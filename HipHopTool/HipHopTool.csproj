@@ -48,6 +48,26 @@
     <Compile Include="HipHopSection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sections\Section_ADBG.cs" />
+    <Compile Include="Sections\Section_AHDR.cs" />
+    <Compile Include="Sections\Section_AINF.cs" />
+    <Compile Include="Sections\Section_ATOC.cs" />
+    <Compile Include="Sections\Section_DHDR.cs" />
+    <Compile Include="Sections\Section_DICT.cs" />
+    <Compile Include="Sections\Section_DPAK.cs" />
+    <Compile Include="Sections\Section_HIPA.cs" />
+    <Compile Include="Sections\Section_LDBG.cs" />
+    <Compile Include="Sections\Section_LHDR.cs" />
+    <Compile Include="Sections\Section_LINF.cs" />
+    <Compile Include="Sections\Section_LTOC.cs" />
+    <Compile Include="Sections\Section_PACK.cs" />
+    <Compile Include="Sections\Section_PCNT.cs" />
+    <Compile Include="Sections\Section_PCRT.cs" />
+    <Compile Include="Sections\Section_PFLG.cs" />
+    <Compile Include="Sections\Section_PLAT.cs" />
+    <Compile Include="Sections\Section_PMOD.cs" />
+    <Compile Include="Sections\Section_PVER.cs" />
+    <Compile Include="Sections\Section_STRM.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

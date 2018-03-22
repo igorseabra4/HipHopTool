@@ -26,34 +26,7 @@ namespace HipHopTool
             byte[] b = BitConverter.GetBytes(a);
             return BitConverter.ToSingle(new byte[] { b[3], b[2], b[1], b[0] }, 0);
         }
-
-        public static HipSection ReadSection(BinaryReader fileReader)
-        {
-            HipSection section = new Section_Node_Generic()
-            {
-                sectionName = new string(fileReader.ReadChars(4)),
-                sectionSize = Switch(fileReader.ReadUInt32())
-            };
-
-            section.data = fileReader.ReadBytes((int)section.sectionSize);
-
-            switch (section.sectionName)
-            {
-                case "PACK":
-                case "DICT":
-                case "ATOC":
-                case "LTOC":
-                case "STRM":
-                    return new Section_Node_Generic(section);
-                case "AHDR":
-                    return new Section_AHDR(section);
-                case "ADBG":
-                    return new Section_ADBG(section);
-                default:
-                    return section;
-            }
-        }
-
+        
         public static byte[] ReadContainedFile(int position, int lenght)
         {
             long savePosition = Program.masterFileReader.BaseStream.Position;
