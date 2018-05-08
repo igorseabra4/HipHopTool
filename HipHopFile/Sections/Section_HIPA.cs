@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public class Section_HIPA : HipSection
     {
-        public Section_HIPA Read(BinaryReader binaryReader)
+        public Section_HIPA()
+        {
+            sectionName = Section.HIPA;
+        }
+
+        public Section_HIPA(BinaryReader binaryReader)
         {
             sectionName = Section.HIPA;
             sectionSize = Switch(binaryReader.ReadInt32());
-
-            return this;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)

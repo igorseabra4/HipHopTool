@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public class Section_PFLG : HipSection
     {
         public int flags;
 
-        public Section_PFLG Read(BinaryReader binaryReader)
+        public Section_PFLG(int flag)
+        {
+            sectionName = Section.PFLG;
+            flags = flag;
+        }
+
+        public Section_PFLG(BinaryReader binaryReader)
         {
             sectionName = Section.PFLG;
             sectionSize = Switch(binaryReader.ReadInt32());
@@ -23,7 +27,10 @@ namespace HipHopTool
 
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
 
-            return this;
+            if (flags != 0x2E & currentGame == Game.Incredibles)
+            {
+                currentGame = Game.BFBB;
+            }
         }
 
         public override void SetListBytes(ref List<byte> listBytes)

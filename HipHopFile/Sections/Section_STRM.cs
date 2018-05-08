@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public class Section_STRM : HipSection
     {
         public Section_DHDR DHDR;
         public Section_DPAK DPAK;
 
-        public Section_STRM Read(BinaryReader binaryReader)
+        public Section_STRM()
+        {
+            sectionName = Section.STRM;
+        }
+
+        public Section_STRM(BinaryReader binaryReader)
         {
             sectionName = Section.STRM;
             sectionSize = Switch(binaryReader.ReadInt32());
@@ -21,23 +26,20 @@ namespace HipHopTool
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.DHDR.ToString()) throw new Exception();
-            DHDR = new Section_DHDR().Read(binaryReader);
+            DHDR = new Section_DHDR(binaryReader);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.DPAK.ToString()) throw new Exception();
-            DPAK = new Section_DPAK().Read(binaryReader);
+            DPAK = new Section_DPAK(binaryReader);
 
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
-
-            return this;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.STRM;
-
-            listBytes.AddRange(DHDR.GetBytes());
-            listBytes.AddRange(DPAK.GetBytes());
+            DHDR.SetBytes(ref listBytes);
+            DPAK.SetBytes(ref listBytes);
         }
     }
 }

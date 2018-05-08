@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public class Section_DICT : HipSection
     {
         public Section_ATOC ATOC;
         public Section_LTOC LTOC;
 
-        public Section_DICT Read(BinaryReader binaryReader)
+        public Section_DICT()
+        {
+            sectionName = Section.DICT;
+        }
+
+        public Section_DICT(BinaryReader binaryReader)
         {
             sectionName = Section.DICT;
             sectionSize = Switch(binaryReader.ReadInt32());
@@ -22,23 +26,21 @@ namespace HipHopTool
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.ATOC.ToString()) throw new Exception();
-            ATOC = new Section_ATOC().Read(binaryReader);
+            ATOC = new Section_ATOC(binaryReader);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.LTOC.ToString()) throw new Exception();
-            LTOC = new Section_LTOC().Read(binaryReader);
+            LTOC = new Section_LTOC(binaryReader);
             
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
-
-            return this;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.DICT;
 
-            listBytes.AddRange(ATOC.GetBytes());
-            listBytes.AddRange(LTOC.GetBytes());
+            ATOC.SetBytes(ref listBytes);
+            LTOC.SetBytes(ref listBytes);
         }
     }
 }

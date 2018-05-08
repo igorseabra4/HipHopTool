@@ -2,33 +2,37 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public class Section_PMOD : HipSection
     {
-        public DateTime fileDate;
+        public int modDate;
 
-        public Section_PMOD Read(BinaryReader binaryReader)
+        public Section_PMOD(int date)
+        {
+            sectionName = Section.PMOD;
+            modDate = date;
+        }
+
+        public Section_PMOD(BinaryReader binaryReader)
         {
             sectionName = Section.PMOD;
             sectionSize = Switch(binaryReader.ReadInt32());
 
             long startSectionPosition = binaryReader.BaseStream.Position;
 
-            fileDate = new DateTime(Switch(binaryReader.ReadInt32()));
+            modDate = Switch(binaryReader.ReadInt32());
             
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
-
-            return this;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.PMOD;
 
-            listBytes.AddRange(BitConverter.GetBytes((int)fileDate.ToBinary()).Reverse());            
+            listBytes.AddRange(BitConverter.GetBytes(modDate).Reverse());            
         }
     }
 }

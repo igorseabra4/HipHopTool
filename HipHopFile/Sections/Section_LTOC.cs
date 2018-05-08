@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public class Section_LTOC : HipSection
     {
         public Section_LINF LINF;
         public List<Section_LHDR> LHDRList;
 
-        public Section_LTOC Read(BinaryReader binaryReader)
+        public Section_LTOC()
+        {
+            sectionName = Section.LTOC;
+            LHDRList = new List<Section_LHDR>();
+        }
+
+        public Section_LTOC(BinaryReader binaryReader)
         {
             sectionName = Section.LTOC;
             sectionSize = Switch(binaryReader.ReadInt32());
@@ -19,7 +25,7 @@ namespace HipHopTool
 
             string currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.LINF.ToString()) throw new Exception();
-            LINF = new Section_LINF().Read(binaryReader);
+            LINF = new Section_LINF(binaryReader);
 
             LHDRList = new List<Section_LHDR>();
 
@@ -27,21 +33,19 @@ namespace HipHopTool
             {
                 currentSectionName = new string(binaryReader.ReadChars(4));
                 if (currentSectionName != Section.LHDR.ToString()) throw new Exception();
-                LHDRList.Add(new Section_LHDR().Read(binaryReader));
+                LHDRList.Add(new Section_LHDR(binaryReader));
             }
 
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
-
-            return this;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.LTOC;
 
-            listBytes.AddRange(LINF.GetBytes());
+            LINF.SetBytes(ref listBytes);
             foreach (Section_LHDR i in LHDRList)
-                listBytes.AddRange(i.GetBytes());
+                i.SetBytes(ref listBytes);
         }
     }
 }

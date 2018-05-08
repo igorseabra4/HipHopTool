@@ -2,29 +2,33 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public class Section_LDBG : HipSection
     {
-        public int unknown1;
-        
-        public Section_LDBG Read(BinaryReader binaryReader)
+        public int value;
+
+        public Section_LDBG(int a)
+        {
+            sectionName = Section.LDBG;
+            value = a;
+        }
+
+        public Section_LDBG(BinaryReader binaryReader)
         {
             sectionName = Section.LDBG;
             sectionSize = Switch(binaryReader.ReadInt32());
             
-            unknown1 = Switch(binaryReader.ReadInt32());
-
-            return this;
+            value = Switch(binaryReader.ReadInt32());
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.LDBG;
 
-            listBytes.AddRange(BitConverter.GetBytes(unknown1).Reverse());
+            listBytes.AddRange(BitConverter.GetBytes(value).Reverse());
         }
     }
 }

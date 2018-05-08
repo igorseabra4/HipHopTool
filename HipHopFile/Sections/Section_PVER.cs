@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public class Section_PVER : HipSection
     {
@@ -12,7 +12,15 @@ namespace HipHopTool
         public int clientVersion;
         public int compatible;
 
-        public Section_PVER Read(BinaryReader binaryReader)
+        public Section_PVER(int newSubVersion, int newClientVersion, int newCompatible)
+        {
+            sectionName = Section.PVER;
+            subVersion = newSubVersion;
+            clientVersion = newClientVersion;
+            compatible = newCompatible;
+        }
+
+        public Section_PVER(BinaryReader binaryReader)
         {
             sectionName = Section.PVER;
             sectionSize = Switch(binaryReader.ReadInt32());
@@ -25,7 +33,14 @@ namespace HipHopTool
 
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
 
-            return this;
+            if (clientVersion == 262150)
+            {
+                currentGame = Game.Scooby;
+            }
+            else if (clientVersion == 655375)
+            {
+                currentGame = Game.Incredibles; // or BFBB, will check at flag
+            }
         }
 
         public override void SetListBytes(ref List<byte> listBytes)

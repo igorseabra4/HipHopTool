@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public enum LayerType
     {
-        DEFAULT = 0, // Spongebob uses only this on HIP but the others on HOP
+        DEFAULT = 0,
         TEXTURE = 1,
         BSP = 2,
         MODEL = 3,
@@ -22,11 +22,16 @@ namespace HipHopTool
     public class Section_LHDR : HipSection
     {
         public LayerType layerType;
-        public int amountOfUnknown;
-        public int[] unknowns;
+        public int assetAmount;
+        public int[] assetIDlist;
         public Section_LDBG LDBG;
-        
-        public Section_LHDR Read(BinaryReader binaryReader)
+
+        public Section_LHDR()
+        {
+            sectionName = Section.LHDR;
+        }
+
+        public Section_LHDR(BinaryReader binaryReader)
         {
             sectionName = Section.LHDR;
             sectionSize = Switch(binaryReader.ReadInt32());
@@ -34,19 +39,17 @@ namespace HipHopTool
             long startSectionPosition = binaryReader.BaseStream.Position;
 
             layerType = (LayerType)Switch(binaryReader.ReadInt32());
-            amountOfUnknown = Switch(binaryReader.ReadInt32());
+            assetAmount = Switch(binaryReader.ReadInt32());
 
-            unknowns = new int[amountOfUnknown];
-            for (int i = 0; i < amountOfUnknown; i++)
-                unknowns[i] = Switch(binaryReader.ReadInt32());
+            assetIDlist = new int[assetAmount];
+            for (int i = 0; i < assetAmount; i++)
+                assetIDlist[i] = Switch(binaryReader.ReadInt32());
             
             string currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.LDBG.ToString()) throw new Exception();
-            LDBG = new Section_LDBG().Read(binaryReader);
+            LDBG = new Section_LDBG(binaryReader);
 
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
-
-            return this;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
@@ -54,12 +57,12 @@ namespace HipHopTool
             sectionName = Section.LHDR;
 
             listBytes.AddRange(BitConverter.GetBytes((int)layerType).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes(amountOfUnknown).Reverse());
+            listBytes.AddRange(BitConverter.GetBytes(assetAmount).Reverse());
 
-            foreach (int i in unknowns)
+            foreach (int i in assetIDlist)
                 listBytes.AddRange(BitConverter.GetBytes(i).Reverse());
 
-            listBytes.AddRange(LDBG.GetBytes());
+            LDBG.SetBytes(ref listBytes);
         }
     }
 }

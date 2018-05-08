@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F45B7D49-0709-42BE-9F7C-0558F7A73B78}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>HipHopTool</RootNamespace>
-    <AssemblyName>HipHopTool</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ProjectGuid>{F68908E6-6947-477E-8A88-3130BE2FDB06}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HipHopFile</RootNamespace>
+    <AssemblyName>HipHopFile</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,25 +32,40 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HipHopFile">
-      <HintPath>..\HipHopFile\bin\Debug\HipHopFile.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sections\HipSection.cs" />
+    <Compile Include="Sections\Section_ADBG.cs" />
+    <Compile Include="Sections\Section_AHDR.cs" />
+    <Compile Include="Sections\Section_AINF.cs" />
+    <Compile Include="Sections\Section_ATOC.cs" />
+    <Compile Include="Sections\Section_DHDR.cs" />
+    <Compile Include="Sections\Section_DICT.cs" />
+    <Compile Include="Sections\Section_DPAK.cs" />
+    <Compile Include="Sections\Section_HIPA.cs" />
+    <Compile Include="Sections\Section_LDBG.cs" />
+    <Compile Include="Sections\Section_LHDR.cs" />
+    <Compile Include="Sections\Section_LINF.cs" />
+    <Compile Include="Sections\Section_LTOC.cs" />
+    <Compile Include="Sections\Section_PACK.cs" />
+    <Compile Include="Sections\Section_PCNT.cs" />
+    <Compile Include="Sections\Section_PCRT.cs" />
+    <Compile Include="Sections\Section_PFLG.cs" />
+    <Compile Include="Sections\Section_PLAT.cs" />
+    <Compile Include="Sections\Section_PMOD.cs" />
+    <Compile Include="Sections\Section_PVER.cs" />
+    <Compile Include="Sections\Section_STRM.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="readme.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

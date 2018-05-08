@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static HipHopTool.Functions;
+using static HipHopFile.Functions;
 
-namespace HipHopTool
+namespace HipHopFile
 {
     public enum AHDRFlags
     {
@@ -24,12 +24,23 @@ namespace HipHopTool
         public int flags;
         public Section_ADBG ADBG;
 
+        public int ID;
         public byte[] containedFile;
 
-        public Section_AHDR Read(BinaryReader binaryReader)
+        public Section_AHDR(int ID, string type, int flag, Section_ADBG section_ADBG)
+        {
+            assetID = ID;
+            fileType = type;
+            flags = flag;
+            ADBG = section_ADBG;
+        }
+
+        public Section_AHDR(BinaryReader binaryReader, int number)
         {
             sectionName = Section.AHDR;
             sectionSize = Switch(binaryReader.ReadInt32());
+
+            ID = number;
 
             long startSectionPosition = binaryReader.BaseStream.Position;
 
@@ -42,13 +53,11 @@ namespace HipHopTool
 
             string currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.ADBG.ToString()) throw new Exception();
-            ADBG = new Section_ADBG().Read(binaryReader);
+            ADBG = new Section_ADBG(binaryReader);
 
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
 
-            containedFile = ReadContainedFile(fileOffset, fileSize);
-
-            return this;
+            containedFile = ReadContainedFile(binaryReader, fileOffset, fileSize);
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
@@ -63,7 +72,7 @@ namespace HipHopTool
             listBytes.AddRange(BitConverter.GetBytes(plusValue).Reverse());
             listBytes.AddRange(BitConverter.GetBytes(flags).Reverse());
 
-            listBytes.AddRange(ADBG.GetBytes());
+            ADBG.SetBytes(ref listBytes);
         }
     }
 }
