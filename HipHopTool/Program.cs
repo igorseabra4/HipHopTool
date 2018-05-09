@@ -23,7 +23,7 @@ namespace HipHopTool
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
-            Console.WriteLine("HipHopTool v0.3.2 by igorseabra4");
+            Console.WriteLine("HipHopTool v0.4 by igorseabra4");
 
             Option option = Option.None;
 
@@ -89,7 +89,7 @@ namespace HipHopTool
                 string iniToCreate = "null";
                 bool multiFolder = true;
 
-                for (int i = 0; i < args.Length; i ++)
+                for (int i = 0; i < args.Length; i++)
                 {
                     if (args[i].ToLower() == "-extract" | args[i].ToLower() == "-e" | args[i].ToLower() == "-unpack" | args[i].ToLower() == "-u")
                     {
