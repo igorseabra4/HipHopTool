@@ -57,6 +57,7 @@ namespace HipHopFile
 
         public static int globalRelativeStartOffset;
         public static Game currentGame = Game.Unknown;
+        public static Platform currentPlatform = Platform.Unknown;
 
         public static HipSection[] HipFileToHipArray(string fileName)
         {

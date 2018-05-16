@@ -23,7 +23,7 @@ namespace HipHopTool
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
-            Console.WriteLine("HipHopTool v0.4 by igorseabra4");
+            Console.WriteLine("HipHopTool v0.4.1 by igorseabra4");
 
             Option option = Option.None;
 

@@ -20,9 +20,10 @@ namespace HipHopFile
         public Section_DPAK(BinaryReader binaryReader)
         {
             sectionName = Section.DPAK;
-            sectionSize = Switch(binaryReader.ReadInt32());
 
+            sectionSize = Switch(binaryReader.ReadInt32());
             firstPadding = Switch(binaryReader.ReadInt32());
+
             globalRelativeStartOffset = (int)binaryReader.BaseStream.Position;
 
             data = binaryReader.ReadBytes(sectionSize - 4);

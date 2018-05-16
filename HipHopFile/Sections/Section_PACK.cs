@@ -57,6 +57,7 @@ namespace HipHopFile
             else if (currentGame == Game.Scooby)
             {
                 PLAT = null;
+                currentPlatform = Platform.PS2;
             }
             else throw new Exception("PACK reading error");
             

@@ -41,7 +41,12 @@ namespace HipHopFile
                 TargetGame = ReadString(binaryReader);
             }
             else throw new Exception("PLAT reading error");
-            
+
+            if (TargetPlatform == "XB" | TargetPlatformName == "Xbox") currentPlatform = Platform.Xbox;
+            else if (TargetPlatform == "GC" | TargetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
+            else if (TargetPlatform == "P2" | TargetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
+            else throw new Exception("PLAT reading error");
+
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
         }
 
@@ -64,6 +69,11 @@ namespace HipHopFile
                 WriteString(ref listBytes, RegionFormat);
                 WriteString(ref listBytes, TargetGame);
             }
+            else throw new Exception("PLAT writing error");
+
+            if (TargetPlatform == "XB" | TargetPlatformName == "Xbox") currentPlatform = Platform.Xbox;
+            else if (TargetPlatform == "GC" | TargetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
+            else if (TargetPlatform == "P2" | TargetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
             else throw new Exception("PLAT writing error");
         }
     }

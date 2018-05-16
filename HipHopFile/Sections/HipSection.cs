@@ -36,6 +36,14 @@ namespace HipHopFile
         Incredibles // Incredibles also includes Spongebob Movie and Rise of the Underminer
     }
 
+    public enum Platform
+    {
+        Unknown,
+        PS2,
+        GameCube,
+        Xbox
+    }
+
     public abstract class HipSection
     {
         public Section sectionName;
