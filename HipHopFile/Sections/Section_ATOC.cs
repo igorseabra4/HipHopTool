@@ -28,16 +28,12 @@ namespace HipHopFile
             AINF = new Section_AINF(binaryReader);
 
             AHDRList = new List<Section_AHDR>();
-
-            int currentAHDR = 0;
-
+            
             while (binaryReader.BaseStream.Position < startSectionPosition + sectionSize)
             {
                 currentSectionName = new string(binaryReader.ReadChars(4));
                 if (currentSectionName != Section.AHDR.ToString()) throw new Exception();
-                AHDRList.Add(new Section_AHDR(binaryReader, currentAHDR));
-
-                currentAHDR++;
+                AHDRList.Add(new Section_AHDR(binaryReader));
             }
             
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;

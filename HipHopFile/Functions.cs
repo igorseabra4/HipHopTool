@@ -58,7 +58,7 @@ namespace HipHopFile
         public static int globalRelativeStartOffset;
         public static Game currentGame = Game.Unknown;
         public static Platform currentPlatform = Platform.Unknown;
-
+        
         public static HipSection[] HipFileToHipArray(string fileName)
         {
             List<HipSection> hipFile = new List<HipSection>(4);
@@ -76,7 +76,7 @@ namespace HipHopFile
             }
 
             binaryReader.Close();
-
+            
             return hipFile.ToArray();
         }
 
@@ -165,7 +165,7 @@ namespace HipHopFile
                     foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
                     {
                         if (multiFolder)
-                            directoryToUnpack = Path.Combine(unpackFolder, AHDR.fileType);
+                            directoryToUnpack = Path.Combine(unpackFolder, AHDR.assetType.ToString());
 
                         if (!Directory.Exists(directoryToUnpack))
                             Directory.CreateDirectory(directoryToUnpack);
@@ -178,14 +178,14 @@ namespace HipHopFile
                         }
 
                         File.WriteAllBytes(Path.Combine(directoryToUnpack, assetFileName), AHDR.containedFile);
-                        AHDRDictionary.Add(AHDR.assetID, AHDR.assetID.ToString("X8") + "," + AHDR.fileType + "," + AHDR.flags.ToString() + "," + AHDR.ADBG.alignment.ToString() + "," + AHDR.ADBG.assetName + "," + AHDR.ADBG.assetFileName + "," + AHDR.ADBG.checksum.ToString("X8"));
+                        AHDRDictionary.Add(AHDR.assetID, AHDR.assetID.ToString("X8") + "," + AHDR.assetType + "," + AHDR.flags.ToString() + "," + AHDR.ADBG.alignment.ToString() + "," + AHDR.ADBG.assetName + "," + AHDR.ADBG.assetFileName + "," + AHDR.ADBG.checksum.ToString("X8"));
                     }
 
                     foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
                     {
                         INIWriter.WriteLine("LayerType=" + (int)LHDR.layerType + " " + LHDR.layerType.ToString());
-                        if (LHDR.assetAmount == 0)
-                            INIWriter.WriteLine("AssetAmount=" + LHDR.assetAmount.ToString());
+                        if (LHDR.assetIDlist.Count() == 0)
+                            INIWriter.WriteLine("AssetAmount=0");
                         INIWriter.WriteLine("LHDR.LDBG=" + LHDR.LDBG.value.ToString());
                         foreach (int j in LHDR.assetIDlist)
                             INIWriter.WriteLine("Asset=" + AHDRDictionary[j]);
@@ -307,7 +307,7 @@ namespace HipHopFile
                 {
                     string[] j = s.Split('=')[1].Split(',');
                     assetIDlist.Add(Convert.ToInt32(j[0], 16));
-                    DICT.ATOC.AHDRList.Add(new Section_AHDR(Convert.ToInt32(j[0], 16), j[1], Convert.ToInt32(j[2]),
+                    DICT.ATOC.AHDRList.Add(new Section_AHDR(Convert.ToInt32(j[0], 16), j[1], (AHDRFlags)Convert.ToInt32(j[2]),
                         new Section_ADBG(Convert.ToInt32(j[3]), j[4], j[5], Convert.ToInt32(j[6], 16))));
                 }
                 else if (s.StartsWith("LHDR.LDBG"))
@@ -316,8 +316,7 @@ namespace HipHopFile
                 }
                 else if (s.StartsWith("EndLayer"))
                 {
-                    CurrentLHDR.assetAmount = assetIDlist.Count();
-                    CurrentLHDR.assetIDlist = assetIDlist.ToArray();
+                    CurrentLHDR.assetIDlist = assetIDlist;
                     DICT.LTOC.LHDRList.Add(CurrentLHDR);
 
                     assetIDlist = new List<int>();
@@ -372,11 +371,11 @@ namespace HipHopFile
                 int alignment = 16;
                 if (currentGame == Game.BFBB)
                 {
-                    if (AHDR.fileType == "CSN " |
-                        AHDR.fileType == "SND " |
-                        AHDR.fileType == "SNDS")
+                    if (AHDR.assetType == AssetType.CSN |
+                        AHDR.assetType == AssetType.SND |
+                        AHDR.assetType == AssetType.SNDS)
                         alignment = 32;
-                    else if (AHDR.fileType == "CRDT")
+                    else if (AHDR.assetType == AssetType.CRDT)
                         alignment = 4;
                 }
 

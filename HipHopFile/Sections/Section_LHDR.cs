@@ -22,8 +22,7 @@ namespace HipHopFile
     public class Section_LHDR : HipSection
     {
         public LayerType layerType;
-        public int assetAmount;
-        public int[] assetIDlist;
+        public List<int> assetIDlist;
         public Section_LDBG LDBG;
 
         public Section_LHDR()
@@ -39,11 +38,11 @@ namespace HipHopFile
             long startSectionPosition = binaryReader.BaseStream.Position;
 
             layerType = (LayerType)Switch(binaryReader.ReadInt32());
-            assetAmount = Switch(binaryReader.ReadInt32());
+            int assetAmount = Switch(binaryReader.ReadInt32());
 
-            assetIDlist = new int[assetAmount];
+            assetIDlist = new List<int>(assetAmount);
             for (int i = 0; i < assetAmount; i++)
-                assetIDlist[i] = Switch(binaryReader.ReadInt32());
+                assetIDlist.Add(Switch(binaryReader.ReadInt32()));
             
             string currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.LDBG.ToString()) throw new Exception();
@@ -57,7 +56,7 @@ namespace HipHopFile
             sectionName = Section.LHDR;
 
             listBytes.AddRange(BitConverter.GetBytes((int)layerType).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes(assetAmount).Reverse());
+            listBytes.AddRange(BitConverter.GetBytes(assetIDlist.Count()).Reverse());
 
             foreach (int i in assetIDlist)
                 listBytes.AddRange(BitConverter.GetBytes(i).Reverse());

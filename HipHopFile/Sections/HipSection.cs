@@ -52,7 +52,7 @@ namespace HipHopFile
         public void SetBytes(ref List<byte> listBytes)
         {
             int position = listBytes.Count();
-            listBytes.AddRange(new byte[]      {
+            listBytes.AddRange(new byte[] {
                 0, 0, 0, 0,
                 0, 0, 0, 0,
             });
