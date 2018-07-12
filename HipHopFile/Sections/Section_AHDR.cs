@@ -6,86 +6,6 @@ using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
-    public enum AssetType
-    {
-        Null,
-        ALST,
-        ANIM,
-        ATBL,
-        BOUL,
-        BSP,
-        BUTN,
-        CAM,
-        CNTR,
-        COLL,
-        COND,
-        CRDT,
-        CSN,
-        CSNM,
-        CSSS,
-        CTOC,
-        DEST,
-        DPAT,
-        DSTR,
-        DYNA,
-        EGEN,
-        ENV,
-        FLY,
-        FOG,
-        GRUP,
-        JAW,
-        JSP,
-        LKIT,
-        LOBM,
-        LODT,
-        MAPR,
-        MINF,
-        MODL,
-        MRKR,
-        MVPT,
-        NPC,
-        PARE,
-        PARP,
-        PARS,
-        PICK,
-        PIPT,
-        PKUP,
-        PLAT,
-        PLYR,
-        PORT,
-        PRJT,
-        RANM,
-        RAW,
-        RWTX,
-        SCRP,
-        SDFX,
-        SFX,
-        SGRP,
-        SHDW,
-        SHRP,
-        SIMP,
-        SND,
-        SNDI,
-        SNDS,
-        SURF,
-        TEXT,
-        TIMR,
-        TRIG,
-        UI,
-        UIFN,
-        UIFT,
-        VIL,
-        VILP
-    }
-
-    public enum AHDRFlags
-    {
-        SOURCE_FILE = 1,
-        SOURCE_VIRTUAL = 2,
-        READ_TRANSFORM = 4,
-        WRITE_TRANSFORM = 8
-    }
-
     public class Section_AHDR : HipSection
     {
         public int assetID;
@@ -101,17 +21,17 @@ namespace HipHopFile
         public Section_AHDR(int assetID, string assetType, AHDRFlags flags, Section_ADBG ADBG)
         {
             this.assetID = assetID;
-
             this.assetType = AssetType.Null;
+
             foreach (AssetType o in Enum.GetValues(typeof(AssetType)))
             {
-                if (o.ToString().PadRight(4) == assetType)
+                if (o.ToString() == assetType.Trim())
                 {
                     this.assetType = o;
                     break;
                 }
             }
-            if (this.assetType == AssetType.Null) throw new Exception("Unknown asset type");
+            if (this.assetType == AssetType.Null) throw new Exception("Unknown asset type: " + assetType);
 
             this.flags = flags;
             this.ADBG = ADBG;

@@ -178,7 +178,7 @@ namespace HipHopFile
                         }
 
                         File.WriteAllBytes(Path.Combine(directoryToUnpack, assetFileName), AHDR.containedFile);
-                        AHDRDictionary.Add(AHDR.assetID, AHDR.assetID.ToString("X8") + "," + AHDR.assetType + "," + AHDR.flags.ToString() + "," + AHDR.ADBG.alignment.ToString() + "," + AHDR.ADBG.assetName + "," + AHDR.ADBG.assetFileName + "," + AHDR.ADBG.checksum.ToString("X8"));
+                        AHDRDictionary.Add(AHDR.assetID, AHDR.assetID.ToString("X8") + "," + AHDR.assetType + "," + ((int)AHDR.flags).ToString() + "," + AHDR.ADBG.alignment.ToString() + "," + AHDR.ADBG.assetName + "," + AHDR.ADBG.assetFileName + "," + AHDR.ADBG.checksum.ToString("X8"));
                     }
 
                     foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
@@ -233,20 +233,7 @@ namespace HipHopFile
             {
                 if (s.StartsWith("Game="))
                 {
-                    switch (s.Split('=')[1])
-                    {
-                        case "Scooby":
-                            currentGame = Game.Scooby;
-                            break;
-                        case "BFBB":
-                            currentGame = Game.BFBB;
-                            break;
-                        case "Incredibles":
-                            currentGame = Game.Incredibles;
-                            break;
-                        default:
-                            throw new Exception("Unknown game");
-                    }
+                    SetGame(s.Split('=')[1]);
                 }
                 else if (s.StartsWith("PACK.PVER"))
                 {
@@ -305,10 +292,7 @@ namespace HipHopFile
                 }
                 else if (s.StartsWith("Asset="))
                 {
-                    string[] j = s.Split('=')[1].Split(',');
-                    assetIDlist.Add(Convert.ToInt32(j[0], 16));
-                    DICT.ATOC.AHDRList.Add(new Section_AHDR(Convert.ToInt32(j[0], 16), j[1], (AHDRFlags)Convert.ToInt32(j[2]),
-                        new Section_ADBG(Convert.ToInt32(j[3]), j[4], j[5], Convert.ToInt32(j[6], 16))));
+                    AddAsset(s.Split('=')[1].Split(','), ref assetIDlist, ref DICT);
                 }
                 else if (s.StartsWith("LHDR.LDBG"))
                 {
@@ -324,6 +308,47 @@ namespace HipHopFile
                 }
             }
 
+            return GetFilesData(INIFile, ref HIPA, ref PACK, ref DICT, ref STRM);
+        }
+
+        private static void SetGame(string v)
+        {
+            switch (v)
+            {
+                case "Scooby":
+                    currentGame = Game.Scooby;
+                    break;
+                case "BFBB":
+                    currentGame = Game.BFBB;
+                    break;
+                case "Incredibles":
+                    currentGame = Game.Incredibles;
+                    break;
+                default:
+                    throw new Exception("Unknown game");
+            }
+        }
+
+        private static void AddAsset(string[] j, ref List<int> assetIDlist, ref Section_DICT DICT)
+        {
+            int assetID = Convert.ToInt32(j[0], 16);
+            string assetType = j[1];
+            AHDRFlags flags = (AHDRFlags)Convert.ToInt32(j[2]);
+            int align = Convert.ToInt32(j[3]);
+            string assetName = j[4];
+            string assetFileName = j[5];
+            int checksum = Convert.ToInt32(j[6], 16);
+
+            assetIDlist.Add(assetID);
+
+            Section_ADBG newADBG = new Section_ADBG(align, assetName, assetFileName, checksum);
+            Section_AHDR newAHDR = new Section_AHDR(assetID, assetType, flags, newADBG);
+
+            DICT.ATOC.AHDRList.Add(newAHDR);
+        }
+
+        private static HipSection[] GetFilesData(string INIFile, ref Section_HIPA HIPA, ref Section_PACK PACK, ref Section_DICT DICT, ref Section_STRM STRM)
+        {
             // Let's get the data from the files now, then add them to the AHDRs
 
             string[] Folders = Directory.GetDirectories(Path.GetDirectoryName(INIFile));
@@ -395,7 +420,7 @@ namespace HipHopFile
 
             PACK.PCNT = new Section_PCNT(DICT.ATOC.AHDRList.Count, DICT.LTOC.LHDRList.Count, LargestSourceFileAsset, LargestLayer, LargestSourceVirtualAsset);
 
-            return new HipSection[4] { HIPA, PACK, DICT, STRM };
+            return new HipSection[] { HIPA, PACK, DICT, STRM };
         }
     }
 }

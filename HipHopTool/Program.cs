@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using HipHopFile;
 using static HipHopFile.Functions;
 
 namespace HipHopTool
@@ -23,7 +20,7 @@ namespace HipHopTool
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
-            Console.WriteLine("HipHopTool v0.4.2 by igorseabra4");
+            Console.WriteLine("HipHopTool v0.4.3 by igorseabra4");
 
             Option option = Option.None;
 

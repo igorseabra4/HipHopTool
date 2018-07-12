@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HipHopFile", "HipHopFile\HipHopFile.csproj", "{F68908E6-6947-477E-8A88-3130BE2FDB06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HipHopTool", "HipHopTool\HipHopTool.csproj", "{F45B7D49-0709-42BE-9F7C-0558F7A73B78}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F68908E6-6947-477E-8A88-3130BE2FDB06} = {F68908E6-6947-477E-8A88-3130BE2FDB06}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

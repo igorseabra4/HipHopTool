@@ -4,46 +4,6 @@ using System.Linq;
 
 namespace HipHopFile
 {
-    public enum Section
-    {
-        HIPA,
-        PACK,
-        PVER,
-        PFLG,
-        PCNT,
-        PCRT,
-        PMOD,
-        PLAT,
-        DICT,
-        ATOC,
-        AINF,
-        AHDR,
-        ADBG,
-        LTOC,
-        LINF,
-        LHDR,
-        LDBG,
-        STRM,
-        DHDR,
-        DPAK
-    }
-
-    public enum Game
-    {
-        Unknown,
-        Scooby,
-        BFBB,
-        Incredibles // Incredibles also includes Spongebob Movie and Rise of the Underminer
-    }
-
-    public enum Platform
-    {
-        Unknown,
-        PS2,
-        GameCube,
-        Xbox
-    }
-
     public abstract class HipSection
     {
         public Section sectionName;
