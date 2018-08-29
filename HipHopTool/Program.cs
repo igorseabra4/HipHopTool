@@ -20,7 +20,7 @@ namespace HipHopTool
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
-            Console.WriteLine("HipHopTool v0.4.3 by igorseabra4");
+            SendMessage("HipHopTool v0.4.3 by igorseabra4");
 
             Option option = Option.None;
 
@@ -28,11 +28,11 @@ namespace HipHopTool
             {
                 while (option != Option.Close)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("What do you wanna do?");
-                    Console.WriteLine("Type 0 to extract a HIP/HOP file.");
-                    Console.WriteLine("Type 1 to create a HIP/HOP file.");
-                    Console.WriteLine("Type 2 to close.");
+                    SendMessage();
+                    SendMessage("What do you wanna do?");
+                    SendMessage("Type 0 to extract a HIP/HOP file.");
+                    SendMessage("Type 1 to create a HIP/HOP file.");
+                    SendMessage("Type 2 to close.");
 
                     try
                     {
@@ -53,7 +53,7 @@ namespace HipHopTool
 
                         if (openFileDialog.ShowDialog(new Form() { TopMost = true, TopLevel = true }) == DialogResult.OK)
                         {
-                            Console.WriteLine("File: " + openFileDialog.FileName);
+                            SendMessage("File: " + openFileDialog.FileName);
                             HipArrayToIni(HipFileToHipArray(openFileDialog.FileName), openFileDialog.FileName + ".d", true);
                         }
                     }
@@ -117,29 +117,29 @@ namespace HipHopTool
 
                 if (option == Option.ExtractHIP)
                 {
-                    Console.WriteLine("File: " + hipToUnpack);
+                    SendMessage("File: " + hipToUnpack);
 
                     if (outputExtractPath == "null")
                         outputExtractPath = hipToUnpack + ".d";
 
-                    Console.WriteLine("Destination: " + outputExtractPath);
+                    SendMessage("Destination: " + outputExtractPath);
 
                     HipArrayToIni(HipFileToHipArray(hipToUnpack), outputExtractPath, multiFolder);
 
-                    Console.WriteLine("Success");
+                    SendMessage("Success");
                 }
                 else if (option == Option.CreateHIP)
                 {
-                    Console.WriteLine("File: " + iniToCreate);
+                    SendMessage("File: " + iniToCreate);
 
                     if (outputExtractPath == "null")
                         outputExtractPath = Path.ChangeExtension(iniToCreate, ".HIP");
 
-                    Console.WriteLine("Destination: " + outputExtractPath);
+                    SendMessage("Destination: " + outputExtractPath);
 
                     File.WriteAllBytes(outputExtractPath, HipArrayToFile(IniToHipArray(iniToCreate)));
 
-                    Console.WriteLine("Success");
+                    SendMessage("Success");
                 }
                 else if (option == Option.None)
                 {
@@ -147,10 +147,10 @@ namespace HipHopTool
                     {
                         if (Path.GetExtension(s).ToLower() == ".hip" | Path.GetExtension(s).ToLower() == ".hop")
                         {
-                            Console.WriteLine("File: " + s);
-                            Console.WriteLine("Destination: " + s + ".d");                            
+                            SendMessage("File: " + s);
+                            SendMessage("Destination: " + s + ".d");                            
                             HipArrayToIni(HipFileToHipArray(s), s + ".d", true);
-                            Console.WriteLine("Success");
+                            SendMessage("Success");
                         }
                     }
                 }

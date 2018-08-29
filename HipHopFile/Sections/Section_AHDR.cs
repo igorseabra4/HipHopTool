@@ -8,7 +8,7 @@ namespace HipHopFile
 {
     public class Section_AHDR : HipSection
     {
-        public int assetID;
+        public uint assetID;
         public AssetType assetType;
         public int fileOffset;
         public int fileSize;
@@ -18,7 +18,7 @@ namespace HipHopFile
 
         public byte[] containedFile;
         
-        public Section_AHDR(int assetID, string assetType, AHDRFlags flags, Section_ADBG ADBG)
+        public Section_AHDR(uint assetID, string assetType, AHDRFlags flags, Section_ADBG ADBG)
         {
             this.assetID = assetID;
             this.assetType = AssetType.Null;
@@ -37,7 +37,7 @@ namespace HipHopFile
             this.ADBG = ADBG;
         }
 
-        public Section_AHDR(int assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG)
+        public Section_AHDR(uint assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG)
         {
             this.assetID = assetID;
             this.assetType = assetType;
@@ -52,7 +52,7 @@ namespace HipHopFile
 
             long startSectionPosition = binaryReader.BaseStream.Position;
 
-            assetID = Switch(binaryReader.ReadInt32());
+            assetID = Switch(binaryReader.ReadUInt32());
             string type = new string(binaryReader.ReadChars(4));
 
             assetType = AssetType.Null;

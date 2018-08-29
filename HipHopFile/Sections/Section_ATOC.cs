@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using static HipHopFile.Functions;
 
 namespace HipHopFile
@@ -44,6 +45,8 @@ namespace HipHopFile
             sectionName = Section.ATOC;
 
             AINF.SetBytes(ref listBytes);
+            AHDRList = AHDRList.OrderBy(AHDR => AHDR.assetID).ToList();
+
             foreach (Section_AHDR i in AHDRList)
                 i.SetBytes(ref listBytes);
         }
