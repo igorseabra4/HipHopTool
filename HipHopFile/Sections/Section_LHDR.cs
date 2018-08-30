@@ -58,7 +58,6 @@ namespace HipHopFile
             listBytes.AddRange(BitConverter.GetBytes((int)layerType).Reverse());
             listBytes.AddRange(BitConverter.GetBytes(assetIDlist.Count()).Reverse());
 
-            assetIDlist = assetIDlist.OrderBy(i => i).ToList();
             foreach (int i in assetIDlist)
                 listBytes.AddRange(BitConverter.GetBytes(i).Reverse());
 

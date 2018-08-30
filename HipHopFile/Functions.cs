@@ -353,19 +353,16 @@ namespace HipHopFile
 
         private static HipSection[] GetFilesData(string INIFile, ref Section_HIPA HIPA, ref Section_PACK PACK, ref Section_DICT DICT, ref Section_STRM STRM)
         {
-            // Let's get the data from the files now, then add them to the AHDRs
+            // Let's get the data from the files now and put them in a dictionary
+            Dictionary<uint, byte[]> assetDataDictionary = new Dictionary<uint, byte[]>();
 
-            string[] Folders = Directory.GetDirectories(Path.GetDirectoryName(INIFile));
-
-            Dictionary<uint, byte[]> FileDictionary = new Dictionary<uint, byte[]>();
-
-            foreach (string f in Folders)
+            foreach (string f in Directory.GetDirectories(Path.GetDirectoryName(INIFile)))
                 foreach (string i in Directory.GetFiles(f))
                 {
                     byte[] file = File.ReadAllBytes(i);
                     try
                     {
-                        FileDictionary.Add(Convert.ToUInt32(Path.GetFileName(i).Substring(1, 8), 16), file);
+                        assetDataDictionary.Add(Convert.ToUInt32(Path.GetFileName(i).Substring(1, 8), 16), file);
                     }
                     catch
                     {
@@ -373,57 +370,94 @@ namespace HipHopFile
                     }
                 }
 
+            // Now send all the data to the function that'll put the data in the AHDR then fill the STRM section with that
+            return SetupStream(ref HIPA, ref PACK, ref DICT, ref STRM, false, assetDataDictionary);
+        }
+
+        public static HipSection[] SetupStream(ref Section_HIPA HIPA, ref Section_PACK PACK, ref Section_DICT DICT, ref Section_STRM STRM, bool alreadyHasData = true, Dictionary<uint, byte[]> assetDataDictionary = null)
+        {
+            // Create the new STRM stream. Add initial padding to it.
             List<byte> newStream = new List<byte>();
             for (int j = 0; j < STRM.DPAK.firstPadding; j++)
                 newStream.Add(0x33);
 
+            // We'll create these variables but won't really use them. Meh.
             int LargestSourceFileAsset = 0;
             int LargestLayer = 0;
             int LargestSourceVirtualAsset = 0;
+            
+            // Sort the ATOC data (AHDR sections) by their asset ID. Unsure if this is necessary, but just in case.
+            DICT.ATOC.AHDRList = DICT.ATOC.AHDRList.OrderBy(AHDR => AHDR.assetID).ToList();
 
+            // Let's build a temporary dictionary with the assets, so we can write them in layer order.
+            Dictionary<uint, Section_AHDR> assetDictionary = new Dictionary<uint, Section_AHDR>();
             foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
+                assetDictionary.Add(AHDR.assetID, AHDR);
+
+            // Let's go through each layer.
+            foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
-                if (!FileDictionary.Keys.Contains(AHDR.assetID))
+                // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
+                LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => i).ToList();
+
+                foreach (uint assetID in LHDR.assetIDlist)
                 {
-                    SendMessage("Error: asset id [" + AHDR.assetID.ToString("X8") + "] not present. File will be unusable.");
-                    continue;
+                    Section_AHDR AHDR = assetDictionary[assetID];
+
+                    // Does the AHDR section already have the asset data, or should we get it from the dictionary?
+                    // AHDRs from IP will already have data, but the ones from the INI builder won't!
+                    if (!alreadyHasData) 
+                    {
+                        if (!assetDataDictionary.Keys.Contains(AHDR.assetID))
+                        {
+                            SendMessage("Error: asset id [" + AHDR.assetID.ToString("X8") + "] not present. File will be unusable.");
+                            continue;
+                        }
+                        AHDR.containedFile = assetDataDictionary[AHDR.assetID];
+                    }
+
+                    // Set stream dependant AHDR data...
+                    AHDR.fileOffset = newStream.Count();
+                    AHDR.fileSize = AHDR.containedFile.Length;
+
+                    // And add the data to the stream.
+                    newStream.AddRange(AHDR.containedFile);
+
+                    // Calculate alignment data which I don't understand, but hey it works.
+                    AHDR.plusValue = 0;
+
+                    int alignment = 16;
+                    if (currentGame == Game.BFBB)
+                    {
+                        if (AHDR.assetType == AssetType.CSN |
+                            AHDR.assetType == AssetType.SND |
+                            AHDR.assetType == AssetType.SNDS)
+                            alignment = 32;
+                        else if (AHDR.assetType == AssetType.CRDT)
+                            alignment = 4;
+                    }
+
+                    int value = AHDR.fileSize % alignment;
+                    if (value != 0)
+                        AHDR.plusValue = alignment - value;
+                    for (int j = 0; j < AHDR.plusValue; j++)
+                        newStream.Add(0x33);
                 }
-
-                AHDR.containedFile = FileDictionary[AHDR.assetID];
-
-                AHDR.fileOffset = newStream.Count();
-                AHDR.fileSize = AHDR.containedFile.Length;
-                newStream.AddRange(AHDR.containedFile);
-
-                AHDR.plusValue = 0;
-
-                int alignment = 16;
-                if (currentGame == Game.BFBB)
-                {
-                    if (AHDR.assetType == AssetType.CSN |
-                        AHDR.assetType == AssetType.SND |
-                        AHDR.assetType == AssetType.SNDS)
-                        alignment = 32;
-                    else if (AHDR.assetType == AssetType.CRDT)
-                        alignment = 4;
-                }
-
-                int value = AHDR.fileSize % alignment;
-                if (value != 0)
-                    AHDR.plusValue = alignment - value;
-                for (int j = 0; j < AHDR.plusValue; j++)
-                    newStream.Add(0x33);
             }
 
+            // More alignment data.
             int value2 = (newStream.Count - STRM.DPAK.firstPadding) % 0x20;
             if (value2 != 0)
                 for (int j = 0; j < 0x20 - value2; j++)
                     newStream.Add(0x33);
 
+            // Assign list as stream! We're done with the worst part.
             STRM.DPAK.data = newStream.ToArray();
 
+            // I'll create a new PCNT, because I'm sure you'll forget to do so.
             PACK.PCNT = new Section_PCNT(DICT.ATOC.AHDRList.Count, DICT.LTOC.LHDRList.Count, LargestSourceFileAsset, LargestLayer, LargestSourceVirtualAsset);
 
+            // We're done!
             return new HipSection[] { HIPA, PACK, DICT, STRM };
         }
     }
