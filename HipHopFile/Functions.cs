@@ -364,9 +364,9 @@ namespace HipHopFile
                     {
                         assetDataDictionary.Add(Convert.ToUInt32(Path.GetFileName(i).Substring(1, 8), 16), file);
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        SendMessage("Error: asset " + Path.GetFileName(i) + " already imported. Skipping.");
+                        SendMessage("Error importing asset " + Path.GetFileName(i) + ": " + e.Message);
                     }
                 }
 
@@ -410,7 +410,7 @@ namespace HipHopFile
                     {
                         if (!assetDataDictionary.Keys.Contains(AHDR.assetID))
                         {
-                            SendMessage("Error: asset id [" + AHDR.assetID.ToString("X8") + "] not present. File will be unusable.");
+                            SendMessage($"Error: asset with ID [{AHDR.assetID.ToString("X8")}] was not found. The archive will not be saved correctly and will be unusable.");
                             continue;
                         }
                         AHDR.containedFile = assetDataDictionary[AHDR.assetID];

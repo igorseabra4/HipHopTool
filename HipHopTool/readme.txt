@@ -1,4 +1,4 @@
-= HipHopTool v0.4.2 by igorseabra4 =
+= HipHopTool v0.4.4 by igorseabra4 =
 Tool to extract and create HIP/HOP archive files used in games by Heavy Iron Studios.
 
 Currently supported games:
@@ -7,7 +7,7 @@ Currently supported games:
 - The Incredibles Game (GCN)
 - The Spongebob Squarepants Movie Game (GCN, XBOX)
 - The Incredibles: Rise of the Underminer
-- Other platform versions of the above games might also be supported, however I have not tested them.
+- Other platform versions of the above games are probably also supported, however I have not tested them.
 
 = File Description =
 HIP archives (internally, they are all HIPs, HOP is just a filename thing) are used by the games above to put together all assets used in a scene ingame. They are divided into multiple layers, and each layer contains multiple (sometimes thousands of) assets. Every texture, model, object, sound, pickup object etc is an asset.
@@ -36,7 +36,7 @@ will extract the EXAMPLE.HOP file to a default folder and all assets to one fold
 == Creating ==
 HipHopTool.exe -create EXAMPLE_OUT\Settings.ini -dest OUT.HIP
 
-will create a new archive called OUT.HIP from an INI file called Settings.ini located in the EXAMPLE_OUT folder. You can also use -c for the same effect of -create. Ommiting -dest will save the HIP to the same folder as Settings.ini(extension defaults to .HIP).
+will create a new archive called OUT.HIP from an INI file called Settings.ini located in the EXAMPLE_OUT folder. You can also use -c for the same effect of -create. Ommiting -dest will save the HIP to the same folder as Settings.ini (extension defaults to .HIP).
 
 Note that you can use full paths and not just filenames for -extract, -create and -dest. If the path includes spaces, make sure to enclose it in quotes.
 
@@ -44,8 +44,8 @@ Note that you can use full paths and not just filenames for -extract, -create an
 == INI Format ==
 HipHopTool generates a Settings.ini file when extracting an archive, which is used to rebuild it later. You can edit this file in a text editor.
 
-If you want to add a new asset, add it to the list in the layer you want it to be. Give it a unique asset ID and make sure the asset is also present in a folder with that same ID. Which folder you put it in doesn't matter, the file name doesn't matter either; as long as the asset ID which is the hexadecimal number at the start of the filename is the same, the program will find the asset and include it. The order doesn't matter. The asset ID is the hexadecimal number at the start of the asset entry (don't bother with the one at the end, that's a checksum which actually goes unused).
+If you want to add a new asset, add it to the list in the layer you want it to be. Give it a unique asset ID and make sure the asset is also present in a folder with that same ID. Which folder you put it in doesn't matter, the file name doesn't matter either; as long as the asset ID which is the hexadecimal number at the start of the filename is the same, the program will find the asset and include it. The order doesn't matter either, as HipHopTool will sort the assets automatically when building the file. The asset ID in the INI is the hexadecimal number at the start of the asset entry (don't bother with the one at the end, that's a checksum which actually goes unused).
 
-If an asset ID is referenced in the INI but there's no file for it, the program will show an error; if there are multiple files with the same asset ID, the program will show an error.
+If an asset ID is referenced in the INI but there's no file for it, the program will show an error, and the resulting file will be unusable as it'll have an asset with no data. If there are multiple files with the same asset ID, the program will show an error, and the first one found will be used.
 
-You can remove assets simply by removing the line from the INI, there's no need to delete the asset file as it will be ignored. Adding a # before the line will comment it and it will also be ignored.
+You can remove assets simply by removing the line from the INI (or commenting it with a # at the beginning), there's no need to delete the asset file as it will be ignored.
