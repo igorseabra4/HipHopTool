@@ -13,10 +13,12 @@ namespace HipHopFile
         BSP = 2,
         MODEL = 3,
         ANIMATION = 4,
+        VRAM = 5,
         SRAM = 6,
         SNDTOC = 7,
         CUTSCENE = 8,
-        JSPINFO = 10,
+        CUTSCENETOC = 9,
+        JSPINFO = 10
     }
 
     public class Section_LHDR : HipSection
