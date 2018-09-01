@@ -1,4 +1,4 @@
-= HipHopTool v0.4.4 by igorseabra4 =
+= HipHopTool v0.4.5 by igorseabra4 =
 Tool to extract and create HIP/HOP archive files used in games by Heavy Iron Studios.
 
 Currently supported games:

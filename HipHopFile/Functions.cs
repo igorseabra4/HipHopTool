@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -135,14 +136,15 @@ namespace HipHopFile
 
             StreamWriter INIWriter = new StreamWriter(new FileStream(fileName, FileMode.Create));
             INIWriter.WriteLine("Game=" + currentGame.ToString());
+            INIWriter.WriteLine("IniVersion=1");
 
             foreach (HipSection i in hipFile)
             {
                 if (i is Section_PACK PACK)
                 {
-                    INIWriter.WriteLine("PACK.PVER=" + PACK.PVER.subVersion.ToString() + "," + PACK.PVER.clientVersion.ToString() + "," + PACK.PVER.compatible.ToString());
+                    INIWriter.WriteLine("PACK.PVER=" + PACK.PVER.subVersion.ToString() + v1s + PACK.PVER.clientVersion.ToString() + v1s + PACK.PVER.compatible.ToString());
                     INIWriter.WriteLine("PACK.PFLG=" + PACK.PFLG.flags.ToString());
-                    INIWriter.WriteLine("PACK.PCRT=" + PACK.PCRT.fileDate.ToString() + "," + PACK.PCRT.dateString);
+                    INIWriter.WriteLine("PACK.PCRT=" + PACK.PCRT.fileDate.ToString() + v1s + PACK.PCRT.dateString);
                     if (currentGame == Game.BFBB | currentGame == Game.Incredibles)
                     {
                         INIWriter.WriteLine("PACK.PLAT.Target=" + PACK.PLAT.TargetPlatform);
@@ -158,33 +160,17 @@ namespace HipHopFile
                 }
                 else if (i is Section_DICT DICT)
                 {
+                    ExtractAssetsToFolders(unpackFolder, ref DICT, multiFolder);
+
                     INIWriter.WriteLine("DICT.ATOC.AINF=" + DICT.ATOC.AINF.value.ToString());
                     INIWriter.WriteLine("DICT.LTOC.LINF=" + DICT.LTOC.LINF.value.ToString());
                     INIWriter.WriteLine();
 
                     Dictionary<uint, string> AHDRDictionary = new Dictionary<uint, string>();
-
-                    string directoryToUnpack = Path.Combine(unpackFolder, "files");
-
+                    
                     foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
-                    {
-                        if (multiFolder)
-                            directoryToUnpack = Path.Combine(unpackFolder, AHDR.assetType.ToString());
-
-                        if (!Directory.Exists(directoryToUnpack))
-                            Directory.CreateDirectory(directoryToUnpack);
-
-                        string assetFileName = "[" + AHDR.assetID.ToString("X8") + "] " + AHDR.ADBG.assetName;
-
-                        foreach (char c in Path.GetInvalidFileNameChars())
-                        {
-                            assetFileName = assetFileName.Replace(c, '_');
-                        }
-
-                        File.WriteAllBytes(Path.Combine(directoryToUnpack, assetFileName), AHDR.containedFile);
-                        AHDRDictionary.Add(AHDR.assetID, AHDR.assetID.ToString("X8") + "," + AHDR.assetType + "," + ((uint)AHDR.flags).ToString() + "," + AHDR.ADBG.alignment.ToString() + "," + AHDR.ADBG.assetName + "," + AHDR.ADBG.assetFileName + "," + AHDR.ADBG.checksum.ToString("X8"));
-                    }
-
+                        AHDRDictionary.Add(AHDR.assetID, AHDR.assetID.ToString("X8") + v1s + AHDR.assetType + v1s + ((uint)AHDR.flags).ToString() + v1s + AHDR.ADBG.alignment.ToString() + v1s + AHDR.ADBG.assetName + v1s + AHDR.ADBG.assetFileName + v1s + AHDR.ADBG.checksum.ToString("X8"));
+                    
                     foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
                     {
                         INIWriter.WriteLine("LayerType=" + (int)LHDR.layerType + " " + LHDR.layerType.ToString());
@@ -209,11 +195,133 @@ namespace HipHopFile
             INIWriter.Close();
         }
 
+        public static void HipArrayToJson(HipSection[] hipFile, string unpackFolder, bool multiFolder)
+        {
+            Directory.CreateDirectory(unpackFolder);
+
+            switch (currentGame)
+            {
+                case Game.Scooby:
+                    SendMessage("Game: Scooby-Doo: Night of 100 Frights");
+                    break;
+                case Game.Incredibles:
+                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie, or Rise of the Underminer");
+                    break;
+                case Game.BFBB:
+                    SendMessage("Game: Spongebob Squarepants: Battle For Bikini Bottom");
+                    break;
+                default:
+                    SendMessage("Error: Unknown game.");
+                    break;
+            }
+            
+            HipSerializer serializer = new HipSerializer()
+            {
+                currentGame = currentGame
+            };
+            
+            foreach (HipSection i in hipFile)
+            {
+                if (i is Section_PACK PACK)
+                {
+                    serializer.PACK_PVER_subVersion = PACK.PVER.subVersion;
+                    serializer.PACK_PVER_clientVersion = PACK.PVER.clientVersion;
+                    serializer.PACK_PVER_compatible = PACK.PVER.compatible;
+                    serializer.PACK_PFLG_flags = PACK.PFLG.flags;
+                    serializer.PACK_PCRT_fileDate = PACK.PCRT.fileDate;
+                    serializer.PACK_PCRT_dateString = PACK.PCRT.dateString;
+
+                    if (currentGame == Game.BFBB | currentGame == Game.Incredibles)
+                    {
+                        serializer.PACK_PLAT_TargetPlatform = PACK.PLAT.TargetPlatform;
+                        serializer.PACK_PLAT_RegionFormat = PACK.PLAT.RegionFormat;
+                        serializer.PACK_PLAT_Language = PACK.PLAT.Language;
+                        serializer.PACK_PLAT_TargetGame = PACK.PLAT.TargetGame;
+
+                        if (currentGame == Game.BFBB)
+                            serializer.PACK_PLAT_TargetPlatformName = PACK.PLAT.TargetPlatformName;
+                    }
+                    else if (currentGame != Game.Scooby)
+                        throw new Exception("Unknown game");
+                }
+                else if (i is Section_DICT DICT)
+                {
+                    ExtractAssetsToFolders(unpackFolder, ref DICT, multiFolder);
+
+                    serializer.DICT_ATOC_AINF_value = DICT.ATOC.AINF.value;
+                    serializer.DICT_LTOC_LINF_value = DICT.LTOC.LINF.value;
+
+                    Dictionary<uint, AssetSerializer> assetDictionary = new Dictionary<uint, AssetSerializer>();
+
+                    foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
+                        assetDictionary.Add(AHDR.assetID, new AssetSerializer()
+                        {
+                            assetType = AHDR.assetType,
+                            flags = AHDR.flags,
+                            ADBG_alignment = AHDR.ADBG.alignment,
+                            ADBG_assetName = AHDR.ADBG.assetName,
+                            ADBG_assetFileName = AHDR.ADBG.assetFileName,
+                            checksum = AHDR.ADBG.checksum
+                        });
+
+                    serializer.layers = new List<LayerSerializer>();
+                    foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
+                    {
+                        Dictionary<uint, AssetSerializer> assets = new Dictionary<uint, AssetSerializer>();
+
+                        foreach (uint j in LHDR.assetIDlist)
+                            assets.Add(j, assetDictionary[j]);
+
+                        serializer.layers.Add(new LayerSerializer()
+                        {
+                            layerType = LHDR.layerType,
+                            LHDR_LDBG_value = LHDR.LDBG.value,
+                            assets = assets
+                        });
+                    }
+                }
+                else if (i is Section_STRM STRM)
+                {
+                    serializer.SRTM_DHDR_value = STRM.DHDR.value;
+                    serializer.SRTM_DPAK_firstPadding = STRM.DPAK.firstPadding;
+                }
+            }
+
+            File.WriteAllText(Path.Combine(unpackFolder, "Settings.json"), JsonConvert.SerializeObject(serializer, Formatting.Indented));
+        }
+
+        private static void ExtractAssetsToFolders(string unpackFolder, ref Section_DICT DICT, bool multiFolder)
+        {
+            string directoryToUnpack = Path.Combine(unpackFolder, "files");
+
+            foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
+            {
+                if (multiFolder)
+                    directoryToUnpack = Path.Combine(unpackFolder, AHDR.assetType.ToString());
+
+                if (!Directory.Exists(directoryToUnpack))
+                    Directory.CreateDirectory(directoryToUnpack);
+
+                string assetFileName = "[" + AHDR.assetID.ToString("X8") + "] " + AHDR.ADBG.assetName;
+
+                foreach (char c in Path.GetInvalidFileNameChars())
+                {
+                    assetFileName = assetFileName.Replace(c, '_');
+                }
+
+                File.WriteAllBytes(Path.Combine(directoryToUnpack, assetFileName), AHDR.containedFile);
+            }
+        }
+
+        private static readonly char v0s = ',';
+        private static readonly char v1s = ';';
+
         public static HipSection[] IniToHipArray(string INIFile)
         {
             // Let's load the data from the INI first
 
             string[] INI = File.ReadAllLines(INIFile);
+            char sep = v0s;
 
             Section_HIPA HIPA = new Section_HIPA();
 
@@ -239,9 +347,14 @@ namespace HipHopFile
                 {
                     SetGame(s.Split('=')[1]);
                 }
+                else if (s.StartsWith("IniVersion"))
+                {
+                    if (Convert.ToInt32(s.Split('=')[1]) == 1)
+                        sep = v1s;
+                }
                 else if (s.StartsWith("PACK.PVER"))
                 {
-                    string[] j = s.Split('=')[1].Split(',');
+                    string[] j = s.Split('=')[1].Split(sep);
                     PACK.PVER = new Section_PVER(Convert.ToInt32(j[0]), Convert.ToInt32(j[1]), Convert.ToInt32(j[2]));
                 }
                 else if (s.StartsWith("PACK.PFLG"))
@@ -250,7 +363,7 @@ namespace HipHopFile
                 }
                 else if (s.StartsWith("PACK.PCRT"))
                 {
-                    string[] j = s.Split('=')[1].Split(',');
+                    string[] j = s.Split('=')[1].Split(sep);
                     PACK.PMOD = new Section_PMOD(Convert.ToInt32(j[0]));
                     PACK.PCRT = new Section_PCRT(Convert.ToInt32(j[0]), j[1]);
                 }
@@ -296,7 +409,7 @@ namespace HipHopFile
                 }
                 else if (s.StartsWith("Asset="))
                 {
-                    AddAsset(s.Split('=')[1].Split(','), ref assetIDlist, ref DICT);
+                    AddAsset(s.Split('=')[1].Split(sep), ref assetIDlist, ref DICT);
                 }
                 else if (s.StartsWith("LHDR.LDBG"))
                 {
