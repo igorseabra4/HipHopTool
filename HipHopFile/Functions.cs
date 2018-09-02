@@ -66,7 +66,6 @@ namespace HipHopFile
             if (writeString.Length % 2 == 1) listBytes.AddRange(new byte[] { 0 });
         }
 
-        public static int globalRelativeStartOffset;
         public static Game currentGame = Game.Unknown;
         public static Platform currentPlatform = Platform.Unknown;
         
@@ -93,19 +92,7 @@ namespace HipHopFile
 
         public static byte[] HipArrayToFile(HipSection[] hipFile)
         {
-            // Create hip as list of bytes...
             List<byte> list = new List<byte>();
-            foreach (HipSection i in hipFile)
-                i.SetBytes(ref list);
-
-            // Fix AHDR offsets...
-            foreach (HipSection h in hipFile)
-                if (h is Section_DICT DICT)
-                    foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
-                        AHDR.fileOffset += globalRelativeStartOffset;
-
-            // Create hip as list of bytes again, now with correct offsets.
-            list = new List<byte>();
             foreach (HipSection i in hipFile)
                 i.SetBytes(ref list);
 
@@ -187,7 +174,6 @@ namespace HipHopFile
                 else if (i is Section_STRM STRM)
                 {
                     INIWriter.WriteLine("STRM.DHDR=" + STRM.DHDR.value.ToString());
-                    INIWriter.WriteLine("STRM.Padding=" + STRM.DPAK.firstPadding.ToString());
                     INIWriter.WriteLine();
                 }
             }
@@ -283,7 +269,6 @@ namespace HipHopFile
                 else if (i is Section_STRM STRM)
                 {
                     serializer.SRTM_DHDR_value = STRM.DHDR.value;
-                    serializer.SRTM_DPAK_firstPadding = STRM.DPAK.firstPadding;
                 }
             }
 
@@ -399,10 +384,6 @@ namespace HipHopFile
                 {
                     STRM.DHDR = new Section_DHDR(Convert.ToInt32(s.Split('=')[1]));
                 }
-                else if (s.StartsWith("STRM.Padding"))
-                {
-                    STRM.DPAK = new Section_DPAK(Convert.ToInt32(s.Split('=')[1]));
-                }
                 else if (s.StartsWith("LayerType"))
                 {
                     CurrentLHDR.layerType = (LayerType)Convert.ToInt32(s.Split('=')[1].Split()[0]);
@@ -489,10 +470,21 @@ namespace HipHopFile
 
         public static HipSection[] SetupStream(ref Section_HIPA HIPA, ref Section_PACK PACK, ref Section_DICT DICT, ref Section_STRM STRM, bool alreadyHasData = true, Dictionary<uint, byte[]> assetDataDictionary = null)
         {
-            // Create the new STRM stream. Add initial padding to it.
+            // Let's generate a temporary HIP file that will be discarded.
+            List<byte> temporaryFile = new List<byte>();
+
+            HIPA.SetBytes(ref temporaryFile);
+
+            PACK.PCNT = new Section_PCNT(0, 0, 0, 0, 0);
+            PACK.SetBytes(ref temporaryFile);
+
+            DICT.SetBytes(ref temporaryFile);
+
+            STRM.DPAK.data = new byte[0];
+            STRM.SetBytes(ref temporaryFile);
+            
+            // Create the new STRM stream.
             List<byte> newStream = new List<byte>();
-            for (int j = 0; j < STRM.DPAK.firstPadding; j++)
-                newStream.Add(0x33);
 
             // We'll create these variables but won't really use them. Meh.
             int LargestSourceFileAsset = 0;
@@ -530,7 +522,7 @@ namespace HipHopFile
                     }
 
                     // Set stream dependant AHDR data...
-                    AHDR.fileOffset = newStream.Count();
+                    AHDR.fileOffset = newStream.Count + STRM.DPAK.globalRelativeStartOffset;
                     AHDR.fileSize = AHDR.containedFile.Length;
 
                     // And add the data to the stream.
@@ -556,14 +548,11 @@ namespace HipHopFile
                     for (int j = 0; j < AHDR.plusValue; j++)
                         newStream.Add(0x33);
                 }
-            }
 
-            // More alignment data.
-            int value2 = (newStream.Count - STRM.DPAK.firstPadding) % 0x20;
-            if (value2 != 0)
-                for (int j = 0; j < 0x20 - value2; j++)
+                while ((newStream.Count + STRM.DPAK.globalRelativeStartOffset) % 0x20 != 0)
                     newStream.Add(0x33);
-
+            }
+            
             // Assign list as stream! We're done with the worst part.
             STRM.DPAK.data = newStream.ToArray();
 

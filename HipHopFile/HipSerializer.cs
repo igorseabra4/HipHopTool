@@ -43,6 +43,5 @@ namespace HipHopFile
         public List<LayerSerializer> layers;
 
         public int SRTM_DHDR_value;
-        public int SRTM_DPAK_firstPadding;
     }
 }

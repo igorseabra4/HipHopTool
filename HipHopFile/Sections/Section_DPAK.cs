@@ -8,13 +8,12 @@ namespace HipHopFile
 {
     public class Section_DPAK : HipSection
     {
-        public int firstPadding;
+        public int globalRelativeStartOffset;
         public byte[] data;
-        
-        public Section_DPAK(int a)
+
+        public Section_DPAK()
         {
             sectionName = Section.DPAK;
-            firstPadding = a;
         }
 
         public Section_DPAK(BinaryReader binaryReader)
@@ -22,20 +21,39 @@ namespace HipHopFile
             sectionName = Section.DPAK;
 
             sectionSize = Switch(binaryReader.ReadInt32());
-            firstPadding = Switch(binaryReader.ReadInt32());
+            int firstPadding = Switch(binaryReader.ReadInt32());
+
+            binaryReader.BaseStream.Position += firstPadding;
 
             globalRelativeStartOffset = (int)binaryReader.BaseStream.Position;
 
-            data = binaryReader.ReadBytes(sectionSize - 4);
+            int sizeOfData = sectionSize - 4 - firstPadding;
+            data = binaryReader.ReadBytes(sizeOfData);
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.DPAK;
 
-            listBytes.AddRange(BitConverter.GetBytes(firstPadding).Reverse());
+            int firstPaddingPosition = listBytes.Count;
 
+            listBytes.Add(0);
+            listBytes.Add(0);
+            listBytes.Add(0);
+            listBytes.Add(0);
+
+            while (listBytes.Count % 0x20 != 0)
+                listBytes.Add(0x33);
+            
             globalRelativeStartOffset = listBytes.Count();
+
+            int firstPadding = listBytes.Count - firstPaddingPosition;
+
+            byte[] firstPaddingBytes = BitConverter.GetBytes(firstPadding);
+            listBytes[firstPaddingPosition + 0] = firstPaddingBytes[3];
+            listBytes[firstPaddingPosition + 1] = firstPaddingBytes[2];
+            listBytes[firstPaddingPosition + 2] = firstPaddingBytes[1];
+            listBytes[firstPaddingPosition + 3] = firstPaddingBytes[0];
 
             listBytes.AddRange(data);
         }
