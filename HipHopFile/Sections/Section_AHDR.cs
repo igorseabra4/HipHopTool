@@ -45,6 +45,15 @@ namespace HipHopFile
             this.ADBG = ADBG;
         }
 
+        public Section_AHDR(uint assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG, byte[] data)
+        {
+            this.assetID = assetID;
+            this.assetType = assetType;
+            this.flags = flags;
+            this.ADBG = ADBG;
+            containedFile = data;
+        }
+
         public Section_AHDR(BinaryReader binaryReader)
         {
             sectionName = Section.AHDR;

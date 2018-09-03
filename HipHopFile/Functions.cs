@@ -35,7 +35,23 @@ namespace HipHopFile
             byte[] b = BitConverter.GetBytes(a);
             return BitConverter.ToSingle(new byte[] { b[3], b[2], b[1], b[0] }, 0);
         }
-        
+
+        public static uint BKDRHash(string str)
+        {
+            str = str.ToUpper();
+            uint seed = 131;
+            uint hash = 0;
+            int length = str.Length;
+
+            if (length > 31)
+                length = 31;
+
+            for (int i = 0; i < length; i++)
+                hash = (hash * seed) + str[i];
+
+            return hash;
+        }
+
         public static byte[] ReadContainedFile(BinaryReader binaryReader, int position, int lenght)
         {
             long savePosition = binaryReader.BaseStream.Position;
@@ -480,7 +496,7 @@ namespace HipHopFile
 
             DICT.SetBytes(ref temporaryFile);
 
-            STRM.DPAK.data = new byte[0];
+            STRM.DPAK = new Section_DPAK() { data = new byte[0] };
             STRM.SetBytes(ref temporaryFile);
             
             // Create the new STRM stream.
