@@ -1,54 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
     public class Section_PCNT : HipSection
     {
-        public int fileAHDRCount;
-        public int layerLHDRCount;
+        public int AHDRCount;
+        public int LHDRCount;
         public int sizeOfLargestSourceFileAsset;
         public int sizeOfLargestLayer;
         public int sizeOfLargestSourceVirtualAsset;
 
-        public Section_PCNT(int AHDRCount, int LHDRCount, int LargestSourceFileAsset, int LargestLayer, int LargestSourceVirtualAsset)
+        public Section_PCNT() : base(Section.PCNT)
         {
-            sectionName = Section.PCNT;
-            fileAHDRCount = AHDRCount;
-            layerLHDRCount = LHDRCount;
-            sizeOfLargestSourceFileAsset = LargestSourceFileAsset;
-            sizeOfLargestLayer = LargestLayer;
-            sizeOfLargestSourceVirtualAsset = LargestSourceVirtualAsset;
+            AHDRCount = 0;
+            LHDRCount = 0;
+            sizeOfLargestSourceFileAsset = 0;
+            sizeOfLargestLayer = 0;
+            sizeOfLargestSourceVirtualAsset = 0;
         }
 
-        public Section_PCNT(BinaryReader binaryReader)
+        public Section_PCNT(int AHDRCount, int LHDRCount, int sizeOfLargestSourceFileAsset, int sizeOfLargestLayer, int sizeOfLargestSourceVirtualAsset) : base(Section.PCNT)
         {
-            sectionName = Section.PCNT;
-            sectionSize = Switch(binaryReader.ReadInt32());
+            this.AHDRCount = AHDRCount;
+            this.LHDRCount = LHDRCount;
+            this.sizeOfLargestSourceFileAsset = sizeOfLargestSourceFileAsset;
+            this.sizeOfLargestLayer = sizeOfLargestLayer;
+            this.sizeOfLargestSourceVirtualAsset = sizeOfLargestSourceVirtualAsset;
+        }
 
-            long startSectionPosition = binaryReader.BaseStream.Position;
-
-            fileAHDRCount = Switch(binaryReader.ReadInt32());
-            layerLHDRCount = Switch(binaryReader.ReadInt32());
+        public Section_PCNT(BinaryReader binaryReader) : base(binaryReader, Section.PCNT)
+        {
+            AHDRCount = Switch(binaryReader.ReadInt32());
+            LHDRCount = Switch(binaryReader.ReadInt32());
             sizeOfLargestSourceFileAsset = Switch(binaryReader.ReadInt32());
             sizeOfLargestLayer = Switch(binaryReader.ReadInt32());
             sizeOfLargestSourceVirtualAsset = Switch(binaryReader.ReadInt32());
-
-            binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.PCNT;
 
-            listBytes.AddRange(BitConverter.GetBytes(fileAHDRCount).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes(layerLHDRCount).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes(sizeOfLargestSourceFileAsset).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes(sizeOfLargestLayer).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes(sizeOfLargestSourceVirtualAsset).Reverse());
+            listBytes.AddBigEndian(AHDRCount);
+            listBytes.AddBigEndian(LHDRCount);
+            listBytes.AddBigEndian(sizeOfLargestSourceFileAsset);
+            listBytes.AddBigEndian(sizeOfLargestLayer);
+            listBytes.AddBigEndian(sizeOfLargestSourceVirtualAsset);
         }
     }
 }

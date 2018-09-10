@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
@@ -8,6 +10,19 @@ namespace HipHopFile
     {
         public Section sectionName;
         public int sectionSize;
+
+        public HipSection() { }
+
+        public HipSection(Section sectionName)
+        {
+            this.sectionName = sectionName;
+        }
+
+        public HipSection(BinaryReader binaryReader, Section sectionName)
+        {
+            this.sectionName = sectionName;
+            sectionSize = Switch(binaryReader.ReadInt32());
+        }
 
         public void SetBytes(ref List<byte> listBytes)
         {

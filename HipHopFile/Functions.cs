@@ -18,21 +18,21 @@ namespace HipHopFile
             Console.WriteLine(message);
         }
 
-        public static int Switch(int a)
+        public static int Switch(int value)
         {
-            byte[] b = BitConverter.GetBytes(a);
+            byte[] b = BitConverter.GetBytes(value);
             return BitConverter.ToInt32(new byte[] { b[3], b[2], b[1], b[0] }, 0);
         }
 
-        public static uint Switch(uint a)
+        public static uint Switch(uint value)
         {
-            byte[] b = BitConverter.GetBytes(a);
+            byte[] b = BitConverter.GetBytes(value);
             return BitConverter.ToUInt32(new byte[] { b[3], b[2], b[1], b[0] }, 0);
         }
 
-        public static float Switch(float a)
+        public static float Switch(float value)
         {
-            byte[] b = BitConverter.GetBytes(a);
+            byte[] b = BitConverter.GetBytes(value);
             return BitConverter.ToSingle(new byte[] { b[3], b[2], b[1], b[0] }, 0);
         }
 
@@ -52,15 +52,6 @@ namespace HipHopFile
             return hash;
         }
 
-        public static byte[] ReadContainedFile(BinaryReader binaryReader, int position, int lenght)
-        {
-            long savePosition = binaryReader.BaseStream.Position;
-            binaryReader.BaseStream.Position = position;
-            byte[] data = binaryReader.ReadBytes(lenght);
-            binaryReader.BaseStream.Position = savePosition;
-            return data;
-        }
-
         public static string ReadString(BinaryReader binaryReader)
         {
             List<char> charList = new List<char>();
@@ -73,13 +64,43 @@ namespace HipHopFile
             return new string(charList.ToArray());
         }
 
-        public static void WriteString(ref List<byte> listBytes, string writeString)
+        public static void AddString(this List<byte> listBytes, string writeString)
         {
             foreach (char i in writeString)
                 listBytes.Add((byte)i);
 
             if (writeString.Length % 2 == 0) listBytes.AddRange(new byte[] { 0, 0 });
             if (writeString.Length % 2 == 1) listBytes.AddRange(new byte[] { 0 });
+        }
+
+        public static void AddBigEndian(this List<byte> listBytes, float value)
+        {
+            listBytes.AddRange(BitConverter.GetBytes(value).Reverse());
+        }
+
+        public static void AddBigEndian(this List<byte> listBytes, int value)
+        {
+            listBytes.AddRange(BitConverter.GetBytes(value).Reverse());
+        }
+
+        public static void AddBigEndian(this List<byte> listBytes, uint value)
+        {
+            listBytes.AddRange(BitConverter.GetBytes(value).Reverse());
+        }
+
+        public static void AddBigEndian(this List<byte> listBytes, short value)
+        {
+            listBytes.AddRange(BitConverter.GetBytes(value).Reverse());
+        }
+
+        public static void AddBigEndian(this List<byte> listBytes, ushort value)
+        {
+            listBytes.AddRange(BitConverter.GetBytes(value).Reverse());
+        }
+
+        public static void AddBigEndian(this List<byte> listBytes, byte value)
+        {
+            listBytes.Add(value);
         }
 
         public static Game currentGame = Game.Unknown;
@@ -150,12 +171,12 @@ namespace HipHopFile
                     INIWriter.WriteLine("PACK.PCRT=" + PACK.PCRT.fileDate.ToString() + v1s + PACK.PCRT.dateString);
                     if (currentGame == Game.BFBB | currentGame == Game.Incredibles)
                     {
-                        INIWriter.WriteLine("PACK.PLAT.Target=" + PACK.PLAT.TargetPlatform);
-                        INIWriter.WriteLine("PACK.PLAT.RegionFormat=" + PACK.PLAT.RegionFormat);
-                        INIWriter.WriteLine("PACK.PLAT.Language=" + PACK.PLAT.Language);
-                        INIWriter.WriteLine("PACK.PLAT.TargetGame=" + PACK.PLAT.TargetGame);
+                        INIWriter.WriteLine("PACK.PLAT.Target=" + PACK.PLAT.targetPlatform);
+                        INIWriter.WriteLine("PACK.PLAT.RegionFormat=" + PACK.PLAT.regionFormat);
+                        INIWriter.WriteLine("PACK.PLAT.Language=" + PACK.PLAT.language);
+                        INIWriter.WriteLine("PACK.PLAT.TargetGame=" + PACK.PLAT.targetGame);
                         if (currentGame == Game.BFBB)
-                            INIWriter.WriteLine("PACK.PLAT.TargetPlatformName=" + PACK.PLAT.TargetPlatformName);
+                            INIWriter.WriteLine("PACK.PLAT.TargetPlatformName=" + PACK.PLAT.targetPlatformName);
                     }
                     else if (currentGame != Game.Scooby) throw new Exception("Unknown game");
 
@@ -235,13 +256,13 @@ namespace HipHopFile
 
                     if (currentGame == Game.BFBB | currentGame == Game.Incredibles)
                     {
-                        serializer.PACK_PLAT_TargetPlatform = PACK.PLAT.TargetPlatform;
-                        serializer.PACK_PLAT_RegionFormat = PACK.PLAT.RegionFormat;
-                        serializer.PACK_PLAT_Language = PACK.PLAT.Language;
-                        serializer.PACK_PLAT_TargetGame = PACK.PLAT.TargetGame;
+                        serializer.PACK_PLAT_TargetPlatform = PACK.PLAT.targetPlatform;
+                        serializer.PACK_PLAT_RegionFormat = PACK.PLAT.regionFormat;
+                        serializer.PACK_PLAT_Language = PACK.PLAT.language;
+                        serializer.PACK_PLAT_TargetGame = PACK.PLAT.targetGame;
 
                         if (currentGame == Game.BFBB)
-                            serializer.PACK_PLAT_TargetPlatformName = PACK.PLAT.TargetPlatformName;
+                            serializer.PACK_PLAT_TargetPlatformName = PACK.PLAT.targetPlatformName;
                     }
                     else if (currentGame != Game.Scooby)
                         throw new Exception("Unknown game");
@@ -310,7 +331,7 @@ namespace HipHopFile
                     assetFileName = assetFileName.Replace(c, '_');
                 }
 
-                File.WriteAllBytes(Path.Combine(directoryToUnpack, assetFileName), AHDR.containedFile);
+                File.WriteAllBytes(Path.Combine(directoryToUnpack, assetFileName), AHDR.data);
             }
         }
 
@@ -370,23 +391,23 @@ namespace HipHopFile
                 }
                 else if (s.StartsWith("PACK.PLAT.Target="))
                 {
-                    PACK.PLAT.TargetPlatform = s.Split('=')[1];
+                    PACK.PLAT.targetPlatform = s.Split('=')[1];
                 }
                 else if (s.StartsWith("PACK.PLAT.TargetPlatformName"))
                 {
-                    PACK.PLAT.TargetPlatformName = s.Split('=')[1];
+                    PACK.PLAT.targetPlatformName = s.Split('=')[1];
                 }
                 else if (s.StartsWith("PACK.PLAT.RegionFormat"))
                 {
-                    PACK.PLAT.RegionFormat = s.Split('=')[1];
+                    PACK.PLAT.regionFormat = s.Split('=')[1];
                 }
                 else if (s.StartsWith("PACK.PLAT.Language"))
                 {
-                    PACK.PLAT.Language = s.Split('=')[1];
+                    PACK.PLAT.language = s.Split('=')[1];
                 }
                 else if (s.StartsWith("PACK.PLAT.TargetGame"))
                 {
-                    PACK.PLAT.TargetGame = s.Split('=')[1];
+                    PACK.PLAT.targetGame = s.Split('=')[1];
                 }
                 else if (s.StartsWith("DICT.ATOC.AINF"))
                 {
@@ -534,15 +555,15 @@ namespace HipHopFile
                             SendMessage($"Error: asset with ID [{AHDR.assetID.ToString("X8")}] was not found. The archive will not be saved correctly and will be unusable.");
                             continue;
                         }
-                        AHDR.containedFile = assetDataDictionary[AHDR.assetID];
+                        AHDR.data = assetDataDictionary[AHDR.assetID];
                     }
 
                     // Set stream dependant AHDR data...
                     AHDR.fileOffset = newStream.Count + STRM.DPAK.globalRelativeStartOffset;
-                    AHDR.fileSize = AHDR.containedFile.Length;
+                    AHDR.fileSize = AHDR.data.Length;
 
                     // And add the data to the stream.
-                    newStream.AddRange(AHDR.containedFile);
+                    newStream.AddRange(AHDR.data);
 
                     // Calculate alignment data which I don't understand, but hey it works.
                     AHDR.plusValue = 0;

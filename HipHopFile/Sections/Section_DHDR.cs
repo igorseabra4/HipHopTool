@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using static HipHopFile.Functions;
 
 namespace HipHopFile
@@ -10,17 +8,13 @@ namespace HipHopFile
     {
         public int value;
 
-        public Section_DHDR(int a)
+        public Section_DHDR(int value) : base(Section.DHDR)
         {
-            sectionName = Section.DHDR;
-            value = a;
+            this.value = value;
         }
 
-        public Section_DHDR(BinaryReader binaryReader)
+        public Section_DHDR(BinaryReader binaryReader) : base(binaryReader, Section.DHDR)
         {
-            sectionName = Section.DHDR;
-            sectionSize = Switch(binaryReader.ReadInt32());
-
             value = Switch(binaryReader.ReadInt32());
         }
 
@@ -28,7 +22,7 @@ namespace HipHopFile
         {
             sectionName = Section.DHDR;
 
-            listBytes.AddRange(BitConverter.GetBytes(value).Reverse());
+            listBytes.AddBigEndian(value);
         }
     }
 }

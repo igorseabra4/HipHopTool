@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using static HipHopFile.Functions;
 
 namespace HipHopFile
@@ -11,18 +9,14 @@ namespace HipHopFile
         public int fileDate;
         public string dateString;
 
-        public Section_PCRT(int date1, string date2)
+        public Section_PCRT(int fileDate, string dateString) : base(Section.PCRT)
         {
-            sectionName = Section.PCRT;
-            fileDate = date1;
-            dateString = date2;
+            this.fileDate = fileDate;
+            this.dateString = dateString;
         }
         
-        public Section_PCRT(BinaryReader binaryReader)
+        public Section_PCRT(BinaryReader binaryReader) : base(binaryReader, Section.PCRT)
         {
-            sectionName = Section.PCRT;
-            sectionSize = Switch(binaryReader.ReadInt32());
-
             fileDate = Switch(binaryReader.ReadInt32());            
             dateString = ReadString(binaryReader);
         }
@@ -31,8 +25,8 @@ namespace HipHopFile
         {
             sectionName = Section.PCRT;
 
-            listBytes.AddRange(BitConverter.GetBytes(fileDate).Reverse());
-            WriteString(ref listBytes, dateString);
+            listBytes.AddBigEndian(fileDate);
+            listBytes.AddString(dateString);
         }
     }
 }

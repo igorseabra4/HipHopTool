@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using static HipHopFile.Functions;
 
 namespace HipHopFile
@@ -10,29 +8,21 @@ namespace HipHopFile
     {
         public int modDate;
 
-        public Section_PMOD(int date)
+        public Section_PMOD(int modDate) : base(Section.PMOD)
         {
-            sectionName = Section.PMOD;
-            modDate = date;
+            this.modDate = modDate;
         }
 
-        public Section_PMOD(BinaryReader binaryReader)
-        {
-            sectionName = Section.PMOD;
-            sectionSize = Switch(binaryReader.ReadInt32());
-
-            long startSectionPosition = binaryReader.BaseStream.Position;
-
+        public Section_PMOD(BinaryReader binaryReader) : base(binaryReader, Section.PMOD)
+        {            
             modDate = Switch(binaryReader.ReadInt32());
-            
-            binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.PMOD;
 
-            listBytes.AddRange(BitConverter.GetBytes(modDate).Reverse());            
+            listBytes.AddBigEndian(modDate);            
         }
     }
 }

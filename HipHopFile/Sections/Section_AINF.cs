@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.IO;
 using static HipHopFile.Functions;
 
@@ -10,17 +8,13 @@ namespace HipHopFile
     {
         public int value;
 
-        public Section_AINF(int a)
+        public Section_AINF(int value) : base(Section.AINF)
         {
-            sectionName = Section.AINF;
-            value = a;
+            this.value = value;
         }
 
-        public Section_AINF(BinaryReader binaryReader)
+        public Section_AINF(BinaryReader binaryReader) : base(binaryReader, Section.AINF)
         {
-            sectionName = Section.AINF;
-            sectionSize = Switch(binaryReader.ReadInt32());
-
             value = Switch(binaryReader.ReadInt32());
         }
 
@@ -28,7 +22,7 @@ namespace HipHopFile
         {
             sectionName = Section.AINF;
 
-            listBytes.AddRange(BitConverter.GetBytes(value).Reverse());
+            listBytes.AddBigEndian(value);
         }
     }
 }

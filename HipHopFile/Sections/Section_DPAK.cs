@@ -11,24 +11,25 @@ namespace HipHopFile
         public int globalRelativeStartOffset;
         public byte[] data;
 
-        public Section_DPAK()
+        public Section_DPAK() : base(Section.DPAK) { }
+
+        public Section_DPAK(BinaryReader binaryReader) : base(binaryReader, Section.DPAK)
         {
-            sectionName = Section.DPAK;
-        }
+            if (Section_ATOC.noAHDR)
+            {
+                data = binaryReader.ReadBytes(sectionSize);
+            }
+            else
+            {
+                int firstPadding = Switch(binaryReader.ReadInt32());
 
-        public Section_DPAK(BinaryReader binaryReader)
-        {
-            sectionName = Section.DPAK;
+                binaryReader.BaseStream.Position += firstPadding;
 
-            sectionSize = Switch(binaryReader.ReadInt32());
-            int firstPadding = Switch(binaryReader.ReadInt32());
+                globalRelativeStartOffset = (int)binaryReader.BaseStream.Position;
 
-            binaryReader.BaseStream.Position += firstPadding;
-
-            globalRelativeStartOffset = (int)binaryReader.BaseStream.Position;
-
-            int sizeOfData = sectionSize - 4 - firstPadding;
-            data = binaryReader.ReadBytes(sizeOfData);
+                int sizeOfData = sectionSize - 4 - firstPadding;
+                data = binaryReader.ReadBytes(sizeOfData);
+            }
         }
 
         public override void SetListBytes(ref List<byte> listBytes)

@@ -7,47 +7,37 @@ namespace HipHopFile
 {
     public class Section_PLAT : HipSection
     {
-        public string TargetPlatform;
-        public string TargetPlatformName;
-        public string RegionFormat;
-        public string Language;
-        public string TargetGame;
+        public string targetPlatform;
+        public string targetPlatformName;
+        public string regionFormat;
+        public string language;
+        public string targetGame;
 
-        public Section_PLAT()
+        public Section_PLAT() : base(Section.PLAT) { }
+
+        public Section_PLAT(BinaryReader binaryReader) : base(binaryReader, Section.PLAT)
         {
-            sectionName = Section.PLAT;
-        }
-
-        public Section_PLAT(BinaryReader binaryReader)
-        {
-            sectionName = Section.PLAT;
-            sectionSize = Switch(binaryReader.ReadInt32());
-
-            long startSectionPosition = binaryReader.BaseStream.Position;
-
             if (currentGame == Game.BFBB)
             {
-                TargetPlatform = ReadString(binaryReader);
-                TargetPlatformName = ReadString(binaryReader);
-                RegionFormat = ReadString(binaryReader);
-                Language = ReadString(binaryReader);
-                TargetGame = ReadString(binaryReader);
+                targetPlatform = ReadString(binaryReader);
+                targetPlatformName = ReadString(binaryReader);
+                regionFormat = ReadString(binaryReader);
+                language = ReadString(binaryReader);
+                targetGame = ReadString(binaryReader);
             }
             else if (currentGame == Game.Incredibles)
             {
-                TargetPlatform = ReadString(binaryReader);
-                Language = ReadString(binaryReader);
-                RegionFormat = ReadString(binaryReader);
-                TargetGame = ReadString(binaryReader);
+                targetPlatform = ReadString(binaryReader);
+                language = ReadString(binaryReader);
+                regionFormat = ReadString(binaryReader);
+                targetGame = ReadString(binaryReader);
             }
             else throw new Exception("PLAT reading error: unsupported PLAT version");
 
-            if (TargetPlatform == "XB" | TargetPlatformName == "Xbox" | TargetPlatform == "BX") currentPlatform = Platform.Xbox;
-            else if (TargetPlatform == "GC" | TargetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
-            else if (TargetPlatform == "P2" | TargetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
+            if (targetPlatform == "XB" | targetPlatformName == "Xbox" | targetPlatform == "BX") currentPlatform = Platform.Xbox;
+            else if (targetPlatform == "GC" | targetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
+            else if (targetPlatform == "P2" | targetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
             else throw new Exception("PLAT reading error: unknown platform");
-
-            binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
@@ -56,24 +46,24 @@ namespace HipHopFile
 
             if (currentGame == Game.BFBB)
             {
-                WriteString(ref listBytes, TargetPlatform);
-                WriteString(ref listBytes, TargetPlatformName);
-                WriteString(ref listBytes, RegionFormat);
-                WriteString(ref listBytes, Language);
-                WriteString(ref listBytes, TargetGame);
+                listBytes.AddString(targetPlatform);
+                listBytes.AddString(targetPlatformName);
+                listBytes.AddString(regionFormat);
+                listBytes.AddString(language);
+                listBytes.AddString(targetGame);
             }
             else if (currentGame == Game.Incredibles)
             {
-                WriteString(ref listBytes, TargetPlatform);
-                WriteString(ref listBytes, Language);
-                WriteString(ref listBytes, RegionFormat);
-                WriteString(ref listBytes, TargetGame);
+                listBytes.AddString(targetPlatform);
+                listBytes.AddString(language);
+                listBytes.AddString(regionFormat);
+                listBytes.AddString(targetGame);
             }
             else throw new Exception("PLAT writing error");
 
-            if (TargetPlatform == "XB" | TargetPlatformName == "Xbox" | TargetPlatform == "BX") currentPlatform = Platform.Xbox;
-            else if (TargetPlatform == "GC" | TargetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
-            else if (TargetPlatform == "P2" | TargetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
+            if (targetPlatform == "XB" | targetPlatformName == "Xbox" | targetPlatform == "BX") currentPlatform = Platform.Xbox;
+            else if (targetPlatform == "GC" | targetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
+            else if (targetPlatform == "P2" | targetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
             else throw new Exception("PLAT writing error: unknown platform");
         }
     }

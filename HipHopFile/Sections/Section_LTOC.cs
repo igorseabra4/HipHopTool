@@ -10,17 +10,13 @@ namespace HipHopFile
         public Section_LINF LINF;
         public List<Section_LHDR> LHDRList;
 
-        public Section_LTOC()
+        public Section_LTOC() : base(Section.LTOC)
         {
-            sectionName = Section.LTOC;
             LHDRList = new List<Section_LHDR>();
         }
 
-        public Section_LTOC(BinaryReader binaryReader)
+        public Section_LTOC(BinaryReader binaryReader) : base(binaryReader, Section.LTOC)
         {
-            sectionName = Section.LTOC;
-            sectionSize = Switch(binaryReader.ReadInt32());
-
             long startSectionPosition = binaryReader.BaseStream.Position;
 
             string currentSectionName = new string(binaryReader.ReadChars(4));

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
@@ -10,18 +9,10 @@ namespace HipHopFile
         public Section_DHDR DHDR;
         public Section_DPAK DPAK;
 
-        public Section_STRM()
+        public Section_STRM() : base(Section.STRM) { }
+
+        public Section_STRM(BinaryReader binaryReader) : base(binaryReader, Section.STRM)
         {
-            sectionName = Section.STRM;
-        }
-
-        public Section_STRM(BinaryReader binaryReader)
-        {
-            sectionName = Section.STRM;
-            sectionSize = Switch(binaryReader.ReadInt32());
-
-            long startSectionPosition = binaryReader.BaseStream.Position;
-
             string currentSectionName;
 
             currentSectionName = new string(binaryReader.ReadChars(4));
@@ -31,8 +22,6 @@ namespace HipHopFile
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.DPAK.ToString()) throw new Exception();
             DPAK = new Section_DPAK(binaryReader);
-
-            binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)

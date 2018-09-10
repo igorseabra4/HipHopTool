@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using static HipHopFile.Functions;
 
 namespace HipHopFile
@@ -16,9 +15,9 @@ namespace HipHopFile
         public AHDRFlags flags;
         public Section_ADBG ADBG;
 
-        public byte[] containedFile;
+        public byte[] data;
         
-        public Section_AHDR(uint assetID, string assetType, AHDRFlags flags, Section_ADBG ADBG)
+        public Section_AHDR(uint assetID, string assetType, AHDRFlags flags, Section_ADBG ADBG) : base(Section.AHDR)
         {
             this.assetID = assetID;
             this.assetType = AssetType.Null;
@@ -37,7 +36,7 @@ namespace HipHopFile
             this.ADBG = ADBG;
         }
 
-        public Section_AHDR(uint assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG)
+        public Section_AHDR(uint assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG) : base(Section.AHDR)
         {
             this.assetID = assetID;
             this.assetType = assetType;
@@ -45,22 +44,17 @@ namespace HipHopFile
             this.ADBG = ADBG;
         }
 
-        public Section_AHDR(uint assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG, byte[] data)
+        public Section_AHDR(uint assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG, byte[] data) : base(Section.AHDR)
         {
             this.assetID = assetID;
             this.assetType = assetType;
             this.flags = flags;
             this.ADBG = ADBG;
-            containedFile = data;
+            this.data = data;
         }
 
-        public Section_AHDR(BinaryReader binaryReader)
+        public Section_AHDR(BinaryReader binaryReader) : base(binaryReader, Section.AHDR)
         {
-            sectionName = Section.AHDR;
-            sectionSize = Switch(binaryReader.ReadInt32());
-
-            long startSectionPosition = binaryReader.BaseStream.Position;
-
             assetID = Switch(binaryReader.ReadUInt32());
             string type = new string(binaryReader.ReadChars(4));
 
@@ -84,22 +78,24 @@ namespace HipHopFile
             if (currentSectionName != Section.ADBG.ToString()) throw new Exception();
             ADBG = new Section_ADBG(binaryReader);
 
-            binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
 
-            containedFile = ReadContainedFile(binaryReader, fileOffset, fileSize);
+            long savePosition = binaryReader.BaseStream.Position;
+            binaryReader.BaseStream.Position = fileOffset;
+            data = binaryReader.ReadBytes(fileSize);
+            binaryReader.BaseStream.Position = savePosition;
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
         {
             sectionName = Section.AHDR;
 
-            listBytes.AddRange(BitConverter.GetBytes(assetID).Reverse());
+            listBytes.AddBigEndian(assetID);
             foreach (char i in assetType.ToString().PadRight(4))
                 listBytes.Add((byte)i);
-            listBytes.AddRange(BitConverter.GetBytes(fileOffset).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes(fileSize).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes(plusValue).Reverse());
-            listBytes.AddRange(BitConverter.GetBytes((int)flags).Reverse());
+            listBytes.AddBigEndian(fileOffset);
+            listBytes.AddBigEndian(fileSize);
+            listBytes.AddBigEndian(plusValue);
+            listBytes.AddBigEndian((int)flags);
 
             ADBG.SetBytes(ref listBytes);
         }
