@@ -99,5 +99,10 @@ namespace HipHopFile
 
             ADBG.SetBytes(ref listBytes);
         }
+
+        public override int GetHashCode()
+        {
+            return (int)assetID;
+        }
     }
 }
