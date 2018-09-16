@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -309,7 +308,8 @@ namespace HipHopFile
                 }
             }
 
-            File.WriteAllText(Path.Combine(unpackFolder, "Settings.json"), JsonConvert.SerializeObject(serializer, Formatting.Indented));
+            throw new NotImplementedException("Unable to create Settings.json");
+            //File.WriteAllText(Path.Combine(unpackFolder, "Settings.json"), JsonConvert.SerializeObject(serializer, Formatting.Indented));
         }
 
         private static void ExtractAssetsToFolders(string unpackFolder, ref Section_DICT DICT, bool multiFolder)
