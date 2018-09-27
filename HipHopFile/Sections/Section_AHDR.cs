@@ -16,7 +16,11 @@ namespace HipHopFile
         public Section_ADBG ADBG;
 
         public byte[] data;
-        
+
+        public Section_AHDR() : base(Section.AHDR)
+        {
+        }
+
         public Section_AHDR(uint assetID, string assetType, AHDRFlags flags, Section_ADBG ADBG) : base(Section.AHDR)
         {
             this.assetID = assetID;

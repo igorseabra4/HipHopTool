@@ -11,6 +11,10 @@ namespace HipHopFile
         public string assetFileName;
         public int checksum;
 
+        public Section_ADBG() : base(Section.ADBG)
+        {
+        }
+
         public Section_ADBG(int alignment, string assetName, string assetFileName, int checksum) : base(Section.ADBG)
         {
             this.alignment = alignment;
