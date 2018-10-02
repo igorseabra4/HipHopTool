@@ -135,7 +135,7 @@ namespace HipHopFile
             return list.ToArray();
         }
 
-        public static void HipArrayToIni(HipSection[] hipFile, string unpackFolder, bool multiFolder)
+        public static void HipArrayToIni(HipSection[] hipFile, string unpackFolder, bool multiFolder, bool alphabetical)
         {
             Directory.CreateDirectory(unpackFolder);
             
@@ -189,19 +189,31 @@ namespace HipHopFile
                     INIWriter.WriteLine("DICT.LTOC.LINF=" + DICT.LTOC.LINF.value.ToString());
                     INIWriter.WriteLine();
 
-                    Dictionary<uint, string> AHDRDictionary = new Dictionary<uint, string>();
-                    
+                    Dictionary<uint, Section_AHDR> ahdrDictionary = new Dictionary<uint, Section_AHDR>();
+
                     foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
-                        AHDRDictionary.Add(AHDR.assetID, AHDR.assetID.ToString("X8") + v1s + AHDR.assetType + v1s + ((uint)AHDR.flags).ToString() + v1s + AHDR.ADBG.alignment.ToString() + v1s + AHDR.ADBG.assetName + v1s + AHDR.ADBG.assetFileName + v1s + AHDR.ADBG.checksum.ToString("X8"));
-                    
+                        ahdrDictionary.Add(AHDR.assetID, AHDR);
+
                     foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
                     {
                         INIWriter.WriteLine("LayerType=" + (int)LHDR.layerType + " " + LHDR.layerType.ToString());
-                        if (LHDR.assetIDlist.Count() == 0)
+                        if (LHDR.assetIDlist.Count == 0)
                             INIWriter.WriteLine("AssetAmount=0");
                         INIWriter.WriteLine("LHDR.LDBG=" + LHDR.LDBG.value.ToString());
+
+                        List<Section_AHDR> ahdrList = new List<Section_AHDR>(LHDR.assetIDlist.Count);
                         foreach (uint j in LHDR.assetIDlist)
-                            INIWriter.WriteLine("Asset=" + AHDRDictionary[j]);
+                            ahdrList.Add(ahdrDictionary[j]);
+
+                        if (alphabetical)
+                            ahdrList = ahdrList.OrderBy(ahdr => ahdr.ADBG.assetName).ToList();
+
+                        foreach (Section_AHDR AHDR in ahdrList)
+                        {
+                            string assetToString = AHDR.assetID.ToString("X8") + v1s + AHDR.assetType + v1s + ((uint)AHDR.flags).ToString() + v1s + AHDR.ADBG.alignment.ToString() + v1s + AHDR.ADBG.assetName.Replace(v1s, '_') + v1s + AHDR.ADBG.assetFileName + v1s + AHDR.ADBG.checksum.ToString("X8");
+                            INIWriter.WriteLine("Asset=" + assetToString);
+                        }
+
                         INIWriter.WriteLine("EndLayer");
 
                         INIWriter.WriteLine();

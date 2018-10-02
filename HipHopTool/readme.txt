@@ -1,4 +1,4 @@
-= HipHopTool v0.4.6 by igorseabra4 =
+= HipHopTool v0.4.7 by igorseabra4 =
 Tool to extract and create HIP/HOP archive files used in games by Heavy Iron Studios.
 
 Currently supported games:
@@ -31,6 +31,10 @@ By default, all assets will be exported to folders named after their types, but 
 HipHopTool.exe -extract EXAMPLE.HOP -mode single
 
 will extract the EXAMPLE.HOP file to a default folder and all assets to one folder.
+
+HipHopTool.exe -extract EXAMPLE.HOP -alphabetical
+
+will extract the EXAMPLE.HOP file to a folder called EXAMPLE_OUT and the Settings.ini will have assets sorted alphabetically by their names. You can also use -alpha, -a for the same effect.
 
 
 == Creating ==

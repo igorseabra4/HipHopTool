@@ -12,7 +12,7 @@ namespace HipHopTool
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
-            SendMessage("HipHopTool v0.4.6 by igorseabra4");
+            SendMessage("HipHopTool v0.4.7 by igorseabra4");
             
             if (args.Length == 0)
                 ShowNoArgsMenu();
@@ -22,7 +22,7 @@ namespace HipHopTool
                     {
                         SendMessage("File: " + s);
                         SendMessage("Destination: " + s + ".d");
-                        HipArrayToIni(HipFileToHipArray(s), s + ".d", true);
+                        HipArrayToIni(HipFileToHipArray(s), s + ".d", true, false);
                         SendMessage("Success");
                     }
         }
@@ -35,6 +35,7 @@ namespace HipHopTool
             string outputPath = "null";
             string iniToCreate = "null";
             bool multiFolder = true;
+            bool alphabetical = false;
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -58,6 +59,10 @@ namespace HipHopTool
                         multiFolder = true;
                     }
                 }
+                else if (args[i].ToLower() == "-alphabetical" | args[i].ToLower() == "-alpha" | args[i].ToLower() == "-a")
+                {
+                    alphabetical = true;
+                }
                 else if (args[i].ToLower() == "-create" | args[i].ToLower() == "-c")
                 {
                     iniToCreate = args[i + 1];
@@ -74,7 +79,7 @@ namespace HipHopTool
 
                 SendMessage("Destination: " + outputPath);
 
-                HipArrayToIni(HipFileToHipArray(hipToUnpack), outputPath, multiFolder);
+                HipArrayToIni(HipFileToHipArray(hipToUnpack), outputPath, multiFolder, alphabetical);
 
                 SendMessage("Success");
             }
@@ -102,7 +107,7 @@ namespace HipHopTool
             while (option != Option.Close)
             {
                 SendMessage();
-                SendMessage("What do you wanna do?");
+                SendMessage("Usage: drag HIP/HOP files into the executable to extract them, check readme for command line options, or choose one of the options below.");
                 SendMessage("Type 0 to extract a HIP/HOP file.");
                 SendMessage("Type 1 to create a HIP/HOP file.");
                 SendMessage("Type 2 to close.");
@@ -127,7 +132,7 @@ namespace HipHopTool
                     if (openFileDialog.ShowDialog(new Form() { TopMost = true, TopLevel = true }) == DialogResult.OK)
                     {
                         SendMessage("File: " + openFileDialog.FileName);
-                        HipArrayToIni(HipFileToHipArray(openFileDialog.FileName), openFileDialog.FileName + ".d", true);
+                        HipArrayToIni(HipFileToHipArray(openFileDialog.FileName), openFileDialog.FileName + ".d", true, false);
                     }
                 }
                 else if (option == Option.CreateHIP)
