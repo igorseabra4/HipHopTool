@@ -36,8 +36,8 @@ namespace HipHopFile
 
             if (targetPlatform == "XB" | targetPlatformName == "Xbox" | targetPlatform == "BX") currentPlatform = Platform.Xbox;
             else if (targetPlatform == "GC" | targetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
-            else if (targetPlatform == "P2" | targetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
-            else throw new Exception("PLAT reading error: unknown platform");
+            else if (targetPlatform == "P2" | targetPlatform == "PS2" | targetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
+            else throw new Exception("PLAT reading error: unknown platform: " + targetPlatform);
         }
 
         public override void SetListBytes(ref List<byte> listBytes)
@@ -63,8 +63,8 @@ namespace HipHopFile
 
             if (targetPlatform == "XB" | targetPlatformName == "Xbox" | targetPlatform == "BX") currentPlatform = Platform.Xbox;
             else if (targetPlatform == "GC" | targetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
-            else if (targetPlatform == "P2" | targetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
-            else throw new Exception("PLAT writing error: unknown platform");
+            else if (targetPlatform == "P2" | targetPlatform == "PS2" | targetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
+            else throw new Exception("PLAT writing error: unknown platform: " + targetPlatform);
         }
     }
 }

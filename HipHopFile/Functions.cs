@@ -102,11 +102,14 @@ namespace HipHopFile
             listBytes.Add(value);
         }
 
-        public static Game currentGame = Game.Unknown;
-        public static Platform currentPlatform = Platform.Unknown;
+        public static Game currentGame;
+        public static Platform currentPlatform;
         
         public static HipSection[] HipFileToHipArray(string fileName)
         {
+            currentGame = Game.Unknown;
+            currentPlatform = Platform.Unknown;
+
             List<HipSection> hipFile = new List<HipSection>(4);
 
             BinaryReader binaryReader = new BinaryReader(new FileStream(fileName, FileMode.Open));
@@ -210,7 +213,7 @@ namespace HipHopFile
 
                         foreach (Section_AHDR AHDR in ahdrList)
                         {
-                            string assetToString = AHDR.assetID.ToString("X8") + v1s + AHDR.assetType + v1s + ((uint)AHDR.flags).ToString() + v1s + AHDR.ADBG.alignment.ToString() + v1s + AHDR.ADBG.assetName.Replace(v1s, '_') + v1s + AHDR.ADBG.assetFileName + v1s + AHDR.ADBG.checksum.ToString("X8");
+                            string assetToString = AHDR.assetID.ToString("X8") + v1s + AHDR.assetType + v1s + ((int)AHDR.flags).ToString() + v1s + AHDR.ADBG.alignment.ToString() + v1s + AHDR.ADBG.assetName.Replace(v1s, '_') + v1s + AHDR.ADBG.assetFileName + v1s + AHDR.ADBG.checksum.ToString("X8");
                             INIWriter.WriteLine("Asset=" + assetToString);
                         }
 
@@ -359,10 +362,7 @@ namespace HipHopFile
 
             Section_HIPA HIPA = new Section_HIPA();
 
-            Section_PACK PACK = new Section_PACK
-            {
-                PLAT = new Section_PLAT(),
-            };
+            Section_PACK PACK = new Section_PACK();
 
             Section_DICT DICT = new Section_DICT
             {
@@ -380,6 +380,9 @@ namespace HipHopFile
                 if (s.StartsWith("Game="))
                 {
                     SetGame(s.Split('=')[1]);
+
+                    if (currentGame == Game.BFBB || currentGame == Game.Incredibles)
+                        PACK.PLAT = new Section_PLAT();
                 }
                 else if (s.StartsWith("IniVersion"))
                 {
