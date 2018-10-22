@@ -1,13 +1,13 @@
-= HipHopTool v0.4.7 by igorseabra4 =
+= HipHopTool v0.4.8 by igorseabra4 =
 Tool to extract and create HIP/HOP archive files used in games by Heavy Iron Studios.
 
 Currently supported games:
-- Scooby-Doo: Night of 100 Frights (GCN, PS2)
-- Spongebob Squarepants: Battle For Bikini Bottom (GCN, XBOX)
-- The Incredibles Game (GCN)
-- The Spongebob Squarepants Movie Game (GCN, XBOX)
+- Scooby-Doo: Night of 100 Frights
+- Spongebob Squarepants: Battle For Bikini Bottom
+- The Incredibles Game
+- The Spongebob Squarepants Movie Game
 - The Incredibles: Rise of the Underminer
-- Other platform versions of the above games are probably also supported, however I have not tested them.
+All platforms (GameCube, Xbox, Playstation 2, PC) for all games available in them should be supported.
 
 = File Description =
 HIP archives (internally, they are all HIPs, HOP is just a filename thing) are used by the games above to put together all assets used in a scene ingame. They are divided into multiple layers, and each layer contains multiple (sometimes thousands of) assets. Every texture, model, object, sound, pickup object etc is an asset.
