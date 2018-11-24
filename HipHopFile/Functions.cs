@@ -557,9 +557,9 @@ namespace HipHopFile
                 // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
                 LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => i).ToList();
 
-                foreach (uint assetID in LHDR.assetIDlist)
+                for (int i = 0; i < LHDR.assetIDlist.Count; i++)
                 {
-                    Section_AHDR AHDR = assetDictionary[assetID];
+                    Section_AHDR AHDR = assetDictionary[LHDR.assetIDlist[i]];
 
                     // Does the AHDR section already have the asset data, or should we get it from the dictionary?
                     // AHDRs from IP will already have data, but the ones from the INI builder won't!
@@ -567,7 +567,10 @@ namespace HipHopFile
                     {
                         if (!assetDataDictionary.Keys.Contains(AHDR.assetID))
                         {
-                            SendMessage($"Error: asset with ID [{AHDR.assetID.ToString("X8")}] was not found. The archive will not be saved correctly and will be unusable.");
+                            SendMessage($"Error: asset with ID [{AHDR.assetID.ToString("X8")}] was not found. The asset will be removed from the archive.");
+                            DICT.ATOC.AHDRList.Remove(AHDR);
+                            LHDR.assetIDlist.Remove(AHDR.assetID);
+                            i--;
                             continue;
                         }
                         AHDR.data = assetDataDictionary[AHDR.assetID];
