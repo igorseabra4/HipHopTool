@@ -8,7 +8,7 @@ namespace HipHopFile
 {
     public class Section_LHDR : HipSection
     {
-        public LayerType layerType;
+        public int layerType;
         public List<uint> assetIDlist;
         public Section_LDBG LDBG;
 
@@ -16,7 +16,7 @@ namespace HipHopFile
 
         public Section_LHDR(BinaryReader binaryReader) : base(binaryReader, Section.LHDR)
         {
-            layerType = (LayerType)Switch(binaryReader.ReadInt32());
+            layerType = Switch(binaryReader.ReadInt32());
             int assetAmount = Switch(binaryReader.ReadInt32());
 
             assetIDlist = new List<uint>(assetAmount);
@@ -32,7 +32,7 @@ namespace HipHopFile
         {
             sectionName = Section.LHDR;
 
-            listBytes.AddBigEndian((int)layerType);
+            listBytes.AddBigEndian(layerType);
             listBytes.AddBigEndian(assetIDlist.Count());
 
             foreach (int i in assetIDlist)

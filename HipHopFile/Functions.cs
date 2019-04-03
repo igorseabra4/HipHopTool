@@ -42,8 +42,8 @@ namespace HipHopFile
             uint hash = 0;
             int length = str.Length;
 
-            if (length > 31)
-                length = 31;
+            //if (length > 31)
+            //    length = 31;
 
             for (int i = 0; i < length; i++)
                 hash = (hash * seed) + str[i];
@@ -199,7 +199,11 @@ namespace HipHopFile
 
                     foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
                     {
-                        INIWriter.WriteLine("LayerType=" + (int)LHDR.layerType + " " + LHDR.layerType.ToString());
+                        if (currentGame == Game.Incredibles)
+                            INIWriter.WriteLine("LayerType=" + LHDR.layerType + " " + ((LayerType_TSSM)LHDR.layerType).ToString());
+                        else
+                            INIWriter.WriteLine("LayerType=" + LHDR.layerType + " " + ((LayerType_BFBB)LHDR.layerType).ToString());
+
                         if (LHDR.assetIDlist.Count == 0)
                             INIWriter.WriteLine("AssetAmount=0");
                         INIWriter.WriteLine("LHDR.LDBG=" + LHDR.LDBG.value.ToString());
@@ -438,7 +442,7 @@ namespace HipHopFile
                 }
                 else if (s.StartsWith("LayerType"))
                 {
-                    CurrentLHDR.layerType = (LayerType)Convert.ToInt32(s.Split('=')[1].Split()[0]);
+                    CurrentLHDR.layerType = Convert.ToInt32(s.Split('=')[1].Split()[0]);
                 }
                 else if (s.StartsWith("Asset="))
                 {

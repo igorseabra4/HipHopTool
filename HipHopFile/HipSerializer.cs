@@ -14,7 +14,7 @@ namespace HipHopFile
 
     public class LayerSerializer
     {
-        public LayerType layerType;
+        public int layerType;
         public int LHDR_LDBG_value;
         public Dictionary<uint, AssetSerializer> assets;
     }
