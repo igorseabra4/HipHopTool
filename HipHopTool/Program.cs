@@ -12,7 +12,7 @@ namespace HipHopTool
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
-            SendMessage("HipHopTool v0.4.9 by igorseabra4");
+            SendMessage("HipHopTool v0.5.0 by igorseabra4");
             
             if (args.Length == 0)
                 ShowNoArgsMenu();

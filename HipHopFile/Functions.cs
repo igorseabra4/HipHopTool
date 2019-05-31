@@ -560,6 +560,8 @@ namespace HipHopFile
             {
                 // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
                 LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => i).ToList();
+                
+                int finalAlignment = currentPlatform == Platform.GameCube ? 0x20 : 0x800;
 
                 for (int i = 0; i < LHDR.assetIDlist.Count; i++)
                 {
@@ -591,16 +593,15 @@ namespace HipHopFile
                     AHDR.plusValue = 0;
 
                     int alignment = 16;
-                    if (currentGame == Game.BFBB)
-                    {
-                        if (AHDR.assetType == AssetType.CSN |
-                            AHDR.assetType == AssetType.SND |
-                            AHDR.assetType == AssetType.SNDS)
-                            alignment = 32;
-                        else if (AHDR.assetType == AssetType.CRDT)
-                            alignment = 4;
-                    }
 
+                    if (currentGame == Game.BFBB && AHDR.assetType == AssetType.CSN || AHDR.assetType == AssetType.SND || AHDR.assetType == AssetType.SNDS)
+                    {
+                        alignment = finalAlignment;
+                        AHDR.ADBG.alignment = alignment;
+                    }
+                    else
+                        AHDR.ADBG.alignment = 0;
+                    
                     int value = AHDR.fileSize % alignment;
                     if (value != 0)
                         AHDR.plusValue = alignment - value;
@@ -608,10 +609,10 @@ namespace HipHopFile
                         newStream.Add(0x33);
                 }
 
-                while ((newStream.Count + STRM.DPAK.globalRelativeStartOffset) % 0x20 != 0)
+                while ((newStream.Count + STRM.DPAK.globalRelativeStartOffset) % finalAlignment != 0)
                     newStream.Add(0x33);
             }
-            
+
             // Assign list as stream! We're done with the worst part.
             STRM.DPAK.data = newStream.ToArray();
 

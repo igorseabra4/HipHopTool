@@ -43,7 +43,9 @@ namespace HipHopFile
             listBytes.Add(0);
             listBytes.Add(0);
 
-            while (listBytes.Count % 0x20 != 0)
+            int alignment = currentPlatform == Platform.GameCube ? 0x20 : 0x1000;
+
+            while (listBytes.Count % alignment != 0)
                 listBytes.Add(0x33);
             
             globalRelativeStartOffset = listBytes.Count();
