@@ -24,12 +24,12 @@ namespace HipHopFile
             LTOC = new Section_LTOC(binaryReader);
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.DICT;
 
-            ATOC.SetBytes(ref listBytes);
-            LTOC.SetBytes(ref listBytes);
+            ATOC.SetBytes(game, platform, ref listBytes);
+            LTOC.SetBytes(game, platform, ref listBytes);
         }
     }
 }

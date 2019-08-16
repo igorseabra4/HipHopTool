@@ -34,13 +34,13 @@ namespace HipHopFile
             binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.LTOC;
 
-            LINF.SetBytes(ref listBytes);
+            LINF.SetBytes(game, platform, ref listBytes);
             foreach (Section_LHDR i in LHDRList)
-                i.SetBytes(ref listBytes);
+                i.SetBytes(game, platform, ref listBytes);
         }
     }
 }

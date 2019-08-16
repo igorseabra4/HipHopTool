@@ -21,7 +21,7 @@ namespace HipHopFile
             dateString = ReadString(binaryReader);
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.PCRT;
 

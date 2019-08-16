@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HipHopFile;
+using System;
 using System.IO;
 using System.Windows.Forms;
 using static HipHopFile.Functions;
@@ -18,11 +19,11 @@ namespace HipHopTool
                 ShowNoArgsMenu();
             else if (!PerformArgsSelection(args))
                 foreach (string s in args)
-                    if (Path.GetExtension(s).ToLower() == ".hip" | Path.GetExtension(s).ToLower() == ".hop")
+                    if (Path.GetExtension(s).ToLower() == ".hip" || Path.GetExtension(s).ToLower() == ".hop")
                     {
                         SendMessage("File: " + s);
                         SendMessage("Destination: " + s + ".d");
-                        HipArrayToIni(HipFileToHipArray(s), s + ".d", true, false);
+                        new HipFile(s, false).ToIni(s + ".d", true, false);
                         SendMessage("Success");
                     }
         }
@@ -79,7 +80,7 @@ namespace HipHopTool
 
                 SendMessage("Destination: " + outputPath);
 
-                HipArrayToIni(HipFileToHipArray(hipToUnpack), outputPath, multiFolder, alphabetical);
+                new HipFile(hipToUnpack, false).ToIni(outputPath, multiFolder, alphabetical);
 
                 SendMessage("Success");
             }
@@ -92,7 +93,7 @@ namespace HipHopTool
 
                 SendMessage("Destination: " + outputPath);
 
-                File.WriteAllBytes(outputPath, HipArrayToFile(IniToHipArray(iniToCreate)));
+                File.WriteAllBytes(outputPath, new HipFile(iniToCreate, true).ToBytes());
 
                 SendMessage("Success");
             }
@@ -132,7 +133,8 @@ namespace HipHopTool
                     if (openFileDialog.ShowDialog(new Form() { TopMost = true, TopLevel = true }) == DialogResult.OK)
                     {
                         SendMessage("File: " + openFileDialog.FileName);
-                        HipArrayToIni(HipFileToHipArray(openFileDialog.FileName), openFileDialog.FileName + ".d", true, false);
+
+                        new HipFile(openFileDialog.FileName, false).ToIni(openFileDialog.FileName + ".d", true, false);
                     }
                 }
                 else if (option == Option.CreateHIP)
@@ -151,7 +153,7 @@ namespace HipHopTool
                         };
                         if (saveFileDialog.ShowDialog(new Form() { TopMost = true, TopLevel = true }) == DialogResult.OK)
                         {
-                            File.WriteAllBytes(saveFileDialog.FileName, HipArrayToFile(IniToHipArray(openFileDialog.FileName)));
+                            File.WriteAllBytes(saveFileDialog.FileName, new HipFile(openFileDialog.FileName, true).ToBytes());
                         }
                     }
                 }

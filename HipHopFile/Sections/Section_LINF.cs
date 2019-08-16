@@ -18,7 +18,7 @@ namespace HipHopFile
             value = Switch(binaryReader.ReadInt32());
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.LINF;
 

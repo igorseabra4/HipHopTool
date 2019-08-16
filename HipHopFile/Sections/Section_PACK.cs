@@ -16,7 +16,7 @@ namespace HipHopFile
 
         public Section_PACK() : base(Section.PACK) { }
 
-        public Section_PACK(BinaryReader binaryReader) : base(binaryReader, Section.PACK)
+        public Section_PACK(BinaryReader binaryReader, out Game game, out Platform platform) : base(binaryReader, Section.PACK)
         {            
             long startSectionPosition = binaryReader.BaseStream.Position;
 
@@ -24,11 +24,11 @@ namespace HipHopFile
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.PVER.ToString()) throw new Exception();
-            PVER = new Section_PVER(binaryReader);
+            PVER = new Section_PVER(binaryReader, out game);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.PFLG.ToString()) throw new Exception();
-            PFLG = new Section_PFLG(binaryReader);
+            PFLG = new Section_PFLG(binaryReader, game, out game);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.PCNT.ToString()) throw new Exception();
@@ -43,24 +43,27 @@ namespace HipHopFile
             PMOD = new Section_PMOD(binaryReader);
 
             if (binaryReader.BaseStream.Position == startSectionPosition + sectionSize)
+            {
+                platform = Platform.Unknown;
                 return;
+            }
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.PLAT.ToString()) throw new Exception();
-            PLAT = new Section_PLAT(binaryReader);
+            PLAT = new Section_PLAT(binaryReader, game, out platform);
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.PACK;
             
-            PVER.SetBytes(ref listBytes);
-            PFLG.SetBytes(ref listBytes);
-            PCNT.SetBytes(ref listBytes);
-            PCRT.SetBytes(ref listBytes);
-            PMOD.SetBytes(ref listBytes);
+            PVER.SetBytes(game, platform, ref listBytes);
+            PFLG.SetBytes(game, platform, ref listBytes);
+            PCNT.SetBytes(game, platform, ref listBytes);
+            PCRT.SetBytes(game, platform, ref listBytes);
+            PMOD.SetBytes(game, platform, ref listBytes);
             if (PLAT != null)
-                PLAT.SetBytes(ref listBytes);
+                PLAT.SetBytes(game, platform, ref listBytes);
         }
     }
 }

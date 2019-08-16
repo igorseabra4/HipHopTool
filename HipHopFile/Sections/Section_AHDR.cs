@@ -89,7 +89,7 @@ namespace HipHopFile
             binaryReader.BaseStream.Position = savePosition;
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.AHDR;
 
@@ -101,7 +101,7 @@ namespace HipHopFile
             listBytes.AddBigEndian(plusValue);
             listBytes.AddBigEndian((int)flags);
 
-            ADBG.SetBytes(ref listBytes);
+            ADBG.SetBytes(game, platform, ref listBytes);
         }
 
         public override int GetHashCode()

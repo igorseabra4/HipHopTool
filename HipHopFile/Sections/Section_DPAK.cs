@@ -32,7 +32,7 @@ namespace HipHopFile
             }
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.DPAK;
 
@@ -43,7 +43,7 @@ namespace HipHopFile
             listBytes.Add(0);
             listBytes.Add(0);
 
-            int alignment = currentPlatform == Platform.GameCube ? 0x20 : 0x1000;
+            int alignment = platform == Platform.GameCube ? 0x20 : 0x1000;
 
             while (listBytes.Count % alignment != 0)
                 listBytes.Add(0x33);

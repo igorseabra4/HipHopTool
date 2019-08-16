@@ -17,19 +17,21 @@ namespace HipHopFile
             this.compatible = compatible;
         }
 
-        public Section_PVER(BinaryReader binaryReader) : base(binaryReader, Section.PVER)
+        public Section_PVER(BinaryReader binaryReader, out Game game) : base(binaryReader, Section.PVER)
         {
             subVersion = Switch(binaryReader.ReadInt32());
             clientVersion = Switch(binaryReader.ReadInt32());
             compatible = Switch(binaryReader.ReadInt32());
-            
+
             if (clientVersion == 262150)
-                currentGame = Game.Scooby;
+                game = Game.Scooby;
             else if (clientVersion == 655375)
-                currentGame = Game.Incredibles; // or BFBB, will check at PFLG
+                game = Game.Incredibles; // or BFBB, will check at PFLG
+            else
+                game = Game.Unknown;
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.PVER;
 

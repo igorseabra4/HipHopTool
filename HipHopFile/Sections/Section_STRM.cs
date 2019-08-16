@@ -24,11 +24,11 @@ namespace HipHopFile
             DPAK = new Section_DPAK(binaryReader);
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.STRM;
-            DHDR.SetBytes(ref listBytes);
-            DPAK.SetBytes(ref listBytes);
+            DHDR.SetBytes(game, platform, ref listBytes);
+            DPAK.SetBytes(game, platform, ref listBytes);
         }
     }
 }

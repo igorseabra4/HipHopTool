@@ -28,7 +28,7 @@ namespace HipHopFile
             LDBG = new Section_LDBG(binaryReader);
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.LHDR;
 
@@ -38,7 +38,7 @@ namespace HipHopFile
             foreach (int i in assetIDlist)
                 listBytes.AddBigEndian(i);
 
-            LDBG.SetBytes(ref listBytes);
+            LDBG.SetBytes(game, platform, ref listBytes);
         }
     }
 }

@@ -35,14 +35,14 @@ namespace HipHopFile
             noAHDR = AHDRList.Count == 0;
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.ATOC;
 
-            AINF.SetBytes(ref listBytes);
+            AINF.SetBytes(game, platform, ref listBytes);
 
             foreach (Section_AHDR i in AHDRList)
-                i.SetBytes(ref listBytes);
+                i.SetBytes(game, platform, ref listBytes);
 
             noAHDR = AHDRList.Count == 0;
         }

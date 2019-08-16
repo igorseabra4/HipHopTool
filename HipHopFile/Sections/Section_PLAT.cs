@@ -15,9 +15,9 @@ namespace HipHopFile
 
         public Section_PLAT() : base(Section.PLAT) { }
 
-        public Section_PLAT(BinaryReader binaryReader) : base(binaryReader, Section.PLAT)
+        public Section_PLAT(BinaryReader binaryReader, Game game, out Platform platform) : base(binaryReader, Section.PLAT)
         {
-            if (currentGame == Game.BFBB)
+            if (game == Game.BFBB)
             {
                 targetPlatform = ReadString(binaryReader);
                 targetPlatformName = ReadString(binaryReader);
@@ -25,7 +25,7 @@ namespace HipHopFile
                 language = ReadString(binaryReader);
                 targetGame = ReadString(binaryReader);
             }
-            else if (currentGame == Game.Incredibles)
+            else if (game == Game.Incredibles)
             {
                 targetPlatform = ReadString(binaryReader);
                 language = ReadString(binaryReader);
@@ -34,17 +34,17 @@ namespace HipHopFile
             }
             else throw new Exception("PLAT reading error: unsupported PLAT version");
 
-            if (targetPlatform == "XB" | targetPlatformName == "Xbox" | targetPlatform == "BX") currentPlatform = Platform.Xbox;
-            else if (targetPlatform == "GC" | targetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
-            else if (targetPlatform == "P2" | targetPlatform == "PS2" | targetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
+            if (targetPlatform == "XB" || targetPlatformName == "Xbox" || targetPlatform == "BX") platform = Platform.Xbox;
+            else if (targetPlatform == "GC" || targetPlatformName == "GameCube") platform = Platform.GameCube;
+            else if (targetPlatform == "P2" || targetPlatform == "PS2" || targetPlatformName == "PlayStation 2") platform = Platform.PS2;
             else throw new Exception("PLAT reading error: unknown platform: " + targetPlatform);
         }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.PLAT;
 
-            if (currentGame == Game.BFBB)
+            if (game == Game.BFBB)
             {
                 listBytes.AddString(targetPlatform);
                 listBytes.AddString(targetPlatformName);
@@ -52,7 +52,7 @@ namespace HipHopFile
                 listBytes.AddString(language);
                 listBytes.AddString(targetGame);
             }
-            else if (currentGame == Game.Incredibles)
+            else if (game == Game.Incredibles)
             {
                 listBytes.AddString(targetPlatform);
                 listBytes.AddString(language);
@@ -60,11 +60,6 @@ namespace HipHopFile
                 listBytes.AddString(targetGame);
             }
             else throw new Exception("PLAT writing error");
-
-            if (targetPlatform == "XB" | targetPlatformName == "Xbox" | targetPlatform == "BX") currentPlatform = Platform.Xbox;
-            else if (targetPlatform == "GC" | targetPlatformName == "GameCube") currentPlatform = Platform.GameCube;
-            else if (targetPlatform == "P2" | targetPlatform == "PS2" | targetPlatformName == "PlayStation 2") currentPlatform = Platform.PS2;
-            else throw new Exception("PLAT writing error: unknown platform: " + targetPlatform);
         }
     }
 }

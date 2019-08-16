@@ -24,7 +24,7 @@ namespace HipHopFile
             sectionSize = Switch(binaryReader.ReadInt32());
         }
 
-        public void SetBytes(ref List<byte> listBytes)
+        public void SetBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             int position = listBytes.Count();
             listBytes.AddRange(new byte[] {
@@ -32,7 +32,7 @@ namespace HipHopFile
                 0, 0, 0, 0,
             });
 
-            SetListBytes(ref listBytes);
+            SetListBytes(game, platform, ref listBytes);
 
             sectionSize = listBytes.Count() - position - 0x8;
 
@@ -46,6 +46,6 @@ namespace HipHopFile
             listBytes[position + 7] = BitConverter.GetBytes(sectionSize)[0];
         }
 
-        public abstract void SetListBytes(ref List<byte> listBytes);
+        public abstract void SetListBytes(Game game, Platform platform, ref List<byte> listBytes);
     }
 }

@@ -9,7 +9,7 @@ namespace HipHopFile
 
         public Section_HIPA(BinaryReader binaryReader) : base(binaryReader, Section.HIPA) { }
 
-        public override void SetListBytes(ref List<byte> listBytes)
+        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionName = Section.HIPA;
         }
