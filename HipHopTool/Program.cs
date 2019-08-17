@@ -23,7 +23,7 @@ namespace HipHopTool
                     {
                         SendMessage("File: " + s);
                         SendMessage("Destination: " + s + ".d");
-                        new HipFile(s, false).ToIni(s + ".d", true, false);
+                        new HipFile(s).ToIni(s + ".d", true, false);
                         SendMessage("Success");
                     }
         }
@@ -80,7 +80,7 @@ namespace HipHopTool
 
                 SendMessage("Destination: " + outputPath);
 
-                new HipFile(hipToUnpack, false).ToIni(outputPath, multiFolder, alphabetical);
+                new HipFile(hipToUnpack).ToIni(outputPath, multiFolder, alphabetical);
 
                 SendMessage("Success");
             }
@@ -93,7 +93,7 @@ namespace HipHopTool
 
                 SendMessage("Destination: " + outputPath);
 
-                File.WriteAllBytes(outputPath, new HipFile(iniToCreate, true).ToBytes());
+                File.WriteAllBytes(outputPath, HipFile.FromINI(iniToCreate).ToBytes());
 
                 SendMessage("Success");
             }
@@ -134,7 +134,7 @@ namespace HipHopTool
                     {
                         SendMessage("File: " + openFileDialog.FileName);
 
-                        new HipFile(openFileDialog.FileName, false).ToIni(openFileDialog.FileName + ".d", true, false);
+                        new HipFile(openFileDialog.FileName).ToIni(openFileDialog.FileName + ".d", true, false);
                     }
                 }
                 else if (option == Option.CreateHIP)
@@ -153,7 +153,7 @@ namespace HipHopTool
                         };
                         if (saveFileDialog.ShowDialog(new Form() { TopMost = true, TopLevel = true }) == DialogResult.OK)
                         {
-                            File.WriteAllBytes(saveFileDialog.FileName, new HipFile(openFileDialog.FileName, true).ToBytes());
+                            File.WriteAllBytes(saveFileDialog.FileName, HipFile.FromINI(openFileDialog.FileName).ToBytes());
                         }
                     }
                 }

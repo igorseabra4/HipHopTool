@@ -26,28 +26,43 @@ namespace HipHopFile
             this.STRM = STRM;
         }
 
-        public HipFile(string fileName, bool fromINI)
+        public HipFile(string fileName)
         {
-            if (fromINI)
-            {
-                SetupFromINI(fileName);
-            }
-            else
-            {
-                BinaryReader binaryReader = new BinaryReader(new FileStream(fileName, FileMode.Open));
+            BinaryReader binaryReader = new BinaryReader(new FileStream(fileName, FileMode.Open));
 
-                while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
-                {
-                    string currentSection = new string(binaryReader.ReadChars(4));
-                    if (currentSection == Section.HIPA.ToString()) HIPA = new Section_HIPA(binaryReader);
-                    else if (currentSection == Section.PACK.ToString()) PACK = new Section_PACK(binaryReader, out game, out platform);
-                    else if (currentSection == Section.DICT.ToString()) DICT = new Section_DICT(binaryReader);
-                    else if (currentSection == Section.STRM.ToString()) STRM = new Section_STRM(binaryReader);
-                    else throw new Exception(currentSection);
-                }
-
-                binaryReader.Close();
+            while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+            {
+                string currentSection = new string(binaryReader.ReadChars(4));
+                if (currentSection == Section.HIPA.ToString()) HIPA = new Section_HIPA(binaryReader);
+                else if (currentSection == Section.PACK.ToString()) PACK = new Section_PACK(binaryReader, out game, out platform);
+                else if (currentSection == Section.DICT.ToString()) DICT = new Section_DICT(binaryReader);
+                else if (currentSection == Section.STRM.ToString()) STRM = new Section_STRM(binaryReader);
+                else throw new Exception(currentSection);
             }
+
+            binaryReader.Close();
+        }
+
+        public static HipFile FromINI(string fileName)
+        {
+            HipFile hipFile = new HipFile();
+            hipFile.SetupFromINI(fileName);
+            return hipFile;
+        }
+
+        private HipFile()
+        {
+            game = Game.Unknown;
+            platform = Platform.Unknown;
+
+            HIPA = new Section_HIPA();
+            PACK = new Section_PACK();
+            DICT = new Section_DICT
+            {
+                ATOC = new Section_ATOC(),
+                LTOC = new Section_LTOC()
+            };
+            STRM = new Section_STRM();
         }
 
         private void SetGame(string v)
@@ -72,18 +87,6 @@ namespace HipHopFile
         {
             string[] INI = File.ReadAllLines(iniFileName);
             char sep = v0s;
-
-            Section_HIPA HIPA = new Section_HIPA();
-
-            Section_PACK PACK = new Section_PACK();
-
-            Section_DICT DICT = new Section_DICT
-            {
-                ATOC = new Section_ATOC(),
-                LTOC = new Section_LTOC()
-            };
-
-            Section_STRM STRM = new Section_STRM();
 
             List<uint> assetIDlist = new List<uint>();
             Section_LHDR CurrentLHDR = new Section_LHDR();
@@ -171,7 +174,34 @@ namespace HipHopFile
                 }
             }
 
-            GetFilesData(iniFileName);
+            // Let's get the data from the files now and put them in a dictionary
+            Dictionary<uint, byte[]> assetDataDictionary = new Dictionary<uint, byte[]>();
+
+            foreach (string f in Directory.GetDirectories(Path.GetDirectoryName(iniFileName)))
+                foreach (string i in Directory.GetFiles(f))
+                {
+                    byte[] file = File.ReadAllBytes(i);
+                    try
+                    {
+                        assetDataDictionary.Add(Convert.ToUInt32(Path.GetFileName(i).Substring(1, 8), 16), file);
+                    }
+                    catch (Exception e)
+                    {
+                        SendMessage("Error importing asset " + Path.GetFileName(i) + ": " + e.Message);
+                    }
+                }
+
+            // Now that we have all files data, we can give them to the AHDRs.
+            foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
+            {
+                if (!assetDataDictionary.Keys.Contains(AHDR.assetID))
+                {
+                    SendMessage($"Error: asset with ID [{AHDR.assetID.ToString("X8")}] was not found. The asset will be removed from the archive.");
+                    DICT.ATOC.AHDRList.Remove(AHDR);
+                }
+                else
+                    AHDR.data = assetDataDictionary[AHDR.assetID];
+            }
         }
 
         private void AddAsset(string[] j, ref List<uint> assetIDlist)
@@ -191,33 +221,10 @@ namespace HipHopFile
 
             DICT.ATOC.AHDRList.Add(newAHDR);
         }
-
-        private void GetFilesData(string INIFile)
+        
+        private void SetupSTRM()
         {
-            // Let's get the data from the files now and put them in a dictionary
-            Dictionary<uint, byte[]> assetDataDictionary = new Dictionary<uint, byte[]>();
-
-            foreach (string f in Directory.GetDirectories(Path.GetDirectoryName(INIFile)))
-                foreach (string i in Directory.GetFiles(f))
-                {
-                    byte[] file = File.ReadAllBytes(i);
-                    try
-                    {
-                        assetDataDictionary.Add(Convert.ToUInt32(Path.GetFileName(i).Substring(1, 8), 16), file);
-                    }
-                    catch (Exception e)
-                    {
-                        SendMessage("Error importing asset " + Path.GetFileName(i) + ": " + e.Message);
-                    }
-                }
-
-            // Now send all the data to the function that'll put the data in the AHDR then fill the STRM section with that
-            SetupStream(false, assetDataDictionary);
-        }
-
-        private void SetupStream(bool alreadyHasData = true, Dictionary<uint, byte[]> assetDataDictionary = null)
-        {
-            // Let's generate a temporary HIP file that will be discarded.
+            // Let's generate a temporary HIP file that will be discarded. This sets a correct STRM.DPAK.globalRelativeStartOffset
             List<byte> temporaryFile = new List<byte>();
 
             HIPA.SetBytes(game, platform, ref temporaryFile);
@@ -256,23 +263,15 @@ namespace HipHopFile
 
                 for (int i = 0; i < LHDR.assetIDlist.Count; i++)
                 {
-                    Section_AHDR AHDR = assetDictionary[LHDR.assetIDlist[i]];
-
-                    // Does the AHDR section already have the asset data, or should we get it from the dictionary?
-                    // AHDRs from IP will already have data, but the ones from the INI builder won't!
-                    if (!alreadyHasData)
+                    if (!assetDictionary.ContainsKey(LHDR.assetIDlist[i]))
                     {
-                        if (!assetDataDictionary.Keys.Contains(AHDR.assetID))
-                        {
-                            SendMessage($"Error: asset with ID [{AHDR.assetID.ToString("X8")}] was not found. The asset will be removed from the archive.");
-                            DICT.ATOC.AHDRList.Remove(AHDR);
-                            LHDR.assetIDlist.Remove(AHDR.assetID);
-                            i--;
-                            continue;
-                        }
-                        AHDR.data = assetDataDictionary[AHDR.assetID];
+                        LHDR.assetIDlist.RemoveAt(i);
+                        i--;
+                        continue;
                     }
 
+                    Section_AHDR AHDR = assetDictionary[LHDR.assetIDlist[i]];
+                    
                     // Set stream dependant AHDR data...
                     AHDR.fileOffset = newStream.Count + STRM.DPAK.globalRelativeStartOffset;
                     AHDR.fileSize = AHDR.data.Length;
@@ -313,7 +312,7 @@ namespace HipHopFile
 
         public byte[] ToBytes()
         {
-            SetupStream();
+            SetupSTRM();
 
             List<byte> list = new List<byte>();
 
