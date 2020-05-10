@@ -74,8 +74,5 @@
     <Compile Include="Sections\Section_PVER.cs" />
     <Compile Include="Sections\Section_STRM.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
