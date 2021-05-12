@@ -21,6 +21,10 @@ namespace HipHopFile
             sizeOfLargestSourceVirtualAsset = 0;
         }
 
+        public Section_PCNT(int AHDRCount, int LHDRCount) : this(AHDRCount, LHDRCount, 0, 0, 0)
+        {
+        }
+
         public Section_PCNT(int AHDRCount, int LHDRCount, int sizeOfLargestSourceFileAsset, int sizeOfLargestLayer, int sizeOfLargestSourceVirtualAsset) : base(Section.PCNT)
         {
             this.AHDRCount = AHDRCount;
@@ -41,7 +45,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.PCNT;
+            sectionType = Section.PCNT;
 
             listBytes.AddBigEndian(AHDRCount);
             listBytes.AddBigEndian(LHDRCount);

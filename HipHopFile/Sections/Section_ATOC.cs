@@ -37,7 +37,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.ATOC;
+            sectionType = Section.ATOC;
 
             AINF.SetBytes(game, platform, ref listBytes);
 
@@ -45,6 +45,14 @@ namespace HipHopFile
                 i.SetBytes(game, platform, ref listBytes);
 
             noAHDR = AHDRList.Count == 0;
+        }
+
+        public Section_AHDR GetWithIndex(uint assetID)
+        {
+            for (int i = 0; i < AHDRList.Count; i++)
+                if (AHDRList[i].assetID == assetID)
+                    return AHDRList[i];
+            return null;
         }
     }
 }

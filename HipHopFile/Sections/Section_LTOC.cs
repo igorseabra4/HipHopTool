@@ -36,7 +36,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.LTOC;
+            sectionType = Section.LTOC;
 
             LINF.SetBytes(game, platform, ref listBytes);
             foreach (Section_LHDR i in LHDRList)

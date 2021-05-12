@@ -34,15 +34,12 @@ namespace HipHopFile
             }
             else throw new Exception("PLAT reading error: unsupported PLAT version");
 
-            if (targetPlatform == "XB" || targetPlatformName == "Xbox" || targetPlatform == "BX") platform = Platform.Xbox;
-            else if (targetPlatform == "GC" || targetPlatformName == "GameCube") platform = Platform.GameCube;
-            else if (targetPlatform == "P2" || targetPlatform == "PS2" || targetPlatformName == "PlayStation 2") platform = Platform.PS2;
-            else throw new Exception("PLAT reading error: unknown platform: " + targetPlatform);
+            platform = GetPlatform();
         }
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.PLAT;
+            sectionType = Section.PLAT;
 
             if (game == Game.BFBB)
             {
@@ -60,6 +57,17 @@ namespace HipHopFile
                 listBytes.AddString(targetGame);
             }
             else throw new Exception("PLAT writing error");
+        }
+
+        public Platform GetPlatform()
+        {
+            if (targetPlatform == "XB" || targetPlatformName == "Xbox" || targetPlatform == "BX")
+                return Platform.Xbox;
+            if (targetPlatform == "GC" || targetPlatformName == "GameCube")
+                return Platform.GameCube;
+            if (targetPlatform == "P2" || targetPlatform == "PS2" || targetPlatformName == "PlayStation 2")
+                return Platform.PS2;
+            throw new Exception("PLAT reading error: unknown platform: " + targetPlatform);
         }
     }
 }

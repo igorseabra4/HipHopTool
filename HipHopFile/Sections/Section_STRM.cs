@@ -26,7 +26,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.STRM;
+            sectionType = Section.STRM;
             DHDR.SetBytes(game, platform, ref listBytes);
             DPAK.SetBytes(game, platform, ref listBytes);
         }

@@ -8,19 +8,19 @@ namespace HipHopFile
 {
     public abstract class HipSection
     {
-        public Section sectionName;
+        public Section sectionType;
         public int sectionSize;
 
         public HipSection() { }
 
         public HipSection(Section sectionName)
         {
-            this.sectionName = sectionName;
+            this.sectionType = sectionName;
         }
 
-        public HipSection(BinaryReader binaryReader, Section sectionName)
+        public HipSection(BinaryReader binaryReader, Section sectionType)
         {
-            this.sectionName = sectionName;
+            this.sectionType = sectionType;
             sectionSize = Switch(binaryReader.ReadInt32());
         }
 
@@ -36,14 +36,17 @@ namespace HipHopFile
 
             sectionSize = listBytes.Count() - position - 0x8;
 
-            listBytes[position + 0] = (byte)sectionName.ToString()[0];
-            listBytes[position + 1] = (byte)sectionName.ToString()[1];
-            listBytes[position + 2] = (byte)sectionName.ToString()[2];
-            listBytes[position + 3] = (byte)sectionName.ToString()[3];
-            listBytes[position + 4] = BitConverter.GetBytes(sectionSize)[3];
-            listBytes[position + 5] = BitConverter.GetBytes(sectionSize)[2];
-            listBytes[position + 6] = BitConverter.GetBytes(sectionSize)[1];
-            listBytes[position + 7] = BitConverter.GetBytes(sectionSize)[0];
+            var sectionNameString = sectionType.ToString();
+            var sectionSizeBytes = BitConverter.GetBytes(sectionSize);
+
+            listBytes[position + 0] = (byte)sectionNameString[0];
+            listBytes[position + 1] = (byte)sectionNameString[1];
+            listBytes[position + 2] = (byte)sectionNameString[2];
+            listBytes[position + 3] = (byte)sectionNameString[3];
+            listBytes[position + 4] = sectionSizeBytes[3];
+            listBytes[position + 5] = sectionSizeBytes[2];
+            listBytes[position + 6] = sectionSizeBytes[1];
+            listBytes[position + 7] = sectionSizeBytes[0];
         }
 
         public abstract void SetListBytes(Game game, Platform platform, ref List<byte> listBytes);

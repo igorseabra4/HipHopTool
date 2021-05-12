@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
@@ -55,7 +54,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.PACK;
+            sectionType = Section.PACK;
             
             PVER.SetBytes(game, platform, ref listBytes);
             PFLG.SetBytes(game, platform, ref listBytes);

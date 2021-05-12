@@ -10,7 +10,7 @@ namespace HipHopFile
 
         public Section_PFLG(int flags) : base(Section.PFLG)
         {
-            sectionName = Section.PFLG;
+            sectionType = Section.PFLG;
             this.flags = flags;
         }
 
@@ -26,7 +26,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.PFLG;
+            sectionType = Section.PFLG;
             listBytes.AddBigEndian(flags);
         }
     }

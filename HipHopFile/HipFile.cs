@@ -8,53 +8,48 @@ namespace HipHopFile
 {
     public class HipFile
     {
-        public Game game;
-        public Platform platform;
-
         public Section_HIPA HIPA;
         public Section_PACK PACK;
         public Section_DICT DICT;
         public Section_STRM STRM;
 
-        public HipFile(Game game, Platform platform, Section_HIPA HIPA, Section_PACK PACK, Section_DICT DICT, Section_STRM STRM)
+        public HipFile(Section_HIPA HIPA, Section_PACK PACK, Section_DICT DICT, Section_STRM STRM)
         {
-            this.game = game;
-            this.platform = platform;
             this.HIPA = HIPA;
             this.PACK = PACK;
             this.DICT = DICT;
             this.STRM = STRM;
         }
 
-        public HipFile(string fileName)
-        {
-            BinaryReader binaryReader = new BinaryReader(new FileStream(fileName, FileMode.Open));
-
-            while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
-            {
-                string currentSection = new string(binaryReader.ReadChars(4));
-                if (currentSection == Section.HIPA.ToString()) HIPA = new Section_HIPA(binaryReader);
-                else if (currentSection == Section.PACK.ToString()) PACK = new Section_PACK(binaryReader, out game, out platform);
-                else if (currentSection == Section.DICT.ToString()) DICT = new Section_DICT(binaryReader);
-                else if (currentSection == Section.STRM.ToString()) STRM = new Section_STRM(binaryReader);
-                else throw new Exception(currentSection);
-            }
-
-            binaryReader.Close();
-        }
-
-        public static HipFile FromINI(string fileName)
+        public static (HipFile, Game, Platform) FromPath(string fileName)
         {
             HipFile hipFile = new HipFile();
-            hipFile.SetupFromINI(fileName);
-            return hipFile;
+            Game game = Game.Unknown;
+            Platform platform = Platform.Unknown;
+
+            using (var binaryReader = new BinaryReader(new FileStream(fileName, FileMode.Open)))
+                while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                {
+                    string currentSection = new string(binaryReader.ReadChars(4));
+                    if (currentSection == Section.HIPA.ToString()) hipFile.HIPA = new Section_HIPA(binaryReader);
+                    else if (currentSection == Section.PACK.ToString()) hipFile.PACK = new Section_PACK(binaryReader, out game, out platform);
+                    else if (currentSection == Section.DICT.ToString()) hipFile.DICT = new Section_DICT(binaryReader);
+                    else if (currentSection == Section.STRM.ToString()) hipFile.STRM = new Section_STRM(binaryReader);
+                    else throw new Exception(currentSection);
+                }
+
+            return (hipFile, game, platform);
+        }
+
+        public static (HipFile, Game, Platform) FromINI(string fileName)
+        {
+            HipFile hipFile = new HipFile();
+            hipFile.SetupFromINI(fileName, out Game game, out Platform platform);
+            return (hipFile, game, platform);
         }
 
         private HipFile()
         {
-            game = Game.Unknown;
-            platform = Platform.Unknown;
-
             HIPA = new Section_HIPA();
             PACK = new Section_PACK();
             DICT = new Section_DICT
@@ -65,25 +60,22 @@ namespace HipHopFile
             STRM = new Section_STRM();
         }
 
-        private void SetGame(string v)
+        private Game GetGame(string v)
         {
             switch (v)
             {
                 case "Scooby":
-                    game = Game.Scooby;
-                    break;
+                    return Game.Scooby;
                 case "BFBB":
-                    game = Game.BFBB;
-                    break;
+                    return Game.BFBB;
                 case "Incredibles":
-                    game = Game.Incredibles;
-                    break;
+                    return Game.Incredibles;
                 default:
                     throw new Exception("Unknown game");
             }
         }
 
-        private void SetupFromINI(string iniFileName)
+        private void SetupFromINI(string iniFileName, out Game game, out Platform platform)
         {
             string[] INI = File.ReadAllLines(iniFileName);
             char sep = v0s;
@@ -91,11 +83,13 @@ namespace HipHopFile
             List<uint> assetIDlist = new List<uint>();
             Section_LHDR CurrentLHDR = new Section_LHDR();
 
+            game = Game.Unknown;
+
             foreach (string s in INI)
             {
                 if (s.StartsWith("Game="))
                 {
-                    SetGame(s.Split('=')[1]);
+                    game = GetGame(s.Split('=')[1]);
 
                     if (game == Game.BFBB || game == Game.Incredibles)
                         PACK.PLAT = new Section_PLAT();
@@ -174,6 +168,8 @@ namespace HipHopFile
                 }
             }
 
+            platform = PACK.PLAT.GetPlatform();
+
             // Let's get the data from the files now and put them in a dictionary
             Dictionary<uint, byte[]> assetDataDictionary = new Dictionary<uint, byte[]>();
 
@@ -222,7 +218,7 @@ namespace HipHopFile
             DICT.ATOC.AHDRList.Add(newAHDR);
         }
         
-        private void SetupSTRM()
+        private void SetupSTRM(Game game, Platform platform)
         {
             // Let's generate a temporary HIP file that will be discarded. This sets a correct STRM.DPAK.globalRelativeStartOffset
             List<byte> temporaryFile = new List<byte>();
@@ -240,13 +236,8 @@ namespace HipHopFile
             // Create the new STRM stream.
             List<byte> newStream = new List<byte>();
 
-            // We'll create these variables but won't really use them. Meh.
-            int LargestSourceFileAsset = 0;
-            int LargestLayer = 0;
-            int LargestSourceVirtualAsset = 0;
-
             // Sort the ATOC data (AHDR sections) by their asset ID. Unsure if this is necessary, but just in case.
-            DICT.ATOC.AHDRList = DICT.ATOC.AHDRList.OrderBy(AHDR => AHDR.assetID).ToList();
+            // DICT.ATOC.AHDRList = DICT.ATOC.AHDRList.OrderBy(AHDR => AHDR.GetCompareValue(platform)).ToList();
 
             // Let's build a temporary dictionary with the assets, so we can write them in layer order.
             Dictionary<uint, Section_AHDR> assetDictionary = new Dictionary<uint, Section_AHDR>();
@@ -257,7 +248,7 @@ namespace HipHopFile
             foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
                 // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
-                LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => i).ToList();
+                LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => DICT.ATOC.GetWithIndex(i).GetCompareValue(game, platform)).ToList();
 
                 int finalAlignment = platform == Platform.GameCube ? 0x20 : 0x800;
 
@@ -307,12 +298,12 @@ namespace HipHopFile
             STRM.DPAK.data = newStream.ToArray();
 
             // I'll create a new PCNT, because I'm sure you'll forget to do so.
-            PACK.PCNT = new Section_PCNT(DICT.ATOC.AHDRList.Count, DICT.LTOC.LHDRList.Count, LargestSourceFileAsset, LargestLayer, LargestSourceVirtualAsset);
+            PACK.PCNT = new Section_PCNT(DICT.ATOC.AHDRList.Count, DICT.LTOC.LHDRList.Count);
         }
 
-        public byte[] ToBytes()
+        public byte[] ToBytes(Game game, Platform platform)
         {
-            SetupSTRM();
+            SetupSTRM(game, platform);
 
             List<byte> list = new List<byte>();
 
@@ -324,7 +315,7 @@ namespace HipHopFile
             return list.ToArray();
         }
 
-        public void ToIni(string unpackFolder, bool multiFolder, bool alphabetical)
+        public void ToIni(Game game, string unpackFolder, bool multiFolder, bool alphabetical)
         {
             Directory.CreateDirectory(unpackFolder);
 
@@ -353,7 +344,7 @@ namespace HipHopFile
             INIWriter.WriteLine("PACK.PVER=" + PACK.PVER.subVersion.ToString() + v1s + PACK.PVER.clientVersion.ToString() + v1s + PACK.PVER.compatible.ToString());
             INIWriter.WriteLine("PACK.PFLG=" + PACK.PFLG.flags.ToString());
             INIWriter.WriteLine("PACK.PCRT=" + PACK.PCRT.fileDate.ToString() + v1s + PACK.PCRT.dateString);
-            if (game == Game.BFBB | game == Game.Incredibles)
+            if (game == Game.BFBB || game == Game.Incredibles)
             {
                 INIWriter.WriteLine("PACK.PLAT.Target=" + PACK.PLAT.targetPlatform);
                 INIWriter.WriteLine("PACK.PLAT.RegionFormat=" + PACK.PLAT.regionFormat);
@@ -412,7 +403,7 @@ namespace HipHopFile
             INIWriter.Close();
         }
 
-        public void ToJson(string unpackFolder, bool multiFolder)
+        public void ToJson(Game game, string unpackFolder, bool multiFolder)
         {
             Directory.CreateDirectory(unpackFolder);
 

@@ -20,7 +20,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.LDBG;
+            sectionType = Section.LDBG;
 
             listBytes.AddBigEndian(value);
         }

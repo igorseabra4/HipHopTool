@@ -26,7 +26,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.DICT;
+            sectionType = Section.DICT;
 
             ATOC.SetBytes(game, platform, ref listBytes);
             LTOC.SetBytes(game, platform, ref listBytes);

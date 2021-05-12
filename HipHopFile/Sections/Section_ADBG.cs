@@ -33,7 +33,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.ADBG;
+            sectionType = Section.ADBG;
 
             listBytes.AddBigEndian(alignment);
             listBytes.AddString(assetName);

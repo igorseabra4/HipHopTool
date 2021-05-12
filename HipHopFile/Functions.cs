@@ -17,23 +17,8 @@ namespace HipHopFile
             Console.WriteLine(message);
         }
 
-        public static int Switch(int value)
-        {
-            byte[] b = BitConverter.GetBytes(value);
-            return BitConverter.ToInt32(new byte[] { b[3], b[2], b[1], b[0] }, 0);
-        }
-
-        public static uint Switch(uint value)
-        {
-            byte[] b = BitConverter.GetBytes(value);
-            return BitConverter.ToUInt32(new byte[] { b[3], b[2], b[1], b[0] }, 0);
-        }
-
-        public static float Switch(float value)
-        {
-            byte[] b = BitConverter.GetBytes(value);
-            return BitConverter.ToSingle(new byte[] { b[3], b[2], b[1], b[0] }, 0);
-        }
+        public static int Switch(int value) => BitConverter.ToInt32(BitConverter.GetBytes(value).Reverse().ToArray(), 0);        
+        public static uint Switch(uint value) => BitConverter.ToUInt32(BitConverter.GetBytes(value).Reverse().ToArray(), 0);
 
         public static uint BKDRHash(string str)
         {
@@ -61,6 +46,15 @@ namespace HipHopFile
             if (charList.Count % 2 == 0) binaryReader.BaseStream.Position += 1;
 
             return new string(charList.ToArray());
+        }
+
+        public static AssetType AssetTypeFromString(string type)
+        {
+            type = type.Trim();
+            foreach (AssetType assetType in Enum.GetValues(typeof(AssetType)))
+                if (assetType.ToString() == type)
+                    return assetType;
+            throw new Exception("Unknown asset type: " + type);
         }
 
         public static void AddString(this List<byte> listBytes, string writeString)

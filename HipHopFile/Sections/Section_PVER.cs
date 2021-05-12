@@ -33,7 +33,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.PVER;
+            sectionType = Section.PVER;
 
             listBytes.AddBigEndian(subVersion);
             listBytes.AddBigEndian(clientVersion);

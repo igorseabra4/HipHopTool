@@ -34,7 +34,7 @@ namespace HipHopFile
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
-            sectionName = Section.DPAK;
+            sectionType = Section.DPAK;
 
             int firstPaddingPosition = listBytes.Count;
 
