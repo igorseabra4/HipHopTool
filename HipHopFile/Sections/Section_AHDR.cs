@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using static HipHopFile.Functions;
-using HipHopFile;
 
 namespace HipHopFile
 {
@@ -109,10 +108,11 @@ namespace HipHopFile
                 case AssetType.TIMR: return 120;
                 case AssetType.PORT: return 130;
                 case AssetType.TEXT: return 131;
+                case AssetType.SUBT: return 132;
                 case AssetType.MVPT: return 160;
                 case AssetType.MRKR: return 170;
-                case AssetType.RAW:  return 180;
-                case AssetType.GRUP: return 190;
+                case AssetType.GRUP: return 180;
+                case AssetType.RAW:  return 190;
                 case AssetType.CNTR: return 200;
                 case AssetType.HANG: return 204;
                 case AssetType.PEND: return 206;
@@ -144,6 +144,8 @@ namespace HipHopFile
                 case AssetType.TRCK: return 298;
                 case AssetType.SIMP: return 299;
                 case AssetType.BUTN: return 300;
+                case AssetType.SLID: return 304;
+                case AssetType.ZLIN: return 305;
                 case AssetType.SURF: return 310;
                 case AssetType.DSTR: return 320;
                 case AssetType.GUST: return 321;
@@ -168,29 +170,31 @@ namespace HipHopFile
                 case AssetType.NPCS: return 452;
                 case AssetType.ONEL: return 453;
                 case AssetType.SCRP: return 454;
-                case AssetType.SPLP: return 455;
-                case AssetType.PGRS: return 456;
+                case AssetType.PGRS: return 455;
+                case AssetType.SPLP: return 456;
                 case AssetType.CRDT: return 460;
                 case AssetType.DSCO: return 470;
                 case AssetType.UIM:  return 471;
                 case AssetType.DYNA:
                     switch (GetDynaType(platform))
                     {
-                        case DynaType.audio__conversation: return 485;
-                        case DynaType.camera__binary_poi: return 486;
-                        case DynaType.camera__preset: return 487;
-                        case DynaType.camera__transition_path: return 488;
-                        case DynaType.camera__transition_time: return 489;
-                        case DynaType.Checkpoint: return 490;
-                        case DynaType.effect__BossBrain: return 491;
-                        case DynaType.effect__Flamethrower: return 492;
-                        case DynaType.effect__grass: return 493;
-                        case DynaType.effect__light: return 494;
-                        case DynaType.effect__LightEffectFlicker: return 495;
-                        case DynaType.effect__LightEffectStrobe: return 496;
-                        case DynaType.effect__Lightning: return 497;
-                        case DynaType.Effect__particle_generator: return 498;
-                        case DynaType.effect__Rumble: return 499;
+                        case DynaType.audio__conversation: return 480;
+                        case DynaType.camera__binary_poi: return 481;
+                        case DynaType.camera__preset: return 482;
+                        case DynaType.camera__transition_path: return 483;
+                        case DynaType.camera__transition_time: return 484;
+                        case DynaType.Checkpoint: return 485;
+                        case DynaType.effect__BossBrain: return 486;
+                        case DynaType.effect__Flamethrower: return 487;
+                        case DynaType.effect__grass: return 488;
+                        case DynaType.Unknown_2CD29541: return 489;
+                        case DynaType.Unknown_A072A4DA: return 490;
+                        case DynaType.effect__light: return 491;
+                        case DynaType.effect__LightEffectFlicker: return 492;
+                        case DynaType.effect__LightEffectStrobe: return 493;
+                        case DynaType.effect__Lightning: return 494;
+                        case DynaType.Effect__particle_generator: return 495;
+                        case DynaType.effect__Rumble: return 496;
                         case DynaType.effect__RumbleBoxEmitter: return 500;
                         case DynaType.effect__RumbleSphericalEmitter: return 501;
                         case DynaType.effect__ScreenFade: return 502;
@@ -271,12 +275,10 @@ namespace HipHopFile
                         case DynaType.ui__model: return 577;
                         case DynaType.ui__text: return 578;
                         case DynaType.ui__text__userstring: return 579;
-                        case DynaType.Unknown_2CD29541: return 580;
                         case DynaType.Unknown_4EE03B24: return 581;
                         case DynaType.Unknown_9F234F8E: return 582;
                         case DynaType.Unknown_460F4FB2: return 583;
                         case DynaType.Unknown_2743B85C: return 584;
-                        case DynaType.Unknown_A072A4DA: return 585;
                         case DynaType.Unknown_AD7CB421: return 586;
                         case DynaType.Unknown_C6C76EEE: return 587;
                         case DynaType.Unknown_CDB57387: return 588;
@@ -288,9 +290,10 @@ namespace HipHopFile
 
                         default: return 0;
                     }
+                case AssetType.TPIK: return 642;
                 case AssetType.TRWT: return 643;
-                case AssetType.SSET: return 644;
-                case AssetType.RANM: return 645;
+                case AssetType.RANM: return 644;
+                case AssetType.SSET: return 645;
                 case AssetType.FLY:  return 650;
                 case AssetType.NGMS: return 653;
                 case AssetType.GRSM: return 654;
@@ -318,14 +321,10 @@ namespace HipHopFile
                 case AssetType.CCRV:
                 case AssetType.CTOC:
                 case AssetType.DTRK:
-                case AssetType.SLID:
                 case AssetType.SPLN:
-                case AssetType.SUBT:
                 case AssetType.TEXS:
-                case AssetType.TPIK:
                 case AssetType.UIFN:
                 case AssetType.WIRE:
-                case AssetType.ZLIN:
                     return 0;
             }
             return 0;
