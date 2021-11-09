@@ -47,11 +47,11 @@ namespace HipHopFile
             noAHDR = AHDRList.Count == 0;
         }
 
-        public Section_AHDR GetWithIndex(uint assetID)
+        public Section_AHDR GetFromAssetID(uint assetID)
         {
-            for (int i = 0; i < AHDRList.Count; i++)
-                if (AHDRList[i].assetID == assetID)
-                    return AHDRList[i];
+            foreach (var AHDR in AHDRList)
+                if (AHDR.assetID == assetID)
+                    return AHDR;
             return null;
         }
     }

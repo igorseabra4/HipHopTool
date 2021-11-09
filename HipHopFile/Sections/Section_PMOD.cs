@@ -14,7 +14,7 @@ namespace HipHopFile
         }
 
         public Section_PMOD(BinaryReader binaryReader) : base(binaryReader, Section.PMOD)
-        {            
+        {
             modDate = Switch(binaryReader.ReadInt32());
         }
 
@@ -22,7 +22,7 @@ namespace HipHopFile
         {
             sectionType = Section.PMOD;
 
-            listBytes.AddBigEndian(modDate);            
+            listBytes.AddBigEndian(modDate);
         }
     }
 }

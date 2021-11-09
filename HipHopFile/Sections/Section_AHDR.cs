@@ -90,12 +90,12 @@ namespace HipHopFile
             switch (assetType)
             {
                 case AssetType.RWTX: return 1;
-                case AssetType.BSP:  return 2;
-                case AssetType.JSP:  return 3;
+                case AssetType.BSP: return 2;
+                case AssetType.JSP: return 3;
                 case AssetType.MODL: return 4;
                 case AssetType.PLYR: return 10;
-                case AssetType.NPC:  return 15;
-                case AssetType.VIL:  return 20;
+                case AssetType.NPC: return 15;
+                case AssetType.VIL: return 20;
                 case AssetType.VILP: return 30;
                 case AssetType.DUPC: return 35; // ?
                 case AssetType.PKUP: return 40;
@@ -104,7 +104,7 @@ namespace HipHopFile
                     if (ADBG.assetName == "STARTCAM")
                         return 90;
                     return 100;
-                case AssetType.ENV:  return 110;
+                case AssetType.ENV: return 110;
                 case AssetType.TIMR: return 120;
                 case AssetType.PORT: return 130;
                 case AssetType.TEXT: return 131;
@@ -112,11 +112,11 @@ namespace HipHopFile
                 case AssetType.MVPT: return 160;
                 case AssetType.MRKR: return 170;
                 case AssetType.GRUP: return 180;
-                case AssetType.RAW:  return 190;
+                case AssetType.RAW: return 190;
                 case AssetType.CNTR: return 200;
                 case AssetType.HANG: return 204;
                 case AssetType.PEND: return 206;
-                case AssetType.SFX:  return 210;
+                case AssetType.SFX: return 210;
                 case AssetType.SDFX: return 215;
                 case AssetType.PLAT:
                     switch (TypeFlag(game))
@@ -152,11 +152,11 @@ namespace HipHopFile
                 case AssetType.VOLU: return 322;
                 case AssetType.DPAT: return 330;
                 case AssetType.COND: return 340;
-                case AssetType.UI:   return 350;
+                case AssetType.UI: return 350;
                 case AssetType.UIFT: return 360;
                 case AssetType.PRJT: return 361;
                 case AssetType.LOBM: return 362;
-                case AssetType.FOG:  return 370;
+                case AssetType.FOG: return 370;
                 case AssetType.LITE: return 375;
                 case AssetType.PARP: return 380;
                 case AssetType.PARE: return 390;
@@ -174,7 +174,7 @@ namespace HipHopFile
                 case AssetType.SPLP: return 456;
                 case AssetType.CRDT: return 460;
                 case AssetType.DSCO: return 470;
-                case AssetType.UIM:  return 471;
+                case AssetType.UIM: return 471;
                 case AssetType.DYNA:
                     switch (GetDynaType(platform))
                     {
@@ -294,7 +294,7 @@ namespace HipHopFile
                 case AssetType.TRWT: return 643;
                 case AssetType.RANM: return 644;
                 case AssetType.SSET: return 645;
-                case AssetType.FLY:  return 650;
+                case AssetType.FLY: return 650;
                 case AssetType.NGMS: return 653;
                 case AssetType.GRSM: return 654;
                 case AssetType.MPHT: return 655;
@@ -309,10 +309,10 @@ namespace HipHopFile
                 case AssetType.COLL: return 710;
                 case AssetType.SHDW: return 720;
                 case AssetType.PIPT: return 730;
-                case AssetType.JAW:  return 740;
+                case AssetType.JAW: return 740;
                 case AssetType.MAPR: return 750;
-                case AssetType.CSN:  return 755;
-                case AssetType.SND:  return 760;
+                case AssetType.CSN: return 755;
+                case AssetType.SND: return 760;
                 case AssetType.SNDS: return 770;
                 case AssetType.CSSS: return 780;
                 case AssetType.SNDI: return 790;

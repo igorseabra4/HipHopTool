@@ -217,7 +217,7 @@ namespace HipHopFile
 
             DICT.ATOC.AHDRList.Add(newAHDR);
         }
-        
+
         private void SetupSTRM(Game game, Platform platform)
         {
             // Let's generate a temporary HIP file that will be discarded. This sets a correct STRM.DPAK.globalRelativeStartOffset
@@ -248,7 +248,7 @@ namespace HipHopFile
             foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
                 // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
-                LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => DICT.ATOC.GetWithIndex(i).GetCompareValue(game, platform)).ToList();
+                LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => DICT.ATOC.GetFromAssetID(i).GetCompareValue(game, platform)).ToList();
 
                 int finalAlignment = platform == Platform.GameCube ? 0x20 : 0x800;
 
@@ -262,7 +262,7 @@ namespace HipHopFile
                     }
 
                     Section_AHDR AHDR = assetDictionary[LHDR.assetIDlist[i]];
-                    
+
                     // Set stream dependant AHDR data...
                     AHDR.fileOffset = newStream.Count + STRM.DPAK.globalRelativeStartOffset;
                     AHDR.fileSize = AHDR.data.Length;

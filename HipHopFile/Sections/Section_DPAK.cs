@@ -47,7 +47,7 @@ namespace HipHopFile
 
             while (listBytes.Count % alignment != 0)
                 listBytes.Add(0x33);
-            
+
             globalRelativeStartOffset = listBytes.Count();
 
             int firstPadding = listBytes.Count - firstPaddingPosition;

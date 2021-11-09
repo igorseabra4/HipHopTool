@@ -17,7 +17,7 @@ namespace HipHopFile
             Console.WriteLine(message);
         }
 
-        public static int Switch(int value) => BitConverter.ToInt32(BitConverter.GetBytes(value).Reverse().ToArray(), 0);        
+        public static int Switch(int value) => BitConverter.ToInt32(BitConverter.GetBytes(value).Reverse().ToArray(), 0);
         public static uint Switch(uint value) => BitConverter.ToUInt32(BitConverter.GetBytes(value).Reverse().ToArray(), 0);
 
         public static uint BKDRHash(string str)

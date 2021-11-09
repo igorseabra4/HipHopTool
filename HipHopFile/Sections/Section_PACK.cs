@@ -16,7 +16,7 @@ namespace HipHopFile
         public Section_PACK() : base(Section.PACK) { }
 
         public Section_PACK(BinaryReader binaryReader, out Game game, out Platform platform) : base(binaryReader, Section.PACK)
-        {            
+        {
             long startSectionPosition = binaryReader.BaseStream.Position;
 
             string currentSectionName;
@@ -55,7 +55,7 @@ namespace HipHopFile
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
         {
             sectionType = Section.PACK;
-            
+
             PVER.SetBytes(game, platform, ref listBytes);
             PFLG.SetBytes(game, platform, ref listBytes);
             PCNT.SetBytes(game, platform, ref listBytes);

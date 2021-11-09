@@ -14,7 +14,7 @@ namespace HipHopFile
         }
 
         public Section_LDBG(BinaryReader binaryReader) : base(binaryReader, Section.LDBG)
-        {            
+        {
             value = Switch(binaryReader.ReadInt32());
         }
 

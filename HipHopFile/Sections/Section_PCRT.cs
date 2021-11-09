@@ -14,10 +14,10 @@ namespace HipHopFile
             this.fileDate = fileDate;
             this.dateString = dateString;
         }
-        
+
         public Section_PCRT(BinaryReader binaryReader) : base(binaryReader, Section.PCRT)
         {
-            fileDate = Switch(binaryReader.ReadInt32());            
+            fileDate = Switch(binaryReader.ReadInt32());
             dateString = ReadString(binaryReader);
         }
 

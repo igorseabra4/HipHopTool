@@ -37,7 +37,7 @@ namespace HipHopFile
 
             listBytes.AddBigEndian(alignment);
             listBytes.AddString(assetName);
-            listBytes.AddString(assetFileName);       
+            listBytes.AddString(assetFileName);
             listBytes.AddBigEndian(checksum);
         }
     }
