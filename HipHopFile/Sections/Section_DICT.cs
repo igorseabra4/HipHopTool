@@ -11,13 +11,13 @@ namespace HipHopFile
 
         public Section_DICT() : base(Section.DICT) { }
 
-        public Section_DICT(BinaryReader binaryReader) : base(binaryReader, Section.DICT)
+        public Section_DICT(BinaryReader binaryReader, Platform platform) : base(binaryReader, Section.DICT)
         {
             string currentSectionName;
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.ATOC.ToString()) throw new Exception();
-            ATOC = new Section_ATOC(binaryReader);
+            ATOC = new Section_ATOC(binaryReader, platform);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
             if (currentSectionName != Section.LTOC.ToString()) throw new Exception();

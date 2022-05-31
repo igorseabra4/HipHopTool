@@ -16,7 +16,7 @@ namespace HipHopFile
             AHDRList = new List<Section_AHDR>();
         }
 
-        public Section_ATOC(BinaryReader binaryReader) : base(binaryReader, Section.ATOC)
+        public Section_ATOC(BinaryReader binaryReader, Platform platform) : base(binaryReader, Section.ATOC)
         {
             long startSectionPosition = binaryReader.BaseStream.Position;
 
@@ -29,7 +29,7 @@ namespace HipHopFile
             {
                 currentSectionName = new string(binaryReader.ReadChars(4));
                 if (currentSectionName != Section.AHDR.ToString()) throw new Exception();
-                AHDRList.Add(new Section_AHDR(binaryReader));
+                AHDRList.Add(new Section_AHDR(binaryReader, platform));
             }
 
             noAHDR = AHDRList.Count == 0;

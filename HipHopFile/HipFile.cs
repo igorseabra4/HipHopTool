@@ -33,7 +33,7 @@ namespace HipHopFile
                     string currentSection = new string(binaryReader.ReadChars(4));
                     if (currentSection == Section.HIPA.ToString()) hipFile.HIPA = new Section_HIPA(binaryReader);
                     else if (currentSection == Section.PACK.ToString()) hipFile.PACK = new Section_PACK(binaryReader, out game, out platform);
-                    else if (currentSection == Section.DICT.ToString()) hipFile.DICT = new Section_DICT(binaryReader);
+                    else if (currentSection == Section.DICT.ToString()) hipFile.DICT = new Section_DICT(binaryReader, platform);
                     else if (currentSection == Section.STRM.ToString()) hipFile.STRM = new Section_STRM(binaryReader);
                     else throw new Exception(currentSection);
                 }
@@ -78,7 +78,7 @@ namespace HipHopFile
         private void SetupFromINI(string iniFileName, out Game game, out Platform platform)
         {
             string[] INI = File.ReadAllLines(iniFileName);
-            char sep = v0s;
+            char sep = ';';
 
             List<uint> assetIDlist = new List<uint>();
             Section_LHDR CurrentLHDR = new Section_LHDR();
@@ -96,8 +96,8 @@ namespace HipHopFile
                 }
                 else if (s.StartsWith("IniVersion"))
                 {
-                    if (Convert.ToInt32(s.Split('=')[1]) == 1)
-                        sep = v1s;
+                    if (Convert.ToInt32(s.Split('=')[1]) != 2)
+                        throw new Exception("Unsupported INI file. Please use HipHopFile v0.5.0 to import this INI.");
                 }
                 else if (s.StartsWith("PACK.PVER"))
                 {
@@ -275,7 +275,7 @@ namespace HipHopFile
 
                     int alignment = 16;
 
-                    if (game == Game.BFBB && AHDR.assetType == AssetType.CSN || AHDR.assetType == AssetType.SND || AHDR.assetType == AssetType.SNDS)
+                    if (game == Game.BFBB && AHDR.assetType == AssetType.Cutscene || AHDR.assetType == AssetType.Sound || AHDR.assetType == AssetType.StreamingSound)
                     {
                         alignment = finalAlignment;
                         AHDR.ADBG.alignment = alignment;
@@ -339,11 +339,11 @@ namespace HipHopFile
 
             StreamWriter INIWriter = new StreamWriter(new FileStream(fileName, FileMode.Create));
             INIWriter.WriteLine("Game=" + game.ToString());
-            INIWriter.WriteLine("IniVersion=1");
+            INIWriter.WriteLine("IniVersion=2");
 
-            INIWriter.WriteLine("PACK.PVER=" + PACK.PVER.subVersion.ToString() + v1s + PACK.PVER.clientVersion.ToString() + v1s + PACK.PVER.compatible.ToString());
+            INIWriter.WriteLine("PACK.PVER=" + PACK.PVER.subVersion.ToString() + ";" + PACK.PVER.clientVersion.ToString() + ";" + PACK.PVER.compatible.ToString());
             INIWriter.WriteLine("PACK.PFLG=" + PACK.PFLG.flags.ToString());
-            INIWriter.WriteLine("PACK.PCRT=" + PACK.PCRT.fileDate.ToString() + v1s + PACK.PCRT.dateString);
+            INIWriter.WriteLine("PACK.PCRT=" + PACK.PCRT.fileDate.ToString() + ";" + PACK.PCRT.dateString);
             if (game == Game.BFBB || game == Game.Incredibles)
             {
                 INIWriter.WriteLine("PACK.PLAT.Target=" + PACK.PLAT.targetPlatform);
@@ -388,7 +388,7 @@ namespace HipHopFile
 
                 foreach (Section_AHDR AHDR in ahdrList)
                 {
-                    string assetToString = AHDR.assetID.ToString("X8") + v1s + AHDR.assetType + v1s + ((int)AHDR.flags).ToString() + v1s + AHDR.ADBG.alignment.ToString() + v1s + AHDR.ADBG.assetName.Replace(v1s, '_') + v1s + AHDR.ADBG.assetFileName + v1s + AHDR.ADBG.checksum.ToString("X8");
+                    string assetToString = AHDR.assetID.ToString("X8") + ";" + AHDR.assetType.ToString() + ";" + ((int)AHDR.flags).ToString() + ";" + AHDR.ADBG.alignment.ToString() + ";" + AHDR.ADBG.assetName.Replace(';', '_') + ";" + AHDR.ADBG.assetFileName + ";" + AHDR.ADBG.checksum.ToString("X8");
                     INIWriter.WriteLine("Asset=" + assetToString);
                 }
 
