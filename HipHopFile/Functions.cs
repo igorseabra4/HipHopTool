@@ -55,9 +55,9 @@ namespace HipHopFile
             switch (assetType)
             {
                 case AssetType.Null: return "NULL";
-                case AssetType.AnimList: return "ALST";
+                case AssetType.AnimationList: return "ALST";
                 case AssetType.Animation: return "ANIM";
-                case AssetType.AnimTable: return "ATBL";
+                case AssetType.AnimationTable: return "ATBL";
                 case AssetType.AttackTable: return "ATKT";
                 case AssetType.BinkVideo: return "BINK";
                 case AssetType.Boulder: return "BOUL";
@@ -122,7 +122,7 @@ namespace HipHopFile
                 case AssetType.SDFX: return "SDFX";
                 case AssetType.SFX: return "SFX";
                 case AssetType.SoundGroup: return "SGRP";
-                case AssetType.SimpleShadowTable: return "SHDW";
+                case AssetType.ShadowTable: return "SHDW";
                 case AssetType.Shrapnel: return "SHRP";
                 case AssetType.SimpleObject: return "SIMP";
                 case AssetType.SlideProperty: return "SLID";
@@ -164,7 +164,7 @@ namespace HipHopFile
                 case AssetType.Scientist:
                 case AssetType.Shooter:
                 case AssetType.EnemySB:
-                case AssetType.BucketOTron:
+                case AssetType.Spawner:
                 case AssetType.CastNCrew:
                 case AssetType.Critter:
                 case AssetType.Dennis:
@@ -347,7 +347,7 @@ namespace HipHopFile
                 case DynaType.Enemy__IN2__Scientist: return AssetType.Scientist;
                 case DynaType.Enemy__IN2__Shooter: return AssetType.Shooter;
                 case DynaType.Enemy__SB: return AssetType.EnemySB;
-                case DynaType.Enemy__SB__BucketOTron: return AssetType.BucketOTron;
+                case DynaType.Enemy__SB__BucketOTron: return AssetType.Spawner;
                 case DynaType.Enemy__SB__CastNCrew: return AssetType.CastNCrew;
                 case DynaType.Enemy__SB__Critter: return AssetType.Critter;
                 case DynaType.Enemy__SB__Dennis: return AssetType.Dennis;

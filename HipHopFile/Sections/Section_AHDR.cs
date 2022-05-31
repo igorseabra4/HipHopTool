@@ -95,9 +95,9 @@ namespace HipHopFile
             type = type.Trim();
             switch (type)
             {
-                case "ALST": return AssetType.AnimList;
+                case "ALST": return AssetType.AnimationList;
                 case "ANIM": return AssetType.Animation;
-                case "ATBL": return AssetType.AnimTable;
+                case "ATBL": return AssetType.AnimationTable;
                 case "ATKT": return AssetType.AttackTable;
                 case "BINK": return AssetType.BinkVideo;
                 case "BOUL": return AssetType.Boulder;
@@ -163,7 +163,7 @@ namespace HipHopFile
                 case "SDFX": return AssetType.SDFX;
                 case "SFX": return AssetType.SFX;
                 case "SGRP": return AssetType.SoundGroup;
-                case "SHDW": return AssetType.SimpleShadowTable;
+                case "SHDW": return AssetType.ShadowTable;
                 case "SHRP": return AssetType.Shrapnel;
                 case "SIMP": return AssetType.SimpleObject;
                 case "SLID": return AssetType.SlideProperty;
@@ -274,7 +274,7 @@ namespace HipHopFile
                 case AssetType.ParticleSystem: return 400;
                 case AssetType.CutsceneManager: return 410;
                 case AssetType.ElectricArcGenerator: return 420;
-                case AssetType.AnimList: return 430;
+                case AssetType.AnimationList: return 430;
                 case AssetType.Boulder: return 440;
                 case AssetType.LightKit: return 450;
                 case AssetType.AttackTable: return 451;
@@ -326,7 +326,7 @@ namespace HipHopFile
                 case AssetType.Scientist: return 520;
                 case AssetType.Shooter: return 521;
                 case AssetType.EnemySB: return 522;
-                case AssetType.BucketOTron: return 523;
+                case AssetType.Spawner: return 523;
                 case AssetType.CastNCrew: return 524;
                 case AssetType.Critter: return 525;
                 case AssetType.Dennis: return 526;
@@ -404,7 +404,7 @@ namespace HipHopFile
                 case AssetType.GrassMesh: return 654;
                 case AssetType.MorphTarget: return 655;
                 case AssetType.Animation: return 656;
-                case AssetType.AnimTable: return 660;
+                case AssetType.AnimationTable: return 660;
                 case AssetType.Shrapnel: return 670;
                 case AssetType.PickupTable: return 680;
                 case AssetType.ModelInfo: return 690;
@@ -412,7 +412,7 @@ namespace HipHopFile
                 case AssetType.Destructible: return 699;
                 case AssetType.LevelOfDetailTable: return 700;
                 case AssetType.CollisionTable: return 710;
-                case AssetType.SimpleShadowTable: return 720;
+                case AssetType.ShadowTable: return 720;
                 case AssetType.PipeInfoTable: return 730;
                 case AssetType.JawDataTable: return 740;
                 case AssetType.SurfaceMapper: return 750;
