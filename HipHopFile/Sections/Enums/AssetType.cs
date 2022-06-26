@@ -109,6 +109,7 @@
         Flamethrower,
         Grass,
         LensFlareElement,
+        LensFlareSource,
         LightEffect,
         LightEffectFlicker,
         LightEffectStrobe,
@@ -207,6 +208,31 @@
         UserInterfaceText,
         UserInterfaceTextUserString,
         Unknown_EBC04E7B,
-        Unknown_LensFlare
+
+        // rat proto dynas
+        AnalogDeflection,
+        AnalogDirection,
+        Enemy__NPC_Gate,
+        Enemy__NPC_Walls,
+        HUD_Compass_Object,
+        HUD_Compass_System,
+        logic__Mission,
+        logic__Task,
+        Pour_Widget,
+        Twiddler,
+        Unknown_0A21FFAD,
+        Unknown_105DFF22,
+        Unknown_1E175B3F,
+        Unknown_284375FD,
+        Unknown_2D0D198B,
+        Unknown_35F3B22A,
+        Unknown_45F261C6,
+        Unknown_544AA34C,
+        Unknown_544E0BCC,
+        Unknown_89F5441A,
+        Unknown_B34B0083,
+        Unknown_D9CA96BC,
+        Unknown_EF5FD10C,
+        Unknown_F5B8CC9C
     }
 }

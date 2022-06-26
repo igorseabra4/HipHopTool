@@ -179,7 +179,7 @@ namespace HipHopFile
                 case AssetType.JSPExtraData:
                 case AssetType.SceneProperties:
                 case AssetType.Unknown_EBC04E7B:
-                case AssetType.Unknown_LensFlare:
+                case AssetType.LensFlareSource:
                 case AssetType.AudioConversation:
                 case AssetType.CameraBinaryPoi:
                 case AssetType.CameraPreset:
@@ -259,6 +259,32 @@ namespace HipHopFile
                 case AssetType.UserInterfaceModel:
                 case AssetType.UserInterfaceText:
                 case AssetType.UserInterfaceTextUserString:
+
+                // rat proto
+                case AssetType.AnalogDeflection:
+                case AssetType.AnalogDirection:
+                case AssetType.Enemy__NPC_Gate:
+                case AssetType.Enemy__NPC_Walls:
+                case AssetType.HUD_Compass_Object:
+                case AssetType.HUD_Compass_System:
+                case AssetType.logic__Mission:
+                case AssetType.logic__Task:
+                case AssetType.Pour_Widget:
+                case AssetType.Twiddler:
+                case AssetType.Unknown_0A21FFAD:
+                case AssetType.Unknown_105DFF22:
+                case AssetType.Unknown_1E175B3F:
+                case AssetType.Unknown_284375FD:
+                case AssetType.Unknown_2D0D198B:
+                case AssetType.Unknown_35F3B22A:
+                case AssetType.Unknown_45F261C6:
+                case AssetType.Unknown_544AA34C:
+                case AssetType.Unknown_544E0BCC:
+                case AssetType.Unknown_89F5441A:
+                case AssetType.Unknown_B34B0083:
+                case AssetType.Unknown_D9CA96BC:
+                case AssetType.Unknown_EF5FD10C:
+                case AssetType.Unknown_F5B8CC9C:
                     return "DYNA";
             }
 
@@ -318,6 +344,7 @@ namespace HipHopFile
                 case DynaType.effect__Flamethrower: return AssetType.Flamethrower;
                 case DynaType.effect__grass: return AssetType.Grass;
                 case DynaType.effect__LensFlareElement: return AssetType.LensFlareElement;
+                case DynaType.effect__LensFlareSource: return AssetType.LensFlareSource;
                 case DynaType.effect__light: return AssetType.LightEffect;
                 case DynaType.effect__LightEffectFlicker: return AssetType.LightEffectFlicker;
                 case DynaType.effect__LightEffectStrobe: return AssetType.LightEffectStrobe;
@@ -416,7 +443,31 @@ namespace HipHopFile
                 case DynaType.ui__text: return AssetType.UserInterfaceText;
                 case DynaType.ui__text__userstring: return AssetType.UserInterfaceTextUserString;
                 case DynaType.Unknown_EBC04E7B: return AssetType.Unknown_EBC04E7B;
-                case DynaType.Unknown_LensFlareSomething: return AssetType.Unknown_LensFlare;
+
+                case DynaType.AnalogDeflection: return AssetType.AnalogDeflection;
+                case DynaType.AnalogDirection: return AssetType.AnalogDirection;
+                case DynaType.Enemy__NPC_Gate: return AssetType.Enemy__NPC_Gate;
+                case DynaType.Enemy__NPC_Walls: return AssetType.Enemy__NPC_Walls;
+                case DynaType.HUD_Compass_Object: return AssetType.HUD_Compass_Object;
+                case DynaType.HUD_Compass_System: return AssetType.HUD_Compass_System;
+                case DynaType.logic__Mission: return AssetType.logic__Mission;
+                case DynaType.logic__Task: return AssetType.logic__Task;
+                case DynaType.Pour_Widget: return AssetType.Pour_Widget;
+                case DynaType.Twiddler: return AssetType.Twiddler;
+                case DynaType.Unknown_0A21FFAD: return AssetType.Unknown_0A21FFAD;
+                case DynaType.Unknown_105DFF22: return AssetType.Unknown_105DFF22;
+                case DynaType.Unknown_1E175B3F: return AssetType.Unknown_1E175B3F;
+                case DynaType.Unknown_284375FD: return AssetType.Unknown_284375FD;
+                case DynaType.Unknown_2D0D198B: return AssetType.Unknown_2D0D198B;
+                case DynaType.Unknown_35F3B22A: return AssetType.Unknown_35F3B22A;
+                case DynaType.Unknown_45F261C6: return AssetType.Unknown_45F261C6;
+                case DynaType.Unknown_544AA34C: return AssetType.Unknown_544AA34C;
+                case DynaType.Unknown_544E0BCC: return AssetType.Unknown_544E0BCC;
+                case DynaType.Unknown_89F5441A: return AssetType.Unknown_89F5441A;
+                case DynaType.Unknown_B34B0083: return AssetType.Unknown_B34B0083;
+                case DynaType.Unknown_D9CA96BC: return AssetType.Unknown_D9CA96BC;
+                case DynaType.Unknown_EF5FD10C: return AssetType.Unknown_EF5FD10C;
+                case DynaType.Unknown_F5B8CC9C: return AssetType.Unknown_F5B8CC9C;
             }
 
             throw new Exception("Unknown DYNA type: " + dynaType.ToString("X8"));

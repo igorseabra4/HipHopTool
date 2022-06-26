@@ -21,6 +21,7 @@
         effect__BossBrain = 0xDEC6DFF0,
         effect__Flamethrower = 0xFB1179F5,
         effect__LensFlareElement = 0x2CD29541,
+        effect__LensFlareSource = 0xA072A4DA,
         effect__LightEffectFlicker = 0x53CE3CA4,
         effect__LightEffectStrobe = 0x96727F69,
         effect__Lightning = 0x94B8EF2D,
@@ -124,7 +125,32 @@
         ui__text = 0xBD7646D7,
         ui__text__userstring = 0xFB50BACB,
 
-        Unknown_LensFlareSomething = 0xA072A4DA,
-        Unknown_EBC04E7B = 0xEBC04E7B
+        Unknown_EBC04E7B = 0xEBC04E7B, // incredibles and rotu
+
+        // rat proto
+        AnalogDeflection = 0x16B0A88D,
+        AnalogDirection = 0xC0288F1F,
+        Enemy__NPC_Gate = 0x175ED698,
+        Enemy__NPC_Walls = 0x0E612078,
+        HUD_Compass_Object = 0x50B5E94C,
+        HUD_Compass_System = 0xD3BB2158,
+        logic__Mission = 0x890EB71C,
+        logic__Task = 0x1D40CE5D,
+        Pour_Widget = 0x2DDFA8F4,
+        Twiddler = 0x01A49323,
+        Unknown_0A21FFAD = 0x0A21FFAD,
+        Unknown_105DFF22 = 0x105DFF22,
+        Unknown_1E175B3F = 0x1E175B3F,
+        Unknown_284375FD = 0x284375FD,
+        Unknown_2D0D198B = 0x2D0D198B,
+        Unknown_35F3B22A = 0x35F3B22A,
+        Unknown_45F261C6 = 0x45F261C6,
+        Unknown_544AA34C = 0x544AA34C,
+        Unknown_544E0BCC = 0x544E0BCC,
+        Unknown_89F5441A = 0x89F5441A,
+        Unknown_B34B0083 = 0xB34B0083,
+        Unknown_D9CA96BC = 0xD9CA96BC,
+        Unknown_EF5FD10C = 0xEF5FD10C,
+        Unknown_F5B8CC9C = 0xF5B8CC9C,
     }
 }

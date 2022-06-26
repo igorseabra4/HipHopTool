@@ -296,7 +296,7 @@ namespace HipHopFile
                 case AssetType.Flamethrower: return 487;
                 case AssetType.Grass: return 488;
                 case AssetType.LensFlareElement: return 489;
-                case AssetType.Unknown_LensFlare: return 490;
+                case AssetType.LensFlareSource: return 490;
                 case AssetType.LightEffect: return 491;
                 case AssetType.LightEffectFlicker: return 492;
                 case AssetType.LightEffectStrobe: return 493;
