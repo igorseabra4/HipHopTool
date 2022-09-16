@@ -30,4 +30,20 @@
         CUTSCENETOC = 10,
         JSPINFO = 11
     }
+
+    public enum LayerType
+    {
+        DEFAULT = 0,
+        TEXTURE = 1,
+        TEXTURE_STRM = 2,
+        BSP = 3,
+        MODEL = 4,
+        ANIMATION = 5,
+        VRAM = 6,
+        SRAM = 7,
+        SNDTOC = 8,
+        CUTSCENE = 9,
+        CUTSCENETOC = 10,
+        JSPINFO = 11
+    }
 }

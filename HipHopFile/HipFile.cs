@@ -12,6 +12,7 @@ namespace HipHopFile
         public Section_PACK PACK;
         public Section_DICT DICT;
         public Section_STRM STRM;
+        public Section_HIPB HIPB;
 
         public HipFile(Section_HIPA HIPA, Section_PACK PACK, Section_DICT DICT, Section_STRM STRM)
         {
@@ -19,6 +20,7 @@ namespace HipHopFile
             this.PACK = PACK;
             this.DICT = DICT;
             this.STRM = STRM;
+            HIPB = null;
         }
 
         public static (HipFile, Game, Platform) FromPath(string fileName)
@@ -35,6 +37,7 @@ namespace HipHopFile
                     else if (currentSection == Section.PACK.ToString()) hipFile.PACK = new Section_PACK(binaryReader, out game, out platform);
                     else if (currentSection == Section.DICT.ToString()) hipFile.DICT = new Section_DICT(binaryReader, platform);
                     else if (currentSection == Section.STRM.ToString()) hipFile.STRM = new Section_STRM(binaryReader);
+                    else if (currentSection == Section.HIPB.ToString()) hipFile.HIPB = new Section_HIPB(binaryReader);
                     else throw new Exception(currentSection);
                 }
 
@@ -311,6 +314,8 @@ namespace HipHopFile
             PACK.SetBytes(game, platform, ref list);
             DICT.SetBytes(game, platform, ref list);
             STRM.SetBytes(game, platform, ref list);
+            if (HIPB != null)
+                HIPB.SetBytes(game, platform, ref list);
 
             return list.ToArray();
         }

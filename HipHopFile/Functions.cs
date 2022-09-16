@@ -88,7 +88,8 @@ namespace HipHopFile
                 case AssetType.Gust: return "GUST";
                 case AssetType.Hangable: return "HANG";
                 case AssetType.JawDataTable: return "JAW";
-                case AssetType.JSP: return "JSP";
+                case AssetType.JSP:
+                case AssetType.JSPInfo: return "JSP";
                 case AssetType.Light: return "LITE";
                 case AssetType.LightKit: return "LKIT";
                 case AssetType.LobMaster: return "LOBM";
@@ -100,7 +101,7 @@ namespace HipHopFile
                 case AssetType.Marker: return "MRKR";
                 case AssetType.MovePoint: return "MVPT";
                 case AssetType.NavigationMesh: return "NGMS";
-                case AssetType.NPC: return "NPC";
+                case AssetType.Villain: return "NPC";
                 case AssetType.NPCSettings: return "NPCS";
                 case AssetType.OneLiner: return "ONEL";
                 case AssetType.ParticleEmitter: return "PARE";
@@ -145,8 +146,8 @@ namespace HipHopFile
                 case AssetType.UIFN: return "UIFN";
                 case AssetType.UserInterfaceFont: return "UIFT";
                 case AssetType.UserInterfaceMotion: return "UIM";
-                case AssetType.VIL: return "VIL";
-                case AssetType.VILProperties: return "VILP";
+                case AssetType.NPC: return "VIL";
+                case AssetType.NPCProperties: return "VILP";
                 case AssetType.Volume: return "VOLU";
                 case AssetType.WireframeModel: return "WIRE";
                 case AssetType.ZipLine: return "ZLIN";
@@ -263,13 +264,13 @@ namespace HipHopFile
                 // rat proto
                 case AssetType.AnalogDeflection:
                 case AssetType.AnalogDirection:
-                case AssetType.Enemy__NPC_Gate:
-                case AssetType.Enemy__NPC_Walls:
+                case AssetType.EnemyNPCGate:
+                case AssetType.EnemyNPCWalls:
                 case AssetType.HUD_Compass_Object:
                 case AssetType.HUD_Compass_System:
-                case AssetType.logic__Mission:
-                case AssetType.logic__Task:
-                case AssetType.Pour_Widget:
+                case AssetType.LogicMission:
+                case AssetType.LogicTask:
+                case AssetType.PourWidget:
                 case AssetType.Twiddler:
                 case AssetType.Unknown_0A21FFAD:
                 case AssetType.Unknown_105DFF22:
@@ -446,13 +447,13 @@ namespace HipHopFile
 
                 case DynaType.AnalogDeflection: return AssetType.AnalogDeflection;
                 case DynaType.AnalogDirection: return AssetType.AnalogDirection;
-                case DynaType.Enemy__NPC_Gate: return AssetType.Enemy__NPC_Gate;
-                case DynaType.Enemy__NPC_Walls: return AssetType.Enemy__NPC_Walls;
+                case DynaType.Enemy__NPC_Gate: return AssetType.EnemyNPCGate;
+                case DynaType.Enemy__NPC_Walls: return AssetType.EnemyNPCWalls;
                 case DynaType.HUD_Compass_Object: return AssetType.HUD_Compass_Object;
                 case DynaType.HUD_Compass_System: return AssetType.HUD_Compass_System;
-                case DynaType.logic__Mission: return AssetType.logic__Mission;
-                case DynaType.logic__Task: return AssetType.logic__Task;
-                case DynaType.Pour_Widget: return AssetType.Pour_Widget;
+                case DynaType.logic__Mission: return AssetType.LogicMission;
+                case DynaType.logic__Task: return AssetType.LogicTask;
+                case DynaType.Pour_Widget: return AssetType.PourWidget;
                 case DynaType.Twiddler: return AssetType.Twiddler;
                 case DynaType.Unknown_0A21FFAD: return AssetType.Unknown_0A21FFAD;
                 case DynaType.Unknown_105DFF22: return AssetType.Unknown_105DFF22;

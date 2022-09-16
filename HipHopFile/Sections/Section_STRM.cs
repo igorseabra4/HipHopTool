@@ -9,7 +9,11 @@ namespace HipHopFile
         public Section_DHDR DHDR;
         public Section_DPAK DPAK;
 
-        public Section_STRM() : base(Section.STRM) { }
+        public Section_STRM() : base(Section.STRM)
+        {
+            DHDR = new Section_DHDR(-1);
+            DPAK = new Section_DPAK();
+        }
 
         public Section_STRM(BinaryReader binaryReader) : base(binaryReader, Section.STRM)
         {

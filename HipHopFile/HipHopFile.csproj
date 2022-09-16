@@ -67,6 +67,7 @@
     <Compile Include="Sections\Section_DHDR.cs" />
     <Compile Include="Sections\Section_DICT.cs" />
     <Compile Include="Sections\Section_DPAK.cs" />
+    <Compile Include="Sections\Section_HIPB.cs" />
     <Compile Include="Sections\Section_HIPA.cs" />
     <Compile Include="Sections\Section_LDBG.cs" />
     <Compile Include="Sections\Section_LHDR.cs" />

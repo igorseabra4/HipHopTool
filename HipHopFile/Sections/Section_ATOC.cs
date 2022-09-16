@@ -13,6 +13,7 @@ namespace HipHopFile
 
         public Section_ATOC() : base(Section.ATOC)
         {
+            AINF = new Section_AINF(0);
             AHDRList = new List<Section_AHDR>();
         }
 

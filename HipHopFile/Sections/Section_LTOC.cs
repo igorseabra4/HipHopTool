@@ -11,6 +11,7 @@ namespace HipHopFile
 
         public Section_LTOC() : base(Section.LTOC)
         {
+            LINF = new Section_LINF(0);
             LHDRList = new List<Section_LHDR>();
         }
 

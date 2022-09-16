@@ -141,7 +141,7 @@ namespace HipHopFile
                 case "MRKR": return AssetType.Marker;
                 case "MVPT": return AssetType.MovePoint;
                 case "NGMS": return AssetType.NavigationMesh;
-                case "NPC": return AssetType.NPC;
+                case "NPC": return AssetType.Villain;
                 case "NPCS": return AssetType.NPCSettings;
                 case "ONEL": return AssetType.OneLiner;
                 case "PARE": return AssetType.ParticleEmitter;
@@ -186,8 +186,8 @@ namespace HipHopFile
                 case "UIFN": return AssetType.UIFN;
                 case "UIFT": return AssetType.UserInterfaceFont;
                 case "UIM": return AssetType.UserInterfaceMotion;
-                case "VIL": return AssetType.VIL;
-                case "VILP": return AssetType.VILProperties;
+                case "VIL": return AssetType.NPC;
+                case "VILP": return AssetType.NPCProperties;
                 case "VOLU": return AssetType.Volume;
                 case "WIRE": return AssetType.WireframeModel;
                 case "ZLIN": return AssetType.ZipLine;
@@ -203,11 +203,12 @@ namespace HipHopFile
                 case AssetType.Texture: return 1;
                 case AssetType.BSP: return 2;
                 case AssetType.JSP: return 3;
-                case AssetType.Model: return 4;
+                case AssetType.JSPInfo: return 4;
+                case AssetType.Model: return 5;
                 case AssetType.Player: return 10;
-                case AssetType.NPC: return 15;
-                case AssetType.VIL: return 20;
-                case AssetType.VILProperties: return 30;
+                case AssetType.Villain: return 15;
+                case AssetType.NPC: return 20;
+                case AssetType.NPCProperties: return 30;
                 case AssetType.Duplicator: return 35; // ?
                 case AssetType.Pickup: return 40;
                 case AssetType.Trigger: return 50;

@@ -21,6 +21,7 @@
         LDBG,
         STRM,
         DHDR,
-        DPAK
+        DPAK,
+        HIPB
     }
 }
