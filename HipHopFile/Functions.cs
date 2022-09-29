@@ -129,13 +129,13 @@ namespace HipHopFile
                 case AssetType.SlideProperty: return "SLID";
                 case AssetType.Sound: return "SND";
                 case AssetType.SoundInfo: return "SNDI";
-                case AssetType.StreamingSound: return "SNDS";
+                case AssetType.SoundStream: return "SNDS";
                 case AssetType.Spline: return "SPLN";
                 case AssetType.SplinePath: return "SPLP";
                 case AssetType.SceneSettings: return "SSET";
                 case AssetType.Subtitles: return "SUBT";
                 case AssetType.Surface: return "SURF";
-                case AssetType.TEXS: return "TEXS";
+                case AssetType.TextureStream: return "TEXS";
                 case AssetType.Text: return "TEXT";
                 case AssetType.Timer: return "TIMR";
                 case AssetType.Track: return "TRCK";

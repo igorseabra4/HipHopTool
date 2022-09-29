@@ -278,7 +278,7 @@ namespace HipHopFile
 
                     int alignment = 16;
 
-                    if (game == Game.BFBB && AHDR.assetType == AssetType.Cutscene || AHDR.assetType == AssetType.Sound || AHDR.assetType == AssetType.StreamingSound)
+                    if (game == Game.BFBB && AHDR.assetType == AssetType.Cutscene || AHDR.assetType == AssetType.Sound || AHDR.assetType == AssetType.SoundStream)
                     {
                         alignment = finalAlignment;
                         AHDR.ADBG.alignment = alignment;

@@ -169,13 +169,13 @@ namespace HipHopFile
                 case "SLID": return AssetType.SlideProperty;
                 case "SND": return AssetType.Sound;
                 case "SNDI": return AssetType.SoundInfo;
-                case "SNDS": return AssetType.StreamingSound;
+                case "SNDS": return AssetType.SoundStream;
                 case "SPLN": return AssetType.Spline;
                 case "SPLP": return AssetType.SplinePath;
                 case "SSET": return AssetType.SceneSettings;
                 case "SUBT": return AssetType.Subtitles;
                 case "SURF": return AssetType.Surface;
-                case "TEXS": return AssetType.TEXS;
+                case "TEXS": return AssetType.TextureStream;
                 case "TEXT": return AssetType.Text;
                 case "TIMR": return AssetType.Timer;
                 case "TPIK": return AssetType.PickupTypes;
@@ -201,6 +201,7 @@ namespace HipHopFile
             switch (assetType)
             {
                 case AssetType.Texture: return 1;
+                case AssetType.TextureStream: return 1;
                 case AssetType.BSP: return 2;
                 case AssetType.JSP: return 3;
                 case AssetType.JSPInfo: return 4;
@@ -419,7 +420,7 @@ namespace HipHopFile
                 case AssetType.SurfaceMapper: return 750;
                 case AssetType.Cutscene: return 755;
                 case AssetType.Sound: return 760;
-                case AssetType.StreamingSound: return 770;
+                case AssetType.SoundStream: return 770;
                 case AssetType.CutsceneStreamingSound: return 780;
                 case AssetType.SoundInfo: return 790;
 
@@ -428,7 +429,6 @@ namespace HipHopFile
                 case AssetType.CutsceneTableOfContents:
                 case AssetType.DashTrack:
                 case AssetType.Spline:
-                case AssetType.TEXS:
                 case AssetType.UIFN:
                 case AssetType.WireframeModel:
                     return 0;
