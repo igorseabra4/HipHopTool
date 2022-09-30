@@ -370,11 +370,11 @@ namespace HipHopFile
                 case AssetType.TurretObject: return 562;
                 case AssetType.Vent: return 563;
                 case AssetType.VentType: return 564;
-                case AssetType.HudImage: return 565;
-                case AssetType.HudMeterFont: return 566;
-                case AssetType.HudMeterUnit: return 567;
-                case AssetType.HudModel: return 568;
-                case AssetType.HudText: return 569;
+                case AssetType.HUDImage: return 565;
+                case AssetType.HUDMeterFont: return 566;
+                case AssetType.HUDMeterUnit: return 567;
+                case AssetType.HUDModel: return 568;
+                case AssetType.HUDText: return 569;
                 case AssetType.IncrediblesIcon: return 570;
                 case AssetType.InteractionIceBridge: return 571;
                 case AssetType.InteractionLaunch: return 572;
@@ -383,7 +383,7 @@ namespace HipHopFile
                 case AssetType.InteractionTurn: return 575;
                 case AssetType.InterestPointer: return 576;
                 case AssetType.JSPExtraData: return 577;
-                case AssetType.FunctionGenerator: return 578;
+                case AssetType.LogicFunctionGenerator: return 578;
                 case AssetType.LogicReference: return 579;
                 case AssetType.NPCCoverPoint: return 580;
                 case AssetType.NPCGroup: return 581;

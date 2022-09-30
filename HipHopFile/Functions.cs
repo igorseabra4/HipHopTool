@@ -179,7 +179,6 @@ namespace HipHopFile
                 case AssetType.InterestPointer:
                 case AssetType.JSPExtraData:
                 case AssetType.SceneProperties:
-                case AssetType.Unknown_EBC04E7B:
                 case AssetType.LensFlareSource:
                 case AssetType.AudioConversation:
                 case AssetType.CameraBinaryPoi:
@@ -238,17 +237,17 @@ namespace HipHopFile
                 case AssetType.TextBox:
                 case AssetType.TrainCar:
                 case AssetType.TrainJunction:
-                case AssetType.HudImage:
-                case AssetType.HudMeterFont:
-                case AssetType.HudMeterUnit:
-                case AssetType.HudModel:
-                case AssetType.HudText:
+                case AssetType.HUDImage:
+                case AssetType.HUDMeterFont:
+                case AssetType.HUDMeterUnit:
+                case AssetType.HUDModel:
+                case AssetType.HUDText:
                 case AssetType.InteractionIceBridge:
                 case AssetType.InteractionLaunch:
                 case AssetType.InteractionLift:
                 case AssetType.InteractionSwitchLever:
                 case AssetType.InteractionTurn:
-                case AssetType.FunctionGenerator:
+                case AssetType.LogicFunctionGenerator:
                 case AssetType.LogicReference:
                 case AssetType.NPCCoverPoint:
                 case AssetType.NPCCustomAV:
@@ -260,32 +259,31 @@ namespace HipHopFile
                 case AssetType.UserInterfaceModel:
                 case AssetType.UserInterfaceText:
                 case AssetType.UserInterfaceTextUserString:
-
-                // rat proto
                 case AssetType.AnalogDeflection:
                 case AssetType.AnalogDirection:
-                case AssetType.EnemyNPCGate:
-                case AssetType.EnemyNPCWalls:
-                case AssetType.HUD_Compass_Object:
-                case AssetType.HUD_Compass_System:
+                case AssetType.NPCGate:
+                case AssetType.NPCWalls:
+                case AssetType.HUDCompassObject:
+                case AssetType.HUDCompassSystem:
                 case AssetType.LogicMission:
                 case AssetType.LogicTask:
                 case AssetType.PourWidget:
                 case AssetType.Twiddler:
-                case AssetType.Unknown_0A21FFAD:
-                case AssetType.Unknown_105DFF22:
-                case AssetType.Unknown_1E175B3F:
-                case AssetType.Unknown_284375FD:
-                case AssetType.Unknown_2D0D198B:
-                case AssetType.Unknown_35F3B22A:
-                case AssetType.Unknown_45F261C6:
-                case AssetType.Unknown_544AA34C:
-                case AssetType.Unknown_544E0BCC:
-                case AssetType.Unknown_89F5441A:
-                case AssetType.Unknown_B34B0083:
-                case AssetType.Unknown_D9CA96BC:
-                case AssetType.Unknown_EF5FD10C:
-                case AssetType.Unknown_F5B8CC9C:
+                case AssetType.CarryablePropertyRepel:
+                case AssetType.Tightrope:
+                case AssetType.CarryablePropertySwipe:
+                case AssetType.CarryableObject:
+                case AssetType.Springboard:
+                case AssetType.CarryablePropertyGeneric:
+                case AssetType.CarryablePropertyAttract:
+                case AssetType.EnemySwarmBug:
+                case AssetType.EnemySwarmOwl:
+                case AssetType.EnemyRightArm:
+                case AssetType.EnemyLeftArm:
+                case AssetType.PoleSwing:
+                case AssetType.EnemyThief:
+                case AssetType.EnemyWaiter:
+                case AssetType.Unknown_EBC04E7B:
                     return "DYNA";
             }
 
@@ -335,34 +333,18 @@ namespace HipHopFile
         {
             switch (dynaType)
             {
-                case DynaType.audio__conversation: return AssetType.AudioConversation;
-                case DynaType.camera__binary_poi: return AssetType.CameraBinaryPoi;
-                case DynaType.camera__preset: return AssetType.CameraPreset;
-                case DynaType.camera__transition_path: return AssetType.CameraTransitionPath;
-                case DynaType.camera__transition_time: return AssetType.CameraTransitionTime;
+                case DynaType.AnalogDeflection: return AssetType.AnalogDeflection;
+                case DynaType.AnalogDirection: return AssetType.AnalogDirection;
+                case DynaType.Carrying_CarryableObject: return AssetType.CarryableObject;
+                case DynaType.Carrying_CarryableProperty_GenericUseProperty: return AssetType.CarryablePropertyGeneric;
+                case DynaType.Carrying_CarryableProperty_UsePropertyAttract: return AssetType.CarryablePropertyAttract;
+                case DynaType.Carrying_CarryableProperty_UsePropertyRepel: return AssetType.CarryablePropertyRepel;
+                case DynaType.Carrying_CarryableProperty_UsePropertySwipe: return AssetType.CarryablePropertySwipe;
                 case DynaType.Checkpoint: return AssetType.Checkpoint;
-                case DynaType.effect__BossBrain: return AssetType.BossBrain;
-                case DynaType.effect__Flamethrower: return AssetType.Flamethrower;
-                case DynaType.effect__grass: return AssetType.Grass;
-                case DynaType.effect__LensFlareElement: return AssetType.LensFlareElement;
-                case DynaType.effect__LensFlareSource: return AssetType.LensFlareSource;
-                case DynaType.effect__light: return AssetType.LightEffect;
-                case DynaType.effect__LightEffectFlicker: return AssetType.LightEffectFlicker;
-                case DynaType.effect__LightEffectStrobe: return AssetType.LightEffectStrobe;
-                case DynaType.effect__Lightning: return AssetType.Lightning;
+                case DynaType.ContextObject_PoleSwing: return AssetType.PoleSwing;
+                case DynaType.ContextObject_Springboard: return AssetType.Springboard;
+                case DynaType.ContextObject_Tightrope: return AssetType.Tightrope;
                 case DynaType.Effect__particle_generator: return AssetType.ParticleGenerator;
-                case DynaType.effect__Rumble: return AssetType.Rumble;
-                case DynaType.effect__RumbleBoxEmitter: return AssetType.RumbleBoxEmitter;
-                case DynaType.effect__RumbleSphericalEmitter: return AssetType.RumbleSphericalEmitter;
-                case DynaType.effect__ScreenFade: return AssetType.ScreenFade;
-                case DynaType.effect__ScreenWarp: return AssetType.ScreenWarp;
-                case DynaType.effect__smoke_emitter: return AssetType.SmokeEmitter;
-                case DynaType.effect__spark_emitter: return AssetType.SparkEmitter;
-                case DynaType.effect__Splash: return AssetType.Splash;
-                case DynaType.effect__spotlight: return AssetType.Spotlight;
-                case DynaType.effect__uber_laser: return AssetType.UberLaser;
-                case DynaType.effect__Waterhose: return AssetType.WaterHose;
-                case DynaType.effect__water_body: return AssetType.WaterBody;
                 case DynaType.Enemy__IN2__Bomber: return AssetType.Bomber;
                 case DynaType.Enemy__IN2__BossUnderminerDrill: return AssetType.BossUnderminerDrill;
                 case DynaType.Enemy__IN2__BossUnderminerUM: return AssetType.BossUnderminerUM;
@@ -374,6 +356,14 @@ namespace HipHopFile
                 case DynaType.Enemy__IN2__RobotTank: return AssetType.RobotTank;
                 case DynaType.Enemy__IN2__Scientist: return AssetType.Scientist;
                 case DynaType.Enemy__IN2__Shooter: return AssetType.Shooter;
+                case DynaType.Enemy__NPC_Gate: return AssetType.NPCGate;
+                case DynaType.Enemy__NPC_Walls: return AssetType.NPCWalls;
+                case DynaType.Enemy__RATS__LeftArm: return AssetType.EnemyLeftArm;
+                case DynaType.Enemy__RATS__RightArm: return AssetType.EnemyRightArm;
+                case DynaType.Enemy__RATS__Swarm__Bug: return AssetType.EnemySwarmBug;
+                case DynaType.Enemy__RATS__Swarm__Owl: return AssetType.EnemySwarmOwl;
+                case DynaType.Enemy__RATS__Thief: return AssetType.EnemyThief;
+                case DynaType.Enemy__RATS__Waiter: return AssetType.EnemyWaiter;
                 case DynaType.Enemy__SB: return AssetType.EnemySB;
                 case DynaType.Enemy__SB__BucketOTron: return AssetType.Spawner;
                 case DynaType.Enemy__SB__CastNCrew: return AssetType.CastNCrew;
@@ -385,90 +375,97 @@ namespace HipHopFile
                 case DynaType.Enemy__SB__Standard: return AssetType.Enemy;
                 case DynaType.Enemy__SB__SupplyCrate: return AssetType.Crate;
                 case DynaType.Enemy__SB__Turret: return AssetType.Turret;
+                case DynaType.HUD_Compass_Object: return AssetType.HUDCompassObject;
+                case DynaType.HUD_Compass_System: return AssetType.HUDCompassSystem;
+                case DynaType.Incredibles__Icon: return AssetType.IncrediblesIcon;
+                case DynaType.Interest_Pointer: return AssetType.InterestPointer;
+                case DynaType.JSPExtraData: return AssetType.JSPExtraData;
+                case DynaType.Pour_Widget: return AssetType.PourWidget;
+                case DynaType.SceneProperties: return AssetType.SceneProperties;
+                case DynaType.Twiddler: return AssetType.Twiddler;
+                case DynaType.Unknown_EBC04E7B: return AssetType.Unknown_EBC04E7B;
+                case DynaType.audio__conversation: return AssetType.AudioConversation;
+                case DynaType.camera__binary_poi: return AssetType.CameraBinaryPoi;
+                case DynaType.camera__preset: return AssetType.CameraPreset;
+                case DynaType.camera__transition_path: return AssetType.CameraTransitionPath;
+                case DynaType.camera__transition_time: return AssetType.CameraTransitionTime;
+                case DynaType.effect__BossBrain: return AssetType.BossBrain;
+                case DynaType.effect__Flamethrower: return AssetType.Flamethrower;
+                case DynaType.effect__LensFlareElement: return AssetType.LensFlareElement;
+                case DynaType.effect__LensFlareSource: return AssetType.LensFlareSource;
+                case DynaType.effect__LightEffectFlicker: return AssetType.LightEffectFlicker;
+                case DynaType.effect__LightEffectStrobe: return AssetType.LightEffectStrobe;
+                case DynaType.effect__Lightning: return AssetType.Lightning;
+                case DynaType.effect__Rumble: return AssetType.Rumble;
+                case DynaType.effect__RumbleBoxEmitter: return AssetType.RumbleBoxEmitter;
+                case DynaType.effect__RumbleSphericalEmitter: return AssetType.RumbleSphericalEmitter;
+                case DynaType.effect__ScreenFade: return AssetType.ScreenFade;
+                case DynaType.effect__ScreenWarp: return AssetType.ScreenWarp;
+                case DynaType.effect__Splash: return AssetType.Splash;
+                case DynaType.effect__Waterhose: return AssetType.WaterHose;
+                case DynaType.effect__grass: return AssetType.Grass;
+                case DynaType.effect__light: return AssetType.LightEffect;
+                case DynaType.effect__smoke_emitter: return AssetType.SmokeEmitter;
+                case DynaType.effect__spark_emitter: return AssetType.SparkEmitter;
+                case DynaType.effect__spotlight: return AssetType.Spotlight;
+                case DynaType.effect__uber_laser: return AssetType.UberLaser;
+                case DynaType.effect__water_body: return AssetType.WaterBody;
                 case DynaType.game_object__BoulderGenerator: return AssetType.BoulderGenerator;
-                case DynaType.game_object__bullet_mark: return AssetType.BulletMark;
-                case DynaType.game_object__bullet_time: return AssetType.BulletTime;
-                case DynaType.game_object__bungee_drop: return AssetType.BungeeDrop;
-                case DynaType.game_object__bungee_hook: return AssetType.BungeeHook;
                 case DynaType.game_object__BusStop: return AssetType.BusStop;
-                case DynaType.game_object__camera_param_asset: return AssetType.CameraParamAsset;
                 case DynaType.game_object__Camera_Tweak: return AssetType.CameraTweak;
-                case DynaType.game_object__dash_camera_spline: return AssetType.DashCameraSpline;
-                case DynaType.game_object__flame_emitter: return AssetType.FlameEmitter;
                 case DynaType.game_object__Flythrough: return AssetType.FlythroughObject;
                 case DynaType.game_object__FreezableObject: return AssetType.FreezableObject;
                 case DynaType.game_object__Grapple: return AssetType.Grapple;
                 case DynaType.game_object__Hangable: return AssetType.HangableObject;
                 case DynaType.game_object__IN_Pickup: return AssetType.IncrediblesPickup;
-                case DynaType.game_object__laser_beam: return AssetType.LaserBeam;
                 case DynaType.game_object__NPCSettings: return AssetType.NPCSettingsObject;
                 case DynaType.game_object__RaceTimer: return AssetType.RaceTimer;
-                case DynaType.game_object__rband_camera_asset: return AssetType.RbandCameraAsset;
                 case DynaType.game_object__Ring: return AssetType.Ring;
                 case DynaType.game_object__RingControl: return AssetType.RingControl;
                 case DynaType.game_object__RubbleGenerator: return AssetType.RubbleGenerator;
-                case DynaType.game_object__talk_box: return AssetType.TalkBox;
-                case DynaType.game_object__task_box: return AssetType.TaskBox;
                 case DynaType.game_object__Taxi: return AssetType.Taxi;
                 case DynaType.game_object__Teleport: return AssetType.TeleportBox;
-                case DynaType.game_object__text_box: return AssetType.TextBox;
-                case DynaType.game_object__train_car: return AssetType.TrainCar;
-                case DynaType.game_object__train_junction: return AssetType.TrainJunction;
                 case DynaType.game_object__Turret: return AssetType.TurretObject;
                 case DynaType.game_object__Vent: return AssetType.Vent;
                 case DynaType.game_object__VentType: return AssetType.VentType;
-                case DynaType.hud__image: return AssetType.HudImage;
-                case DynaType.hud__meter__font: return AssetType.HudMeterFont;
-                case DynaType.hud__meter__unit: return AssetType.HudMeterUnit;
-                case DynaType.hud__model: return AssetType.HudModel;
-                case DynaType.hud__text: return AssetType.HudText;
-                case DynaType.Incredibles__Icon: return AssetType.IncrediblesIcon;
+                case DynaType.game_object__bullet_mark: return AssetType.BulletMark;
+                case DynaType.game_object__bullet_time: return AssetType.BulletTime;
+                case DynaType.game_object__bungee_drop: return AssetType.BungeeDrop;
+                case DynaType.game_object__bungee_hook: return AssetType.BungeeHook;
+                case DynaType.game_object__camera_param_asset: return AssetType.CameraParamAsset;
+                case DynaType.game_object__dash_camera_spline: return AssetType.DashCameraSpline;
+                case DynaType.game_object__flame_emitter: return AssetType.FlameEmitter;
+                case DynaType.game_object__laser_beam: return AssetType.LaserBeam;
+                case DynaType.game_object__rband_camera_asset: return AssetType.RbandCameraAsset;
+                case DynaType.game_object__talk_box: return AssetType.TalkBox;
+                case DynaType.game_object__task_box: return AssetType.TaskBox;
+                case DynaType.game_object__text_box: return AssetType.TextBox;
+                case DynaType.game_object__train_car: return AssetType.TrainCar;
+                case DynaType.game_object__train_junction: return AssetType.TrainJunction;
+                case DynaType.hud__image: return AssetType.HUDImage;
+                case DynaType.hud__meter__font: return AssetType.HUDMeterFont;
+                case DynaType.hud__meter__unit: return AssetType.HUDMeterUnit;
+                case DynaType.hud__model: return AssetType.HUDModel;
+                case DynaType.hud__text: return AssetType.HUDText;
                 case DynaType.interaction__IceBridge: return AssetType.InteractionIceBridge;
                 case DynaType.interaction__Launch: return AssetType.InteractionLaunch;
                 case DynaType.interaction__Lift: return AssetType.InteractionLift;
                 case DynaType.interaction__SwitchLever: return AssetType.InteractionSwitchLever;
                 case DynaType.interaction__Turn: return AssetType.InteractionTurn;
-                case DynaType.Interest_Pointer: return AssetType.InterestPointer;
-                case DynaType.JSPExtraData: return AssetType.JSPExtraData;
-                case DynaType.logic__FunctionGenerator: return AssetType.FunctionGenerator;
+                case DynaType.logic__FunctionGenerator: return AssetType.LogicFunctionGenerator;
+                case DynaType.logic__Mission: return AssetType.LogicMission;
+                case DynaType.logic__Task: return AssetType.LogicTask;
                 case DynaType.logic__reference: return AssetType.LogicReference;
                 case DynaType.npc__CoverPoint: return AssetType.NPCCoverPoint;
-                case DynaType.npc__group: return AssetType.NPCGroup;
                 case DynaType.npc__NPC_Custom_AV: return AssetType.NPCCustomAV;
+                case DynaType.npc__group: return AssetType.NPCGroup;
                 case DynaType.pointer: return AssetType.Pointer;
-                case DynaType.SceneProperties: return AssetType.SceneProperties;
                 case DynaType.ui__box: return AssetType.UserInterfaceBox;
                 case DynaType.ui__controller: return AssetType.UserInterfaceController;
                 case DynaType.ui__image: return AssetType.UserInterfaceImage;
                 case DynaType.ui__model: return AssetType.UserInterfaceModel;
                 case DynaType.ui__text: return AssetType.UserInterfaceText;
                 case DynaType.ui__text__userstring: return AssetType.UserInterfaceTextUserString;
-                case DynaType.Unknown_EBC04E7B: return AssetType.Unknown_EBC04E7B;
-
-                case DynaType.AnalogDeflection: return AssetType.AnalogDeflection;
-                case DynaType.AnalogDirection: return AssetType.AnalogDirection;
-                case DynaType.Enemy__NPC_Gate: return AssetType.EnemyNPCGate;
-                case DynaType.Enemy__NPC_Walls: return AssetType.EnemyNPCWalls;
-                case DynaType.HUD_Compass_Object: return AssetType.HUD_Compass_Object;
-                case DynaType.HUD_Compass_System: return AssetType.HUD_Compass_System;
-                case DynaType.logic__Mission: return AssetType.LogicMission;
-                case DynaType.logic__Task: return AssetType.LogicTask;
-                case DynaType.Pour_Widget: return AssetType.PourWidget;
-                case DynaType.Twiddler: return AssetType.Twiddler;
-                case DynaType.Unknown_0A21FFAD: return AssetType.Unknown_0A21FFAD;
-                case DynaType.Unknown_105DFF22: return AssetType.Unknown_105DFF22;
-                case DynaType.Unknown_1E175B3F: return AssetType.Unknown_1E175B3F;
-                case DynaType.Unknown_284375FD: return AssetType.Unknown_284375FD;
-                case DynaType.Unknown_2D0D198B: return AssetType.Unknown_2D0D198B;
-                case DynaType.Unknown_35F3B22A: return AssetType.Unknown_35F3B22A;
-                case DynaType.Unknown_45F261C6: return AssetType.Unknown_45F261C6;
-                case DynaType.Unknown_544AA34C: return AssetType.Unknown_544AA34C;
-                case DynaType.Unknown_544E0BCC: return AssetType.Unknown_544E0BCC;
-                case DynaType.Unknown_89F5441A: return AssetType.Unknown_89F5441A;
-                case DynaType.Unknown_B34B0083: return AssetType.Unknown_B34B0083;
-                case DynaType.Unknown_D9CA96BC: return AssetType.Unknown_D9CA96BC;
-                case DynaType.Unknown_EF5FD10C: return AssetType.Unknown_EF5FD10C;
-                case DynaType.Unknown_F5B8CC9C: return AssetType.Unknown_F5B8CC9C;
             }
 
             throw new Exception("Unknown DYNA type: " + dynaType.ToString("X8"));
