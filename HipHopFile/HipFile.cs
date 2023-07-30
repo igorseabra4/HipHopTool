@@ -14,13 +14,13 @@ namespace HipHopFile
         public Section_STRM STRM;
         public Section_HIPB HIPB;
 
-        public HipFile(Section_HIPA HIPA, Section_PACK PACK, Section_DICT DICT, Section_STRM STRM)
+        public HipFile(Section_HIPA HIPA, Section_PACK PACK, Section_DICT DICT, Section_STRM STRM, Section_HIPB HIPB)
         {
             this.HIPA = HIPA;
             this.PACK = PACK;
             this.DICT = DICT;
             this.STRM = STRM;
-            HIPB = null;
+            this.HIPB = HIPB;
         }
 
         public static (HipFile, Game, Platform) FromPath(string fileName)
@@ -33,13 +33,22 @@ namespace HipHopFile
                 while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
                 {
                     string currentSection = new string(binaryReader.ReadChars(4));
-                    if (currentSection == Section.HIPA.ToString()) hipFile.HIPA = new Section_HIPA(binaryReader);
-                    else if (currentSection == Section.PACK.ToString()) hipFile.PACK = new Section_PACK(binaryReader, out game, out platform);
-                    else if (currentSection == Section.DICT.ToString()) hipFile.DICT = new Section_DICT(binaryReader, platform);
-                    else if (currentSection == Section.STRM.ToString()) hipFile.STRM = new Section_STRM(binaryReader);
-                    else if (currentSection == Section.HIPB.ToString()) hipFile.HIPB = new Section_HIPB(binaryReader);
-                    else throw new Exception(currentSection);
+                    if (currentSection == Section.HIPA.ToString())
+                        hipFile.HIPA = new Section_HIPA(binaryReader);
+                    else if (currentSection == Section.PACK.ToString())
+                        hipFile.PACK = new Section_PACK(binaryReader, out game, out platform);
+                    else if (currentSection == Section.DICT.ToString())
+                        hipFile.DICT = new Section_DICT(binaryReader, platform);
+                    else if (currentSection == Section.STRM.ToString())
+                        hipFile.STRM = new Section_STRM(binaryReader);
+                    else if (currentSection == Section.HIPB.ToString())
+                        hipFile.HIPB = new Section_HIPB(binaryReader);
+                    else
+                        throw new Exception(currentSection);
                 }
+
+            if (hipFile.HIPB == null)
+                hipFile.HIPB = new Section_HIPB();
 
             return (hipFile, game, platform);
         }
@@ -358,7 +367,8 @@ namespace HipHopFile
                 if (game == Game.BFBB)
                     INIWriter.WriteLine("PACK.PLAT.TargetPlatformName=" + PACK.PLAT.targetPlatformName);
             }
-            else if (game != Game.Scooby) throw new Exception("Unknown game");
+            else if (game != Game.Scooby)
+                throw new Exception("Unknown game");
 
             INIWriter.WriteLine();
 
