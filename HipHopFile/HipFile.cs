@@ -245,9 +245,6 @@ namespace HipHopFile
             STRM.DPAK = new Section_DPAK() { data = new byte[0] };
             STRM.SetBytes(game, platform, ref temporaryFile);
 
-            // Create the new STRM stream.
-            List<byte> newStream = new List<byte>();
-
             // Sort the ATOC data (AHDR sections) by their asset ID. Unsure if this is necessary, but just in case.
             // DICT.ATOC.AHDRList = DICT.ATOC.AHDRList.OrderBy(AHDR => AHDR.GetCompareValue(platform)).ToList();
 
@@ -255,6 +252,18 @@ namespace HipHopFile
             Dictionary<uint, Section_AHDR> assetDictionary = new Dictionary<uint, Section_AHDR>();
             foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
                 assetDictionary.Add(AHDR.assetID, AHDR);
+
+            // STRM.DPAK.data = game == Game.Scooby ? BuildStreamScooby(platform, DICT.ATOC.AHDRList) : BuildStream(game, platform, assetDictionary);
+            STRM.DPAK.data = BuildStream(game, platform, assetDictionary);
+
+            // I'll create a new PCNT, because I'm sure you'll forget to do so.
+            PACK.PCNT = new Section_PCNT(DICT.ATOC.AHDRList.Count, DICT.LTOC.LHDRList.Count);
+        }
+
+        private byte[] BuildStream(Game game, Platform platform, Dictionary<uint, Section_AHDR> assetDictionary)
+        {
+            // Create the new STRM stream.
+            List<byte> newStream = new List<byte>();
 
             // Let's go through each layer.
             foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
@@ -306,15 +315,14 @@ namespace HipHopFile
                     newStream.Add(0x33);
             }
 
-            // Assign list as stream! We're done with the worst part.
-            STRM.DPAK.data = newStream.ToArray();
-
-            // I'll create a new PCNT, because I'm sure you'll forget to do so.
-            PACK.PCNT = new Section_PCNT(DICT.ATOC.AHDRList.Count, DICT.LTOC.LHDRList.Count);
+            return newStream.ToArray();
         }
 
         public byte[] ToBytes(Game game, Platform platform)
         {
+            if (game == Game.Scooby)
+                DICT.ATOC.SortAHDRList();
+
             SetupSTRM(game, platform);
 
             List<byte> list = new List<byte>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace HipHopFile
 {
@@ -22,14 +23,16 @@ namespace HipHopFile
             long startSectionPosition = binaryReader.BaseStream.Position;
 
             string currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.AINF.ToString()) throw new Exception();
+            if (currentSectionName != Section.AINF.ToString())
+                throw new Exception();
             AINF = new Section_AINF(binaryReader);
 
             AHDRList = new List<Section_AHDR>();
             while (binaryReader.BaseStream.Position < startSectionPosition + sectionSize)
             {
                 currentSectionName = new string(binaryReader.ReadChars(4));
-                if (currentSectionName != Section.AHDR.ToString()) throw new Exception();
+                if (currentSectionName != Section.AHDR.ToString())
+                    throw new Exception();
                 AHDRList.Add(new Section_AHDR(binaryReader, platform));
             }
 
@@ -54,6 +57,11 @@ namespace HipHopFile
                 if (AHDR.assetID == assetID)
                     return AHDR;
             return null;
+        }
+
+        public void SortAHDRList()
+        {
+            AHDRList = AHDRList.OrderBy(ahdr => ahdr.assetID).ToList();
         }
     }
 }

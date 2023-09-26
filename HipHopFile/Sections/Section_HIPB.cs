@@ -20,7 +20,7 @@ namespace HipHopFile
 
         public Section_HIPB(BinaryReader binaryReader) : base(binaryReader, Section.HIPB)
         {
-            Version = binaryReader.ReadInt32();
+            Version = Switch(binaryReader.ReadInt32());
 
             HasNoLayers = 0;
             if (Version >= 1)
