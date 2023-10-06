@@ -20,7 +20,8 @@ namespace HipHopFile
             long startSectionPosition = binaryReader.BaseStream.Position;
 
             string currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.LINF.ToString()) throw new Exception();
+            if (currentSectionName != Section.LINF.ToString())
+                throw new Exception();
             LINF = new Section_LINF(binaryReader);
 
             LHDRList = new List<Section_LHDR>();
@@ -28,7 +29,8 @@ namespace HipHopFile
             while (binaryReader.BaseStream.Position < startSectionPosition + sectionSize)
             {
                 currentSectionName = new string(binaryReader.ReadChars(4));
-                if (currentSectionName != Section.LHDR.ToString()) throw new Exception();
+                if (currentSectionName != Section.LHDR.ToString())
+                    throw new Exception();
                 LHDRList.Add(new Section_LHDR(binaryReader));
             }
 

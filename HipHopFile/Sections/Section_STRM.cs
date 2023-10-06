@@ -20,11 +20,13 @@ namespace HipHopFile
             string currentSectionName;
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.DHDR.ToString()) throw new Exception();
+            if (currentSectionName != Section.DHDR.ToString())
+                throw new Exception();
             DHDR = new Section_DHDR(binaryReader);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.DPAK.ToString()) throw new Exception();
+            if (currentSectionName != Section.DPAK.ToString())
+                throw new Exception();
             DPAK = new Section_DPAK(binaryReader);
         }
 

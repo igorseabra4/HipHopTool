@@ -22,23 +22,28 @@ namespace HipHopFile
             string currentSectionName;
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.PVER.ToString()) throw new Exception();
+            if (currentSectionName != Section.PVER.ToString())
+                throw new Exception();
             PVER = new Section_PVER(binaryReader, out game);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.PFLG.ToString()) throw new Exception();
+            if (currentSectionName != Section.PFLG.ToString())
+                throw new Exception();
             PFLG = new Section_PFLG(binaryReader, game, out game);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.PCNT.ToString()) throw new Exception();
+            if (currentSectionName != Section.PCNT.ToString())
+                throw new Exception();
             PCNT = new Section_PCNT(binaryReader);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.PCRT.ToString()) throw new Exception();
+            if (currentSectionName != Section.PCRT.ToString())
+                throw new Exception();
             PCRT = new Section_PCRT(binaryReader);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.PMOD.ToString()) throw new Exception();
+            if (currentSectionName != Section.PMOD.ToString())
+                throw new Exception();
             PMOD = new Section_PMOD(binaryReader);
 
             if (binaryReader.BaseStream.Position == startSectionPosition + sectionSize)
@@ -48,7 +53,8 @@ namespace HipHopFile
             }
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.PLAT.ToString()) throw new Exception();
+            if (currentSectionName != Section.PLAT.ToString())
+                throw new Exception();
             PLAT = new Section_PLAT(binaryReader, game, out platform);
         }
 

@@ -32,7 +32,8 @@ namespace HipHopFile
                 regionFormat = ReadString(binaryReader);
                 targetGame = ReadString(binaryReader);
             }
-            else throw new Exception("PLAT reading error: unsupported PLAT version");
+            else
+                throw new Exception("PLAT reading error: unsupported PLAT version");
 
             platform = GetPlatform();
         }
@@ -56,7 +57,8 @@ namespace HipHopFile
                 listBytes.AddString(regionFormat);
                 listBytes.AddString(targetGame);
             }
-            else throw new Exception("PLAT writing error");
+            else
+                throw new Exception("PLAT writing error");
         }
 
         public Platform GetPlatform()

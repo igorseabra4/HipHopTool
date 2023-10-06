@@ -21,11 +21,13 @@ namespace HipHopFile
             string currentSectionName;
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.ATOC.ToString()) throw new Exception();
+            if (currentSectionName != Section.ATOC.ToString())
+                throw new Exception();
             ATOC = new Section_ATOC(binaryReader, platform);
 
             currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.LTOC.ToString()) throw new Exception();
+            if (currentSectionName != Section.LTOC.ToString())
+                throw new Exception();
             LTOC = new Section_LTOC(binaryReader);
 
             foreach (var AHDR in ATOC.AHDRList)

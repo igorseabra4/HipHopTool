@@ -24,7 +24,8 @@ namespace HipHopFile
                 assetIDlist.Add(Switch(binaryReader.ReadUInt32()));
 
             string currentSectionName = new string(binaryReader.ReadChars(4));
-            if (currentSectionName != Section.LDBG.ToString()) throw new Exception();
+            if (currentSectionName != Section.LDBG.ToString())
+                throw new Exception();
             LDBG = new Section_LDBG(binaryReader);
         }
 
