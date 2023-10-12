@@ -266,7 +266,7 @@ namespace HipHopFile
             foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
                 int startLayer = newStream.Count;
-                bool isSRAM = game == Game.Incredibles ? (LayerType_TSSM)LHDR.layerType == LayerType_TSSM.SRAM : (LayerType_BFBB)LHDR.layerType == LayerType_BFBB.SRAM;
+                bool isSRAM = game >= Game.Incredibles ? (LayerType_TSSM)LHDR.layerType == LayerType_TSSM.SRAM : (LayerType_BFBB)LHDR.layerType == LayerType_BFBB.SRAM;
 
                 // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
                 LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => DICT.ATOC.GetFromAssetID(i).GetCompareValue(game, platform)).ToList();
@@ -297,14 +297,12 @@ namespace HipHopFile
 
                     switch (AHDR.assetType)
                     {
+                        case AssetType.SoundStream when game >= Game.Incredibles && platform == Platform.GameCube:
+                            AHDR.ADBG.alignment = 1;
+                            break;
                         case AssetType.SoundStream:
-                            if (game == Game.Incredibles && platform == Platform.GameCube)
-                                AHDR.ADBG.alignment = 1;
-                            else
-                            {
-                                alignment = finalAlignment;
-                                AHDR.ADBG.alignment = alignment;
-                            }
+                            alignment = finalAlignment;
+                            AHDR.ADBG.alignment = alignment;
                             break;
                         case AssetType.Sound:
                             if (platform == Platform.PS2)
@@ -313,7 +311,7 @@ namespace HipHopFile
                                     alignment = 2048;
                                 AHDR.ADBG.alignment = alignment;
                             }
-                            else if (game == Game.Incredibles && platform == Platform.GameCube)
+                            else if (game >= Game.Incredibles && platform == Platform.GameCube)
                                 AHDR.ADBG.alignment = 1;
                             else
                             {
@@ -321,19 +319,22 @@ namespace HipHopFile
                                 AHDR.ADBG.alignment = alignment;
                             }
                             break;
-                        case AssetType.Cutscene when platform != Platform.GameCube:
-                            AHDR.ADBG.alignment = 2048;
+                        case AssetType.Cutscene:
+                            AHDR.ADBG.alignment = finalAlignment;
+                            break;
+                        case AssetType.TextureStream:
+                        case AssetType.BinkVideo:
+                        case AssetType.WireframeModel:
+                            alignment = finalAlignment;
                             break;
                         case AssetType.JSP:
                         case AssetType.JSPInfo:
                         case AssetType.CutsceneStreamingSound:
+                        case AssetType.LightKit:
                             AHDR.ADBG.alignment = alignment;
                             break;
                         case AssetType.BSP:
                             AHDR.ADBG.alignment = -1;
-                            break;
-                        case AssetType.Cutscene when platform == Platform.GameCube:
-                            AHDR.ADBG.alignment = 32;
                             break;
                         default:
                             if (Functions.IsDyna(AHDR.assetType))
@@ -354,7 +355,7 @@ namespace HipHopFile
                     // SND section alignment, only on PS2 games after Scooby-Doo
                     if (isSRAM && platform == Platform.PS2 && game != Game.Scooby)
                     {
-                        if (AHDR.assetID == LHDR.assetIDlist.LastOrDefault(aid => assetDictionary[aid].assetType == AssetType.Sound))
+                        if (AHDR.assetID == LHDR.assetIDlist.LastOrDefault(aid => assetDictionary[aid].assetType == AssetType.Sound) && AHDR.assetID != LHDR.assetIDlist.Last())
                         {
                             AHDR.plusValue = (2048 - ((newStream.Count - startLayer) % 2048)) % 2048;
                             for (int j = 0; j < AHDR.plusValue; j++)
