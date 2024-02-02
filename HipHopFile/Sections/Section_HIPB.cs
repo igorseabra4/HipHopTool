@@ -6,8 +6,9 @@ namespace HipHopFile
 {
     public class Section_HIPB : HipSection
     {
-        public int Version = 2;
+        public int Version = 3;
         public int HasNoLayers;
+        public Game IncrediblesGame;
         public Platform ScoobyPlatform;
         public Dictionary<int, string> LayerNames = new Dictionary<int, string>();
 
@@ -41,6 +42,9 @@ namespace HipHopFile
                     LayerNames[index] = layerName;
                 }
             }
+
+            if (Version >= 3)
+                IncrediblesGame = (Game)Switch(binaryReader.ReadInt32());
         }
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
@@ -60,6 +64,8 @@ namespace HipHopFile
                     listBytes.AddString(LayerNames[index]);
                 }
             }
+            if (Version >= 3)
+                listBytes.AddBigEndian((int)IncrediblesGame);
         }
 
         public string GetLayerName(int index)

@@ -25,7 +25,7 @@ namespace HipHopFile
                 language = ReadString(binaryReader);
                 targetGame = ReadString(binaryReader);
             }
-            else if (game == Game.Incredibles)
+            else if (game >= Game.Incredibles)
             {
                 targetPlatform = ReadString(binaryReader);
                 language = ReadString(binaryReader);
@@ -50,7 +50,7 @@ namespace HipHopFile
                 listBytes.AddString(language);
                 listBytes.AddString(targetGame);
             }
-            else if (game == Game.Incredibles)
+            else if (game >= Game.Incredibles)
             {
                 listBytes.AddString(targetPlatform);
                 listBytes.AddString(language);

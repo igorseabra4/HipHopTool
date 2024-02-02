@@ -47,6 +47,33 @@ namespace HipHopFile
                         throw new Exception(currentSection);
                 }
 
+
+            DateTimeOffset hipCreated = DateTimeOffset.FromUnixTimeSeconds(hipFile.PACK.PCRT.fileDate);
+            if (game == Game.Incredibles && (!hipFile.PACK.PCRT.dateString.Contains("/") || hipFile.HIPB == null))
+            {
+                if (hipCreated.Year == 2004)
+                    game = Game.Incredibles;
+                else if (hipCreated.Year == 2005)
+                    game = Game.ROTU;
+                else if (hipCreated.Year == 2006)
+                    game = Game.RatProto;
+            }
+            else if (game == Game.Incredibles)
+                game = (hipFile.HIPB == null) ? Game.Unknown : hipFile.HIPB.IncrediblesGame;
+
+
+            if (game == Game.Scooby)
+            {
+                if (hipCreated.Year == 2002 && hipCreated.Month == 4)
+                    platform = Platform.PS2;
+                else if (hipCreated.Year == 2002 && hipCreated.Month == 8)
+                    platform = Platform.GameCube;
+                else if (hipCreated.Year == 2003)
+                    platform = Platform.Xbox;
+                else
+                    platform = Platform.Unknown;
+            }
+
             if (hipFile.HIPB == null)
                 hipFile.HIPB = new Section_HIPB();
 
@@ -82,6 +109,10 @@ namespace HipHopFile
                     return Game.BFBB;
                 case "Incredibles":
                     return Game.Incredibles;
+                case "ROTU":
+                    return Game.ROTU;
+                case "RatProto":
+                    return Game.RatProto;
                 default:
                     throw new Exception("Unknown game");
             }
@@ -103,7 +134,7 @@ namespace HipHopFile
                 {
                     game = GetGame(s.Split('=')[1]);
 
-                    if (game == Game.BFBB || game == Game.Incredibles)
+                    if (game == Game.BFBB || game >= Game.Incredibles)
                         PACK.PLAT = new Section_PLAT();
                 }
                 else if (s.StartsWith("IniVersion"))
@@ -347,7 +378,13 @@ namespace HipHopFile
                     SendMessage("Game: Scooby-Doo: Night of 100 Frights");
                     break;
                 case Game.Incredibles:
-                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie, or Rise of the Underminer");
+                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie");
+                    break;
+                case Game.ROTU:
+                    SendMessage("Game: The Incredibles: Rise of the Underminer");
+                    break;
+                case Game.RatProto:
+                    SendMessage("Game: Ratatouille Prototype");
                     break;
                 case Game.BFBB:
                     SendMessage("Game: Spongebob Squarepants: Battle For Bikini Bottom");
@@ -366,7 +403,7 @@ namespace HipHopFile
             INIWriter.WriteLine("PACK.PVER=" + PACK.PVER.subVersion.ToString() + ";" + PACK.PVER.clientVersion.ToString() + ";" + PACK.PVER.compatible.ToString());
             INIWriter.WriteLine("PACK.PFLG=" + PACK.PFLG.flags.ToString());
             INIWriter.WriteLine("PACK.PCRT=" + PACK.PCRT.fileDate.ToString() + ";" + PACK.PCRT.dateString);
-            if (game == Game.BFBB || game == Game.Incredibles)
+            if (game == Game.BFBB || game >= Game.Incredibles)
             {
                 INIWriter.WriteLine("PACK.PLAT.Target=" + PACK.PLAT.targetPlatform);
                 INIWriter.WriteLine("PACK.PLAT.RegionFormat=" + PACK.PLAT.regionFormat);
@@ -393,7 +430,7 @@ namespace HipHopFile
 
             foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
-                if (game == Game.Incredibles)
+                if (game >= Game.Incredibles)
                     INIWriter.WriteLine("LayerType=" + LHDR.layerType + " " + ((LayerType_TSSM)LHDR.layerType).ToString());
                 else
                     INIWriter.WriteLine("LayerType=" + LHDR.layerType + " " + ((LayerType_BFBB)LHDR.layerType).ToString());
@@ -436,7 +473,13 @@ namespace HipHopFile
                     SendMessage("Game: Scooby-Doo: Night of 100 Frights");
                     break;
                 case Game.Incredibles:
-                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie, or Rise of the Underminer");
+                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie");
+                    break;
+                case Game.ROTU:
+                    SendMessage("Game: The Incredibles: Rise of the Underminer");
+                    break;
+                case Game.RatProto:
+                    SendMessage("Game: Ratatouille Prototype");
                     break;
                 case Game.BFBB:
                     SendMessage("Game: Spongebob Squarepants: Battle For Bikini Bottom");
@@ -458,7 +501,7 @@ namespace HipHopFile
             serializer.PACK_PCRT_fileDate = PACK.PCRT.fileDate;
             serializer.PACK_PCRT_dateString = PACK.PCRT.dateString;
 
-            if (game == Game.BFBB || game == Game.Incredibles)
+            if (game == Game.BFBB || game >= Game.Incredibles)
             {
                 serializer.PACK_PLAT_TargetPlatform = PACK.PLAT.targetPlatform;
                 serializer.PACK_PLAT_RegionFormat = PACK.PLAT.regionFormat;
