@@ -42,14 +42,18 @@ namespace HipHopFile
                     else if (currentSection == Section.STRM.ToString())
                         hipFile.STRM = new Section_STRM(binaryReader);
                     else if (currentSection == Section.HIPB.ToString())
+                    {
                         hipFile.HIPB = new Section_HIPB(binaryReader);
+                        if (hipFile.HIPB.VersionMismatch)
+                            break;
+                    }
                     else
                         throw new Exception(currentSection);
                 }
 
 
             DateTimeOffset hipCreated = DateTimeOffset.FromUnixTimeSeconds(hipFile.PACK.PCRT.fileDate);
-            if (game == Game.Incredibles && (!hipFile.PACK.PCRT.dateString.Contains("/") || hipFile.HIPB == null))
+            if (game == Game.Incredibles && !hipFile.PACK.PCRT.dateString.Contains("/"))
             {
                 if (hipCreated.Year == 2004)
                     game = Game.Incredibles;
