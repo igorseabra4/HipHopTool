@@ -280,9 +280,6 @@ namespace HipHopFile
             STRM.DPAK = new Section_DPAK() { data = new byte[0] };
             STRM.SetBytes(game, platform, ref temporaryFile);
 
-            // Sort the ATOC data (AHDR sections) by their asset ID. Unsure if this is necessary, but just in case.
-            // DICT.ATOC.AHDRList = DICT.ATOC.AHDRList.OrderBy(AHDR => AHDR.GetCompareValue(platform)).ToList();
-
             // Let's build a temporary dictionary with the assets, so we can write them in layer order.
             Dictionary<uint, Section_AHDR> assetDictionary = new Dictionary<uint, Section_AHDR>();
             foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
@@ -303,6 +300,9 @@ namespace HipHopFile
             // Let's go through each layer.
             foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
+                int startLayer = newStream.Count;
+                bool isSRAM = game >= Game.Incredibles ? (LayerType_TSSM)LHDR.layerType == LayerType_TSSM.SRAM : (LayerType_BFBB)LHDR.layerType == LayerType_BFBB.SRAM;
+
                 // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
                 LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => DICT.ATOC.GetFromAssetID(i).GetCompareValue(game, platform)).ToList();
 
@@ -326,24 +326,77 @@ namespace HipHopFile
                     // And add the data to the stream.
                     newStream.AddRange(AHDR.data);
 
-                    // Calculate alignment data which I don't understand, but hey it works.
+                    // Calculate alignment data
                     AHDR.plusValue = 0;
-
                     int alignment = 16;
 
-                    if (game == Game.BFBB && AHDR.assetType == AssetType.Cutscene || AHDR.assetType == AssetType.Sound || AHDR.assetType == AssetType.SoundStream)
+                    switch (AHDR.assetType)
                     {
-                        alignment = finalAlignment;
-                        AHDR.ADBG.alignment = alignment;
+                        case AssetType.SoundStream when game >= Game.Incredibles && platform == Platform.GameCube:
+                            AHDR.ADBG.alignment = 1;
+                            break;
+                        case AssetType.SoundStream:
+                            alignment = finalAlignment;
+                            AHDR.ADBG.alignment = alignment;
+                            break;
+                        case AssetType.Sound:
+                            if (platform == Platform.PS2)
+                            {
+                                if (game == Game.Scooby)
+                                    alignment = 2048;
+                                AHDR.ADBG.alignment = alignment;
+                            }
+                            else if (game >= Game.Incredibles && platform == Platform.GameCube)
+                                AHDR.ADBG.alignment = 1;
+                            else
+                            {
+                                alignment = finalAlignment;
+                                AHDR.ADBG.alignment = alignment;
+                            }
+                            break;
+                        case AssetType.Cutscene:
+                            AHDR.ADBG.alignment = finalAlignment;
+                            break;
+                        case AssetType.TextureStream:
+                        case AssetType.BinkVideo:
+                        case AssetType.WireframeModel:
+                            alignment = finalAlignment;
+                            break;
+                        case AssetType.JSP:
+                        case AssetType.JSPInfo:
+                        case AssetType.CutsceneStreamingSound:
+                        case AssetType.LightKit:
+                            AHDR.ADBG.alignment = alignment;
+                            break;
+                        case AssetType.BSP:
+                            AHDR.ADBG.alignment = -1;
+                            break;
+                        default:
+                            if (Functions.IsDyna(AHDR.assetType))
+                                AHDR.ADBG.alignment = -1;
+                            else
+                                AHDR.ADBG.alignment = 0;
+                            break;
                     }
-                    else
-                        AHDR.ADBG.alignment = 0;
 
-                    int value = AHDR.fileSize % alignment;
-                    if (value != 0)
-                        AHDR.plusValue = alignment - value;
-                    for (int j = 0; j < AHDR.plusValue; j++)
-                        newStream.Add(0x33);
+                    // Last asset with data in layer is not aligned
+                    if (i < LHDR.assetIDlist.IndexOf(LHDR.assetIDlist.LastOrDefault(aid => assetDictionary[aid].data.Length != 0)))
+                    {
+                        AHDR.plusValue = (alignment - (AHDR.fileSize % alignment)) % alignment;
+                        for (int j = 0; j < AHDR.plusValue; j++)
+                            newStream.Add(0x33);
+                    }
+
+                    // SND section alignment, only on PS2 games after Scooby-Doo
+                    if (isSRAM && platform == Platform.PS2 && game != Game.Scooby)
+                    {
+                        if (AHDR.assetID == LHDR.assetIDlist.LastOrDefault(aid => assetDictionary[aid].assetType == AssetType.Sound) && AHDR.assetID != LHDR.assetIDlist.Last())
+                        {
+                            AHDR.plusValue = (2048 - ((newStream.Count - startLayer) % 2048)) % 2048;
+                            for (int j = 0; j < AHDR.plusValue; j++)
+                                newStream.Add(0x33);
+                        }
+                    }
                 }
 
                 while ((newStream.Count + STRM.DPAK.globalRelativeStartOffset) % finalAlignment != 0)
@@ -355,8 +408,7 @@ namespace HipHopFile
 
         public byte[] ToBytes(Game game, Platform platform)
         {
-            if (game == Game.Scooby)
-                DICT.ATOC.SortAHDRList();
+            DICT.ATOC.SortAHDRList();
 
             SetupSTRM(game, platform);
 
