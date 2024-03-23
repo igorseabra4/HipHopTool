@@ -18,7 +18,7 @@ namespace HipHopFile
         {
             flags = Switch(binaryReader.ReadInt32());
 
-            if (flags != 0x2E & game == Game.Incredibles)
+            if (flags != 0x2E & game >= Game.Incredibles)
                 outGame = Game.BFBB;
             else
                 outGame = game;

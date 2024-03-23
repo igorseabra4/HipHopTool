@@ -43,14 +43,14 @@ namespace HipHopFile
             listBytes.Add(0);
             listBytes.Add(0);
 
-            int alignment = platform == Platform.GameCube ? 0x20 : 0x1000;
+            int alignment = platform == Platform.GameCube ? 0x20 : 0x800;
 
             while (listBytes.Count % alignment != 0)
                 listBytes.Add(0x33);
 
             globalRelativeStartOffset = listBytes.Count();
 
-            int firstPadding = listBytes.Count - firstPaddingPosition;
+            int firstPadding = listBytes.Count - (firstPaddingPosition + 4);
 
             byte[] firstPaddingBytes = BitConverter.GetBytes(firstPadding);
             listBytes[firstPaddingPosition + 0] = firstPaddingBytes[3];

@@ -5,6 +5,8 @@
         Unknown,
         Scooby,
         BFBB,
-        Incredibles // Incredibles also includes Spongebob Movie and Rise of the Underminer
+        Incredibles, // Incredibles also includes Spongebob Movie
+        ROTU,
+        RatProto
     }
 }

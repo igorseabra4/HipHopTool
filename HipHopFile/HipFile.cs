@@ -42,10 +42,41 @@ namespace HipHopFile
                     else if (currentSection == Section.STRM.ToString())
                         hipFile.STRM = new Section_STRM(binaryReader);
                     else if (currentSection == Section.HIPB.ToString())
+                    {
                         hipFile.HIPB = new Section_HIPB(binaryReader);
+                        if (hipFile.HIPB.VersionMismatch)
+                            break;
+                    }
                     else
                         throw new Exception(currentSection);
                 }
+
+
+            DateTimeOffset hipCreated = DateTimeOffset.FromUnixTimeSeconds(hipFile.PACK.PCRT.fileDate);
+            if (game == Game.Incredibles && !hipFile.PACK.PCRT.dateString.Contains("/"))
+            {
+                if (hipCreated.Year == 2004)
+                    game = Game.Incredibles;
+                else if (hipCreated.Year == 2005)
+                    game = Game.ROTU;
+                else if (hipCreated.Year == 2006)
+                    game = Game.RatProto;
+            }
+            else if (game == Game.Incredibles)
+                game = (hipFile.HIPB == null) ? Game.Unknown : hipFile.HIPB.IncrediblesGame;
+
+
+            if (game == Game.Scooby)
+            {
+                if (hipCreated.Year == 2002 && hipCreated.Month == 4)
+                    platform = Platform.PS2;
+                else if (hipCreated.Year == 2002 && hipCreated.Month == 8)
+                    platform = Platform.GameCube;
+                else if (hipCreated.Year == 2003)
+                    platform = Platform.Xbox;
+                else
+                    platform = Platform.Unknown;
+            }
 
             if (hipFile.HIPB == null)
                 hipFile.HIPB = new Section_HIPB();
@@ -82,6 +113,10 @@ namespace HipHopFile
                     return Game.BFBB;
                 case "Incredibles":
                     return Game.Incredibles;
+                case "ROTU":
+                    return Game.ROTU;
+                case "RatProto":
+                    return Game.RatProto;
                 default:
                     throw new Exception("Unknown game");
             }
@@ -103,7 +138,7 @@ namespace HipHopFile
                 {
                     game = GetGame(s.Split('=')[1]);
 
-                    if (game == Game.BFBB || game == Game.Incredibles)
+                    if (game == Game.BFBB || game >= Game.Incredibles)
                         PACK.PLAT = new Section_PLAT();
                 }
                 else if (s.StartsWith("IniVersion"))
@@ -245,9 +280,6 @@ namespace HipHopFile
             STRM.DPAK = new Section_DPAK() { data = new byte[0] };
             STRM.SetBytes(game, platform, ref temporaryFile);
 
-            // Sort the ATOC data (AHDR sections) by their asset ID. Unsure if this is necessary, but just in case.
-            // DICT.ATOC.AHDRList = DICT.ATOC.AHDRList.OrderBy(AHDR => AHDR.GetCompareValue(platform)).ToList();
-
             // Let's build a temporary dictionary with the assets, so we can write them in layer order.
             Dictionary<uint, Section_AHDR> assetDictionary = new Dictionary<uint, Section_AHDR>();
             foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
@@ -268,6 +300,9 @@ namespace HipHopFile
             // Let's go through each layer.
             foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
+                int startLayer = newStream.Count;
+                bool isSRAM = game >= Game.Incredibles ? (LayerType_TSSM)LHDR.layerType == LayerType_TSSM.SRAM : (LayerType_BFBB)LHDR.layerType == LayerType_BFBB.SRAM;
+
                 // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
                 LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => DICT.ATOC.GetFromAssetID(i).GetCompareValue(game, platform)).ToList();
 
@@ -291,24 +326,77 @@ namespace HipHopFile
                     // And add the data to the stream.
                     newStream.AddRange(AHDR.data);
 
-                    // Calculate alignment data which I don't understand, but hey it works.
+                    // Calculate alignment data
                     AHDR.plusValue = 0;
-
                     int alignment = 16;
 
-                    if (game == Game.BFBB && AHDR.assetType == AssetType.Cutscene || AHDR.assetType == AssetType.Sound || AHDR.assetType == AssetType.SoundStream)
+                    switch (AHDR.assetType)
                     {
-                        alignment = finalAlignment;
-                        AHDR.ADBG.alignment = alignment;
+                        case AssetType.SoundStream when game >= Game.Incredibles && platform == Platform.GameCube:
+                            AHDR.ADBG.alignment = 1;
+                            break;
+                        case AssetType.SoundStream:
+                            alignment = finalAlignment;
+                            AHDR.ADBG.alignment = alignment;
+                            break;
+                        case AssetType.Sound:
+                            if (platform == Platform.PS2)
+                            {
+                                if (game == Game.Scooby)
+                                    alignment = 2048;
+                                AHDR.ADBG.alignment = alignment;
+                            }
+                            else if (game >= Game.Incredibles && platform == Platform.GameCube)
+                                AHDR.ADBG.alignment = 1;
+                            else
+                            {
+                                alignment = finalAlignment;
+                                AHDR.ADBG.alignment = alignment;
+                            }
+                            break;
+                        case AssetType.Cutscene:
+                            AHDR.ADBG.alignment = finalAlignment;
+                            break;
+                        case AssetType.TextureStream:
+                        case AssetType.BinkVideo:
+                        case AssetType.WireframeModel:
+                            alignment = finalAlignment;
+                            break;
+                        case AssetType.JSP:
+                        case AssetType.JSPInfo:
+                        case AssetType.CutsceneStreamingSound:
+                        case AssetType.LightKit:
+                            AHDR.ADBG.alignment = alignment;
+                            break;
+                        case AssetType.BSP:
+                            AHDR.ADBG.alignment = -1;
+                            break;
+                        default:
+                            if (Functions.IsDyna(AHDR.assetType))
+                                AHDR.ADBG.alignment = -1;
+                            else
+                                AHDR.ADBG.alignment = 0;
+                            break;
                     }
-                    else
-                        AHDR.ADBG.alignment = 0;
 
-                    int value = AHDR.fileSize % alignment;
-                    if (value != 0)
-                        AHDR.plusValue = alignment - value;
-                    for (int j = 0; j < AHDR.plusValue; j++)
-                        newStream.Add(0x33);
+                    // Last asset with data in layer is not aligned
+                    if (i < LHDR.assetIDlist.IndexOf(LHDR.assetIDlist.LastOrDefault(aid => assetDictionary[aid].data.Length != 0)))
+                    {
+                        AHDR.plusValue = (alignment - (AHDR.fileSize % alignment)) % alignment;
+                        for (int j = 0; j < AHDR.plusValue; j++)
+                            newStream.Add(0x33);
+                    }
+
+                    // SND section alignment, only on PS2 games after Scooby-Doo
+                    if (isSRAM && platform == Platform.PS2 && game != Game.Scooby)
+                    {
+                        if (AHDR.assetID == LHDR.assetIDlist.LastOrDefault(aid => assetDictionary[aid].assetType == AssetType.Sound) && AHDR.assetID != LHDR.assetIDlist.Last())
+                        {
+                            AHDR.plusValue = (2048 - ((newStream.Count - startLayer) % 2048)) % 2048;
+                            for (int j = 0; j < AHDR.plusValue; j++)
+                                newStream.Add(0x33);
+                        }
+                    }
                 }
 
                 while ((newStream.Count + STRM.DPAK.globalRelativeStartOffset) % finalAlignment != 0)
@@ -320,8 +408,7 @@ namespace HipHopFile
 
         public byte[] ToBytes(Game game, Platform platform)
         {
-            if (game == Game.Scooby)
-                DICT.ATOC.SortAHDRList();
+            DICT.ATOC.SortAHDRList();
 
             SetupSTRM(game, platform);
 
@@ -347,7 +434,13 @@ namespace HipHopFile
                     SendMessage("Game: Scooby-Doo: Night of 100 Frights");
                     break;
                 case Game.Incredibles:
-                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie, or Rise of the Underminer");
+                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie");
+                    break;
+                case Game.ROTU:
+                    SendMessage("Game: The Incredibles: Rise of the Underminer");
+                    break;
+                case Game.RatProto:
+                    SendMessage("Game: Ratatouille Prototype");
                     break;
                 case Game.BFBB:
                     SendMessage("Game: Spongebob Squarepants: Battle For Bikini Bottom");
@@ -366,7 +459,7 @@ namespace HipHopFile
             INIWriter.WriteLine("PACK.PVER=" + PACK.PVER.subVersion.ToString() + ";" + PACK.PVER.clientVersion.ToString() + ";" + PACK.PVER.compatible.ToString());
             INIWriter.WriteLine("PACK.PFLG=" + PACK.PFLG.flags.ToString());
             INIWriter.WriteLine("PACK.PCRT=" + PACK.PCRT.fileDate.ToString() + ";" + PACK.PCRT.dateString);
-            if (game == Game.BFBB || game == Game.Incredibles)
+            if (game == Game.BFBB || game >= Game.Incredibles)
             {
                 INIWriter.WriteLine("PACK.PLAT.Target=" + PACK.PLAT.targetPlatform);
                 INIWriter.WriteLine("PACK.PLAT.RegionFormat=" + PACK.PLAT.regionFormat);
@@ -393,7 +486,7 @@ namespace HipHopFile
 
             foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
-                if (game == Game.Incredibles)
+                if (game >= Game.Incredibles)
                     INIWriter.WriteLine("LayerType=" + LHDR.layerType + " " + ((LayerType_TSSM)LHDR.layerType).ToString());
                 else
                     INIWriter.WriteLine("LayerType=" + LHDR.layerType + " " + ((LayerType_BFBB)LHDR.layerType).ToString());
@@ -436,7 +529,13 @@ namespace HipHopFile
                     SendMessage("Game: Scooby-Doo: Night of 100 Frights");
                     break;
                 case Game.Incredibles:
-                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie, or Rise of the Underminer");
+                    SendMessage("Game: The Incredibles, The Spongebob Squarepants Movie");
+                    break;
+                case Game.ROTU:
+                    SendMessage("Game: The Incredibles: Rise of the Underminer");
+                    break;
+                case Game.RatProto:
+                    SendMessage("Game: Ratatouille Prototype");
                     break;
                 case Game.BFBB:
                     SendMessage("Game: Spongebob Squarepants: Battle For Bikini Bottom");
@@ -458,7 +557,7 @@ namespace HipHopFile
             serializer.PACK_PCRT_fileDate = PACK.PCRT.fileDate;
             serializer.PACK_PCRT_dateString = PACK.PCRT.dateString;
 
-            if (game == Game.BFBB || game == Game.Incredibles)
+            if (game == Game.BFBB || game >= Game.Incredibles)
             {
                 serializer.PACK_PLAT_TargetPlatform = PACK.PLAT.targetPlatform;
                 serializer.PACK_PLAT_RegionFormat = PACK.PLAT.regionFormat;
