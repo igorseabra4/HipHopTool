@@ -306,6 +306,12 @@ namespace HipHopFile
                 // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
                 LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(i => DICT.ATOC.GetFromAssetID(i).GetCompareValue(game, platform)).ToList();
 
+                // Ensuring an equal order of entries in SNDI and assets in sram layer is apparently mandatory on ps2, we sort them by their type and assetid 
+                if (platform == Platform.PS2 && isSRAM)
+                {
+                    LHDR.assetIDlist = LHDR.assetIDlist.GroupBy(g => DICT.ATOC.GetFromAssetID(g).assetType).SelectMany(g => g.OrderBy(i => i)).ToList();
+                }
+
                 int finalAlignment = platform == Platform.GameCube ? 0x20 : 0x800;
 
                 for (int i = 0; i < LHDR.assetIDlist.Count; i++)
