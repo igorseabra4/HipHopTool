@@ -25,7 +25,7 @@ namespace HipHopTool
                         SendMessage("Destination: " + s + ".d");
 
                         var hip = HipFile.FromPath(s);
-                        hip.Item1.ToIni(hip.Item2, s + ".d", true, false);
+                        hip.ToIni(s + ".d", true, false);
 
                         SendMessage("Success");
                     }
@@ -84,7 +84,7 @@ namespace HipHopTool
                 SendMessage("Destination: " + outputPath);
 
                 var hip = HipFile.FromPath(hipToUnpack);
-                hip.Item1.ToIni(hip.Item2, outputPath, multiFolder, alphabetical);
+                hip.ToIni(outputPath, multiFolder, alphabetical);
 
                 SendMessage("Success");
             }
@@ -97,9 +97,7 @@ namespace HipHopTool
 
                 SendMessage("Destination: " + outputPath);
 
-                var hip = HipFile.FromINI(iniToCreate);
-
-                File.WriteAllBytes(outputPath, hip.Item1.ToBytes(hip.Item2, hip.Item3));
+                File.WriteAllBytes(outputPath, HipFile.FromINI(iniToCreate).ToBytes());
 
                 SendMessage("Success");
             }
@@ -141,7 +139,7 @@ namespace HipHopTool
                         SendMessage("File: " + openFileDialog.FileName);
 
                         var hip = HipFile.FromPath(openFileDialog.FileName);
-                        hip.Item1.ToIni(hip.Item2, openFileDialog.FileName + ".d", true, false);
+                        hip.ToIni(openFileDialog.FileName + ".d", true, false);
                     }
                 }
                 else if (option == Option.CreateHIP)
@@ -161,7 +159,7 @@ namespace HipHopTool
                         if (saveFileDialog.ShowDialog(new Form() { TopMost = true, TopLevel = true }) == DialogResult.OK)
                         {
                             var hip = HipFile.FromINI(openFileDialog.FileName);
-                            File.WriteAllBytes(saveFileDialog.FileName, hip.Item1.ToBytes(hip.Item2, hip.Item3));
+                            File.WriteAllBytes(saveFileDialog.FileName, hip.ToBytes());
                         }
                     }
                 }

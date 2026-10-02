@@ -8,14 +8,31 @@ namespace HipHopFile
 {
     public class HipFile
     {
+        public static HipFile FromPath(string fileName)
+        {
+            HipFile hipFile = new HipFile(fileName, false);
+
+            return hipFile;
+        }
+
+        public static HipFile FromINI(string fileName)
+        {
+            return new HipFile(fileName, true);
+        }
+
         public Section_HIPA HIPA;
         public Section_PACK PACK;
         public Section_DICT DICT;
         public Section_STRM STRM;
         public Section_HIPB HIPB;
 
-        public HipFile(Section_HIPA HIPA, Section_PACK PACK, Section_DICT DICT, Section_STRM STRM, Section_HIPB HIPB)
+        public Game game;
+        public Platform platform;
+
+        public HipFile(Game game, Platform platform, Section_HIPA HIPA, Section_PACK PACK, Section_DICT DICT, Section_STRM STRM, Section_HIPB HIPB)
         {
+            this.game = game;
+            this.platform = platform;
             this.HIPA = HIPA;
             this.PACK = PACK;
             this.DICT = DICT;
@@ -23,50 +40,60 @@ namespace HipHopFile
             this.HIPB = HIPB;
         }
 
-        public static (HipFile, Game, Platform) FromPath(string fileName)
+        private HipFile(string fileName, bool isFromINI = false)
         {
-            HipFile hipFile = new HipFile();
-            Game game = Game.Unknown;
-            Platform platform = Platform.Unknown;
+            game = Game.Unknown;
+            platform = Platform.Unknown;
 
+            if (!isFromINI)
+                SetupFromPath(fileName);
+            else
+                SetupFromINI(fileName, out Game game, out Platform platform);
+        }
+
+        private void SetupFromPath(string fileName)
+        {
             using (var binaryReader = new BinaryReader(new FileStream(fileName, FileMode.Open)))
                 while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
                 {
                     string currentSection = new string(binaryReader.ReadChars(4));
                     if (currentSection == Section.HIPA.ToString())
-                        hipFile.HIPA = new Section_HIPA(binaryReader);
+                        HIPA = new Section_HIPA(binaryReader);
                     else if (currentSection == Section.PACK.ToString())
-                        hipFile.PACK = new Section_PACK(binaryReader, out game, out platform);
+                        PACK = new Section_PACK(binaryReader, out game, out platform);
                     else if (currentSection == Section.DICT.ToString())
-                        hipFile.DICT = new Section_DICT(binaryReader, platform);
+                        DICT = new Section_DICT(binaryReader, platform);
                     else if (currentSection == Section.STRM.ToString())
-                        hipFile.STRM = new Section_STRM(binaryReader);
+                        STRM = new Section_STRM(binaryReader);
                     else if (currentSection == Section.HIPB.ToString())
                     {
-                        hipFile.HIPB = new Section_HIPB(binaryReader);
-                        if (hipFile.HIPB.VersionMismatch)
+                        HIPB = new Section_HIPB(binaryReader);
+                        if (HIPB.VersionMismatch)
                             break;
                     }
                     else
                         throw new Exception(currentSection);
                 }
 
+            DateTimeOffset hipCreated = DateTimeOffset.FromUnixTimeSeconds(PACK.PCRT.fileDate);
 
-            DateTimeOffset hipCreated = DateTimeOffset.FromUnixTimeSeconds(hipFile.PACK.PCRT.fileDate);
-            if (game == Game.Incredibles && !hipFile.PACK.PCRT.dateString.Contains("/"))
+            if (game == Game.Incredibles)
             {
-                if (hipCreated.Year == 2004)
-                    game = Game.Incredibles;
-                else if (hipCreated.Year == 2005)
-                    game = Game.ROTU;
-                else if (hipCreated.Year == 2006)
-                    game = Game.RatProto;
+                if (HIPB != null && HIPB.IncrediblesGame != Game.Unknown)
+                {
+                    game = HIPB.IncrediblesGame;
+                }
+                else if (!PACK.PCRT.dateString.Contains("/"))
+                {
+                    if (hipCreated.Year == 2004)
+                        game = Game.Incredibles;
+                    else if (hipCreated.Year == 2005)
+                        game = Game.ROTU;
+                    else if (hipCreated.Year == 2006)
+                        game = Game.RatProto;
+                }
             }
-            else if (game == Game.Incredibles)
-                game = (hipFile.HIPB == null) ? Game.Unknown : hipFile.HIPB.IncrediblesGame;
-
-
-            if (game == Game.Scooby)
+            else if (game == Game.Scooby)
             {
                 if (hipCreated.Year == 2002 && hipCreated.Month == 4)
                     platform = Platform.PS2;
@@ -78,32 +105,11 @@ namespace HipHopFile
                     platform = Platform.Unknown;
             }
 
-            if (hipFile.HIPB == null)
-                hipFile.HIPB = new Section_HIPB();
-
-            return (hipFile, game, platform);
+            if (HIPB == null)
+                HIPB = new Section_HIPB();
         }
 
-        public static (HipFile, Game, Platform) FromINI(string fileName)
-        {
-            HipFile hipFile = new HipFile();
-            hipFile.SetupFromINI(fileName, out Game game, out Platform platform);
-            return (hipFile, game, platform);
-        }
-
-        private HipFile()
-        {
-            HIPA = new Section_HIPA();
-            PACK = new Section_PACK();
-            DICT = new Section_DICT
-            {
-                ATOC = new Section_ATOC(),
-                LTOC = new Section_LTOC()
-            };
-            STRM = new Section_STRM();
-        }
-
-        private Game GetGame(string v)
+        private static Game GetGame(string v)
         {
             switch (v)
             {
@@ -124,6 +130,11 @@ namespace HipHopFile
 
         private void SetupFromINI(string iniFileName, out Game game, out Platform platform)
         {
+            HIPA = new Section_HIPA();
+            PACK = new Section_PACK();
+            DICT = new Section_DICT();
+            STRM = new Section_STRM();
+
             string[] INI = File.ReadAllLines(iniFileName);
             char sep = ';';
 
@@ -412,7 +423,7 @@ namespace HipHopFile
             return newStream.ToArray();
         }
 
-        public byte[] ToBytes(Game game, Platform platform)
+        public byte[] ToBytes()
         {
             DICT.ATOC.SortAHDRList();
 
@@ -424,13 +435,12 @@ namespace HipHopFile
             PACK.SetBytes(game, platform, ref list);
             DICT.SetBytes(game, platform, ref list);
             STRM.SetBytes(game, platform, ref list);
-            if (HIPB != null)
-                HIPB.SetBytes(game, platform, ref list);
+            HIPB?.SetBytes(game, platform, ref list);
 
             return list.ToArray();
         }
 
-        public void ToIni(Game game, string unpackFolder, bool multiFolder, bool alphabetical)
+        public void ToIni(string unpackFolder, bool multiFolder, bool alphabetical)
         {
             Directory.CreateDirectory(unpackFolder);
 

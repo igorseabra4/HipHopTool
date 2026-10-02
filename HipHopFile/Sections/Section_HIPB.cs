@@ -45,11 +45,13 @@ namespace HipHopFile
                 }
             }
 
+            IncrediblesGame = Game.Unknown;
+
             if (Version >= 3)
                 IncrediblesGame = (Game)Switch(binaryReader.ReadInt32());
 
             if (Version > CurrentVersion)
-                VersionMismatch = true; return;
+                VersionMismatch = true;
         }
 
         public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
