@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using static HipHopFile.Functions;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public class Section_ADBG : HipSection
     {
@@ -23,22 +19,22 @@ namespace HipHopFile
             this.checksum = checksum;
         }
 
-        public Section_ADBG(BinaryReader binaryReader) : base(binaryReader, Section.ADBG)
+        public Section_ADBG(BigEndianBinaryReader reader) : base(reader, Section.ADBG)
         {
-            alignment = Switch(binaryReader.ReadInt32());
-            assetName = ReadString(binaryReader);
-            assetFileName = ReadString(binaryReader);
-            checksum = Switch(binaryReader.ReadInt32());
+            alignment = reader.ReadInt32();
+            assetName = reader.ReadString();
+            assetFileName = reader.ReadString();
+            checksum = reader.ReadInt32();
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.ADBG;
 
-            listBytes.AddBigEndian(alignment);
-            listBytes.AddString(assetName);
-            listBytes.AddString(assetFileName);
-            listBytes.AddBigEndian(checksum);
+            writer.Write(alignment);
+            writer.Write(assetName);
+            writer.Write(assetFileName);
+            writer.Write(checksum);
         }
     }
 }

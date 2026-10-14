@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace HipHopFile
 {
@@ -15,26 +13,26 @@ namespace HipHopFile
             DPAK = new Section_DPAK();
         }
 
-        public Section_STRM(BinaryReader binaryReader) : base(binaryReader, Section.STRM)
+        public Section_STRM(BigEndianBinaryReader reader) : base(reader, Section.STRM)
         {
             string currentSectionName;
 
-            currentSectionName = new string(binaryReader.ReadChars(4));
+            currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.DHDR.ToString())
                 throw new Exception();
-            DHDR = new Section_DHDR(binaryReader);
+            DHDR = new Section_DHDR(reader);
 
-            currentSectionName = new string(binaryReader.ReadChars(4));
+            currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.DPAK.ToString())
                 throw new Exception();
-            DPAK = new Section_DPAK(binaryReader);
+            DPAK = new Section_DPAK(reader);
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.STRM;
-            DHDR.SetBytes(game, platform, ref listBytes);
-            DPAK.SetBytes(game, platform, ref listBytes);
+            DHDR.SetBytes(game, platform, writer);
+            DPAK.SetBytes(game, platform, writer);
         }
     }
 }

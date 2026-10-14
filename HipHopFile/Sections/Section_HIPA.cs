@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public class Section_HIPA : HipSection
     {
         public Section_HIPA() : base(Section.HIPA) { }
 
-        public Section_HIPA(BinaryReader binaryReader) : base(binaryReader, Section.HIPA) { }
+        public Section_HIPA(BigEndianBinaryReader reader) : base(reader, Section.HIPA) { }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.HIPA;
         }

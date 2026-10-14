@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using static HipHopFile.Functions;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public class Section_PFLG : HipSection
     {
@@ -14,9 +10,9 @@ namespace HipHopFile
             this.flags = flags;
         }
 
-        public Section_PFLG(BinaryReader binaryReader, Game game, out Game outGame) : base(binaryReader, Section.PFLG)
+        public Section_PFLG(BigEndianBinaryReader reader, Game game, out Game outGame) : base(reader, Section.PFLG)
         {
-            flags = Switch(binaryReader.ReadInt32());
+            flags = reader.ReadInt32();
 
             if (flags != 0x2E & game >= Game.Incredibles)
                 outGame = Game.BFBB;
@@ -24,10 +20,10 @@ namespace HipHopFile
                 outGame = game;
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.PFLG;
-            listBytes.AddBigEndian(flags);
+            writer.Write(flags);
         }
     }
 }

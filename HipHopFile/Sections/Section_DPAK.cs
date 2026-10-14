@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using static HipHopFile.Functions;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public class Section_DPAK : HipSection
     {
@@ -13,52 +7,47 @@ namespace HipHopFile
 
         public Section_DPAK() : base(Section.DPAK) { }
 
-        public Section_DPAK(BinaryReader binaryReader) : base(binaryReader, Section.DPAK)
+        public Section_DPAK(BigEndianBinaryReader reader) : base(reader, Section.DPAK)
         {
             if (Section_ATOC.noAHDR)
             {
-                data = binaryReader.ReadBytes(sectionSize);
+                data = reader.ReadBytes(sectionSize);
             }
             else
             {
-                int firstPadding = Switch(binaryReader.ReadInt32());
+                int firstPadding = reader.ReadInt32();
 
-                binaryReader.BaseStream.Position += firstPadding;
+                reader.BaseStream.Position += firstPadding;
 
-                globalRelativeStartOffset = (int)binaryReader.BaseStream.Position;
+                globalRelativeStartOffset = (int)reader.BaseStream.Position;
 
                 int sizeOfData = sectionSize - 4 - firstPadding;
-                data = binaryReader.ReadBytes(sizeOfData);
+                data = reader.ReadBytes(sizeOfData);
             }
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.DPAK;
 
-            int firstPaddingPosition = listBytes.Count;
+            int firstPaddingPosition = (int)writer.BaseStream.Position;
 
-            listBytes.Add(0);
-            listBytes.Add(0);
-            listBytes.Add(0);
-            listBytes.Add(0);
+            writer.Write((int)0);
 
             int alignment = platform == Platform.GameCube ? 0x20 : 0x800;
 
-            while (listBytes.Count % alignment != 0)
-                listBytes.Add(0x33);
+            while (writer.BaseStream.Position % alignment != 0)
+                writer.Write((byte)0x33);
 
-            globalRelativeStartOffset = listBytes.Count();
+            globalRelativeStartOffset = (int)writer.BaseStream.Position;
 
-            int firstPadding = listBytes.Count - (firstPaddingPosition + 4);
+            int firstPadding = globalRelativeStartOffset - (firstPaddingPosition + 4);
 
-            byte[] firstPaddingBytes = BitConverter.GetBytes(firstPadding);
-            listBytes[firstPaddingPosition + 0] = firstPaddingBytes[3];
-            listBytes[firstPaddingPosition + 1] = firstPaddingBytes[2];
-            listBytes[firstPaddingPosition + 2] = firstPaddingBytes[1];
-            listBytes[firstPaddingPosition + 3] = firstPaddingBytes[0];
+            writer.BaseStream.Position = firstPaddingPosition;
+            writer.Write(firstPadding);
 
-            listBytes.AddRange(data);
+            writer.BaseStream.Position = globalRelativeStartOffset;
+            writer.Write(data);
         }
     }
 }

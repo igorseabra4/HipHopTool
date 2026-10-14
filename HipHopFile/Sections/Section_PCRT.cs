@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using static HipHopFile.Functions;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public class Section_PCRT : HipSection
     {
@@ -15,18 +11,18 @@ namespace HipHopFile
             this.dateString = dateString;
         }
 
-        public Section_PCRT(BinaryReader binaryReader) : base(binaryReader, Section.PCRT)
+        public Section_PCRT(BigEndianBinaryReader reader) : base(reader, Section.PCRT)
         {
-            fileDate = Switch(binaryReader.ReadInt32());
-            dateString = ReadString(binaryReader);
+            fileDate = reader.ReadInt32();
+            dateString = reader.ReadString();
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.PCRT;
 
-            listBytes.AddBigEndian(fileDate);
-            listBytes.AddString(dateString);
+            writer.Write(fileDate);
+            writer.Write(dateString);
         }
     }
 }

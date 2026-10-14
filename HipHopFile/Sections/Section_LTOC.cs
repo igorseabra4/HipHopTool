@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace HipHopFile
 {
@@ -15,35 +14,35 @@ namespace HipHopFile
             LHDRList = new List<Section_LHDR>();
         }
 
-        public Section_LTOC(BinaryReader binaryReader) : base(binaryReader, Section.LTOC)
+        public Section_LTOC(BigEndianBinaryReader reader) : base(reader, Section.LTOC)
         {
-            long startSectionPosition = binaryReader.BaseStream.Position;
+            long startSectionPosition = reader.BaseStream.Position;
 
-            string currentSectionName = new string(binaryReader.ReadChars(4));
+            string currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.LINF.ToString())
                 throw new Exception();
-            LINF = new Section_LINF(binaryReader);
+            LINF = new Section_LINF(reader);
 
             LHDRList = new List<Section_LHDR>();
 
-            while (binaryReader.BaseStream.Position < startSectionPosition + sectionSize)
+            while (reader.BaseStream.Position < startSectionPosition + sectionSize)
             {
-                currentSectionName = new string(binaryReader.ReadChars(4));
+                currentSectionName = new string(reader.ReadChars(4));
                 if (currentSectionName != Section.LHDR.ToString())
                     throw new Exception();
-                LHDRList.Add(new Section_LHDR(binaryReader));
+                LHDRList.Add(new Section_LHDR(reader));
             }
 
-            binaryReader.BaseStream.Position = startSectionPosition + sectionSize;
+            reader.BaseStream.Position = startSectionPosition + sectionSize;
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.LTOC;
 
-            LINF.SetBytes(game, platform, ref listBytes);
+            LINF.SetBytes(game, platform, writer);
             foreach (Section_LHDR i in LHDRList)
-                i.SetBytes(game, platform, ref listBytes);
+                i.SetBytes(game, platform, writer);
         }
     }
 }

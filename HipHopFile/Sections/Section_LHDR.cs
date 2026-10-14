@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
@@ -14,32 +11,32 @@ namespace HipHopFile
 
         public Section_LHDR() : base(Section.LHDR) { }
 
-        public Section_LHDR(BinaryReader binaryReader) : base(binaryReader, Section.LHDR)
+        public Section_LHDR(BigEndianBinaryReader reader) : base(reader, Section.LHDR)
         {
-            layerType = Switch(binaryReader.ReadInt32());
-            int assetAmount = Switch(binaryReader.ReadInt32());
+            layerType = reader.ReadInt32();
+            int assetAmount = reader.ReadInt32();
 
             assetIDlist = new List<uint>(assetAmount);
             for (int i = 0; i < assetAmount; i++)
-                assetIDlist.Add(Switch(binaryReader.ReadUInt32()));
+                assetIDlist.Add(reader.ReadUInt32());
 
-            string currentSectionName = new string(binaryReader.ReadChars(4));
+            string currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.LDBG.ToString())
                 throw new Exception();
-            LDBG = new Section_LDBG(binaryReader);
+            LDBG = new Section_LDBG(reader);
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.LHDR;
 
-            listBytes.AddBigEndian(layerType);
-            listBytes.AddBigEndian(assetIDlist.Count());
+            writer.Write(layerType);
+            writer.Write(assetIDlist.Count);
 
-            foreach (int i in assetIDlist)
-                listBytes.AddBigEndian(i);
+            foreach (var u in assetIDlist)
+                writer.Write(u);
 
-            LDBG.SetBytes(game, platform, ref listBytes);
+            LDBG.SetBytes(game, platform, writer);
         }
     }
 }

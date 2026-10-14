@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
@@ -48,40 +44,40 @@ namespace HipHopFile
             this.data = data;
         }
 
-        public Section_AHDR(BinaryReader binaryReader, Platform platform) : base(binaryReader, Section.AHDR)
+        public Section_AHDR(BigEndianBinaryReader reader, Platform platform) : base(reader, Section.AHDR)
         {
-            assetID = Switch(binaryReader.ReadUInt32());
-            var tempAssetType = new string(binaryReader.ReadChars(4));
-            fileOffset = Switch(binaryReader.ReadInt32());
-            fileSize = Switch(binaryReader.ReadInt32());
-            plusValue = Switch(binaryReader.ReadInt32());
-            flags = (AHDRFlags)Switch(binaryReader.ReadInt32());
+            assetID = reader.ReadUInt32();
+            var tempAssetType = new string(reader.ReadChars(4));
+            fileOffset = reader.ReadInt32();
+            fileSize = reader.ReadInt32();
+            plusValue = reader.ReadInt32();
+            flags = (AHDRFlags)reader.ReadInt32();
 
-            string currentSectionName = new string(binaryReader.ReadChars(4));
+            string currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.ADBG.ToString()) throw new Exception();
-            ADBG = new Section_ADBG(binaryReader);
+            ADBG = new Section_ADBG(reader);
 
-            long savePosition = binaryReader.BaseStream.Position;
-            binaryReader.BaseStream.Position = fileOffset;
-            data = binaryReader.ReadBytes(fileSize);
-            binaryReader.BaseStream.Position = savePosition;
+            long savePosition = reader.BaseStream.Position;
+            reader.BaseStream.Position = fileOffset;
+            data = reader.ReadBytes(fileSize);
+            reader.BaseStream.Position = savePosition;
 
             assetType = AssetTypeFromString(tempAssetType, platform);
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.AHDR;
 
-            listBytes.AddBigEndian(assetID);
+            writer.Write(assetID);
             foreach (char i in assetType.GetCode().PadRight(4))
-                listBytes.Add((byte)i);
-            listBytes.AddBigEndian(fileOffset);
-            listBytes.AddBigEndian(fileSize);
-            listBytes.AddBigEndian(plusValue);
-            listBytes.AddBigEndian((int)flags);
+                writer.Write((byte)i);
+            writer.Write(fileOffset);
+            writer.Write(fileSize);
+            writer.Write(plusValue);
+            writer.Write((int)flags);
 
-            ADBG.SetBytes(game, platform, ref listBytes);
+            ADBG.SetBytes(game, platform, writer);
         }
 
         public override int GetHashCode()

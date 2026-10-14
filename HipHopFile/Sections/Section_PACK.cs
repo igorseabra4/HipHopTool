@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace HipHopFile
 {
@@ -15,60 +13,60 @@ namespace HipHopFile
 
         public Section_PACK() : base(Section.PACK) { }
 
-        public Section_PACK(BinaryReader binaryReader, out Game game, out Platform platform) : base(binaryReader, Section.PACK)
+        public Section_PACK(BigEndianBinaryReader reader, out Game game, out Platform platform) : base(reader, Section.PACK)
         {
-            long startSectionPosition = binaryReader.BaseStream.Position;
+            long startSectionPosition = reader.BaseStream.Position;
 
             string currentSectionName;
 
-            currentSectionName = new string(binaryReader.ReadChars(4));
+            currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.PVER.ToString())
                 throw new Exception();
-            PVER = new Section_PVER(binaryReader, out game);
+            PVER = new Section_PVER(reader, out game);
 
-            currentSectionName = new string(binaryReader.ReadChars(4));
+            currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.PFLG.ToString())
                 throw new Exception();
-            PFLG = new Section_PFLG(binaryReader, game, out game);
+            PFLG = new Section_PFLG(reader, game, out game);
 
-            currentSectionName = new string(binaryReader.ReadChars(4));
+            currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.PCNT.ToString())
                 throw new Exception();
-            PCNT = new Section_PCNT(binaryReader);
+            PCNT = new Section_PCNT(reader);
 
-            currentSectionName = new string(binaryReader.ReadChars(4));
+            currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.PCRT.ToString())
                 throw new Exception();
-            PCRT = new Section_PCRT(binaryReader);
+            PCRT = new Section_PCRT(reader);
 
-            currentSectionName = new string(binaryReader.ReadChars(4));
+            currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.PMOD.ToString())
                 throw new Exception();
-            PMOD = new Section_PMOD(binaryReader);
+            PMOD = new Section_PMOD(reader);
 
-            if (binaryReader.BaseStream.Position == startSectionPosition + sectionSize)
+            if (reader.BaseStream.Position == startSectionPosition + sectionSize)
             {
                 platform = Platform.Unknown;
                 return;
             }
 
-            currentSectionName = new string(binaryReader.ReadChars(4));
+            currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.PLAT.ToString())
                 throw new Exception();
-            PLAT = new Section_PLAT(binaryReader, game, out platform);
+            PLAT = new Section_PLAT(reader, game, out platform);
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.PACK;
 
-            PVER.SetBytes(game, platform, ref listBytes);
-            PFLG.SetBytes(game, platform, ref listBytes);
-            PCNT.SetBytes(game, platform, ref listBytes);
-            PCRT.SetBytes(game, platform, ref listBytes);
-            PMOD.SetBytes(game, platform, ref listBytes);
+            PVER.SetBytes(game, platform, writer);
+            PFLG.SetBytes(game, platform, writer);
+            PCNT.SetBytes(game, platform, writer);
+            PCRT.SetBytes(game, platform, writer);
+            PMOD.SetBytes(game, platform, writer);
             if (PLAT != null)
-                PLAT.SetBytes(game, platform, ref listBytes);
+                PLAT.SetBytes(game, platform, writer);
         }
     }
 }

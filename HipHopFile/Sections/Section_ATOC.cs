@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace HipHopFile
@@ -18,35 +17,35 @@ namespace HipHopFile
             AHDRList = new List<Section_AHDR>();
         }
 
-        public Section_ATOC(BinaryReader binaryReader, Platform platform) : base(binaryReader, Section.ATOC)
+        public Section_ATOC(BigEndianBinaryReader reader, Platform platform) : base(reader, Section.ATOC)
         {
-            long startSectionPosition = binaryReader.BaseStream.Position;
+            long startSectionPosition = reader.BaseStream.Position;
 
-            string currentSectionName = new string(binaryReader.ReadChars(4));
+            string currentSectionName = new string(reader.ReadChars(4));
             if (currentSectionName != Section.AINF.ToString())
                 throw new Exception();
-            AINF = new Section_AINF(binaryReader);
+            AINF = new Section_AINF(reader);
 
             AHDRList = new List<Section_AHDR>();
-            while (binaryReader.BaseStream.Position < startSectionPosition + sectionSize)
+            while (reader.BaseStream.Position < startSectionPosition + sectionSize)
             {
-                currentSectionName = new string(binaryReader.ReadChars(4));
+                currentSectionName = new string(reader.ReadChars(4));
                 if (currentSectionName != Section.AHDR.ToString())
                     throw new Exception();
-                AHDRList.Add(new Section_AHDR(binaryReader, platform));
+                AHDRList.Add(new Section_AHDR(reader, platform));
             }
 
             noAHDR = AHDRList.Count == 0;
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.ATOC;
 
-            AINF.SetBytes(game, platform, ref listBytes);
+            AINF.SetBytes(game, platform, writer);
 
             foreach (Section_AHDR i in AHDRList)
-                i.SetBytes(game, platform, ref listBytes);
+                i.SetBytes(game, platform, writer);
 
             noAHDR = AHDRList.Count == 0;
         }

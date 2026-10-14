@@ -47,6 +47,8 @@
     <Reference Include="System.ValueTuple" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BigEndianBinaryReader.cs" />
+    <Compile Include="BigEndianBinaryWriter.cs" />
     <Compile Include="Sections\Enums\DynaType.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="HipFile.cs" />

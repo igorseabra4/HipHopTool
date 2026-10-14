@@ -97,7 +97,7 @@ namespace HipHopTool
 
                 SendMessage("Destination: " + outputPath);
 
-                File.WriteAllBytes(outputPath, HipFile.FromINI(iniToCreate).ToBytes());
+                HipFile.FromINI(iniToCreate).ToFile(outputPath);
 
                 SendMessage("Success");
             }
@@ -159,7 +159,7 @@ namespace HipHopTool
                         if (saveFileDialog.ShowDialog(new Form() { TopMost = true, TopLevel = true }) == DialogResult.OK)
                         {
                             var hip = HipFile.FromINI(openFileDialog.FileName);
-                            File.WriteAllBytes(saveFileDialog.FileName, hip.ToBytes());
+                            hip.ToFile(saveFileDialog.FileName);
                         }
                     }
                 }

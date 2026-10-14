@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using static HipHopFile.Functions;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public class Section_PVER : HipSection
     {
@@ -17,11 +13,11 @@ namespace HipHopFile
             this.compatible = compatible;
         }
 
-        public Section_PVER(BinaryReader binaryReader, out Game game) : base(binaryReader, Section.PVER)
+        public Section_PVER(BigEndianBinaryReader reader, out Game game) : base(reader, Section.PVER)
         {
-            subVersion = Switch(binaryReader.ReadInt32());
-            clientVersion = Switch(binaryReader.ReadInt32());
-            compatible = Switch(binaryReader.ReadInt32());
+            subVersion = reader.ReadInt32();
+            clientVersion = reader.ReadInt32();
+            compatible = reader.ReadInt32();
 
             if (clientVersion == 262150)
                 game = Game.Scooby;
@@ -31,13 +27,13 @@ namespace HipHopFile
                 game = Game.Unknown;
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.PVER;
 
-            listBytes.AddBigEndian(subVersion);
-            listBytes.AddBigEndian(clientVersion);
-            listBytes.AddBigEndian(compatible);
+            writer.Write(subVersion);
+            writer.Write(clientVersion);
+            writer.Write(compatible);
         }
     }
 }

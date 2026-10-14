@@ -18,37 +18,32 @@ namespace HipHopFile
             this.sectionType = sectionName;
         }
 
-        public HipSection(BinaryReader binaryReader, Section sectionType)
+        public HipSection(BigEndianBinaryReader reader, Section sectionType)
         {
             this.sectionType = sectionType;
-            sectionSize = Switch(binaryReader.ReadInt32());
+            sectionSize = reader.ReadInt32();
         }
 
-        public void SetBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public void SetBytes(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
-            int position = listBytes.Count();
-            listBytes.AddRange(new byte[] {
-                0, 0, 0, 0,
-                0, 0, 0, 0,
-            });
+            int position = (int)writer.BaseStream.Position;
+            writer.Write((int)0);
+            writer.Write((int)0);
 
-            SetListBytes(game, platform, ref listBytes);
+            Setwriter(game, platform, writer);
 
-            sectionSize = listBytes.Count() - position - 0x8;
+            sectionSize = (int)writer.BaseStream.Length - position - 0x8;
 
             var sectionNameString = sectionType.ToString();
             var sectionSizeBytes = BitConverter.GetBytes(sectionSize);
 
-            listBytes[position + 0] = (byte)sectionNameString[0];
-            listBytes[position + 1] = (byte)sectionNameString[1];
-            listBytes[position + 2] = (byte)sectionNameString[2];
-            listBytes[position + 3] = (byte)sectionNameString[3];
-            listBytes[position + 4] = sectionSizeBytes[3];
-            listBytes[position + 5] = sectionSizeBytes[2];
-            listBytes[position + 6] = sectionSizeBytes[1];
-            listBytes[position + 7] = sectionSizeBytes[0];
+            var currentPosition = writer.BaseStream.Position;
+            writer.BaseStream.Position = position;
+            writer.WriteMagic(sectionNameString);
+            writer.Write(sectionSizeBytes);
+            writer.BaseStream.Position = currentPosition;
         }
 
-        public abstract void SetListBytes(Game game, Platform platform, ref List<byte> listBytes);
+        public abstract void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer);
     }
 }

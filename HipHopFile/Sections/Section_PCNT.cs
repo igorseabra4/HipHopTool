@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using static HipHopFile.Functions;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public class Section_PCNT : HipSection
     {
@@ -34,24 +30,24 @@ namespace HipHopFile
             this.sizeOfLargestSourceVirtualAsset = sizeOfLargestSourceVirtualAsset;
         }
 
-        public Section_PCNT(BinaryReader binaryReader) : base(binaryReader, Section.PCNT)
+        public Section_PCNT(BigEndianBinaryReader reader) : base(reader, Section.PCNT)
         {
-            AHDRCount = Switch(binaryReader.ReadInt32());
-            LHDRCount = Switch(binaryReader.ReadInt32());
-            sizeOfLargestSourceFileAsset = Switch(binaryReader.ReadInt32());
-            sizeOfLargestLayer = Switch(binaryReader.ReadInt32());
-            sizeOfLargestSourceVirtualAsset = Switch(binaryReader.ReadInt32());
+            AHDRCount = reader.ReadInt32();
+            LHDRCount = reader.ReadInt32();
+            sizeOfLargestSourceFileAsset = reader.ReadInt32();
+            sizeOfLargestLayer = reader.ReadInt32();
+            sizeOfLargestSourceVirtualAsset = reader.ReadInt32();
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.PCNT;
 
-            listBytes.AddBigEndian(AHDRCount);
-            listBytes.AddBigEndian(LHDRCount);
-            listBytes.AddBigEndian(sizeOfLargestSourceFileAsset);
-            listBytes.AddBigEndian(sizeOfLargestLayer);
-            listBytes.AddBigEndian(sizeOfLargestSourceVirtualAsset);
+            writer.Write(AHDRCount);
+            writer.Write(LHDRCount);
+            writer.Write(sizeOfLargestSourceFileAsset);
+            writer.Write(sizeOfLargestLayer);
+            writer.Write(sizeOfLargestSourceVirtualAsset);
         }
     }
 }

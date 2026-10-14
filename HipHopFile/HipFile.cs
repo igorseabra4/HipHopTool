@@ -53,7 +53,7 @@ namespace HipHopFile
 
         private void SetupFromPath(string fileName)
         {
-            using (var binaryReader = new BinaryReader(new FileStream(fileName, FileMode.Open)))
+            using (var binaryReader = new BigEndianBinaryReader(new FileStream(fileName, FileMode.Open)))
                 while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
                 {
                     string currentSection = new string(binaryReader.ReadChars(4));
@@ -279,28 +279,29 @@ namespace HipHopFile
         private void SetupSTRM(Game game, Platform platform)
         {
             // Let's generate a temporary HIP file that will be discarded. This sets a correct STRM.DPAK.globalRelativeStartOffset
-            List<byte> temporaryFile = new List<byte>();
+            using (BigEndianBinaryWriter temporaryFile = new BigEndianBinaryWriter())
+            {
+                HIPA.SetBytes(game, platform, temporaryFile);
 
-            HIPA.SetBytes(game, platform, ref temporaryFile);
+                PACK.PCNT = new Section_PCNT(0, 0, 0, 0, 0);
+                PACK.SetBytes(game, platform, temporaryFile);
 
-            PACK.PCNT = new Section_PCNT(0, 0, 0, 0, 0);
-            PACK.SetBytes(game, platform, ref temporaryFile);
+                DICT.SetBytes(game, platform, temporaryFile);
 
-            DICT.SetBytes(game, platform, ref temporaryFile);
+                STRM.DPAK = new Section_DPAK() { data = new byte[0] };
+                STRM.SetBytes(game, platform, temporaryFile);
 
-            STRM.DPAK = new Section_DPAK() { data = new byte[0] };
-            STRM.SetBytes(game, platform, ref temporaryFile);
+                // Let's build a temporary dictionary with the assets, so we can write them in layer order.
+                Dictionary<uint, Section_AHDR> assetDictionary = new Dictionary<uint, Section_AHDR>();
+                foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
+                    assetDictionary.Add(AHDR.assetID, AHDR);
 
-            // Let's build a temporary dictionary with the assets, so we can write them in layer order.
-            Dictionary<uint, Section_AHDR> assetDictionary = new Dictionary<uint, Section_AHDR>();
-            foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
-                assetDictionary.Add(AHDR.assetID, AHDR);
+                // STRM.DPAK.data = game == Game.Scooby ? BuildStreamScooby(platform, DICT.ATOC.AHDRList) : BuildStream(game, platform, assetDictionary);
+                STRM.DPAK.data = BuildStream(game, platform, assetDictionary);
 
-            // STRM.DPAK.data = game == Game.Scooby ? BuildStreamScooby(platform, DICT.ATOC.AHDRList) : BuildStream(game, platform, assetDictionary);
-            STRM.DPAK.data = BuildStream(game, platform, assetDictionary);
-
-            // I'll create a new PCNT, because I'm sure you'll forget to do so.
-            PACK.PCNT = new Section_PCNT(DICT.ATOC.AHDRList.Count, DICT.LTOC.LHDRList.Count);
+                // I'll create a new PCNT, because I'm sure you'll forget to do so.
+                PACK.PCNT = new Section_PCNT(DICT.ATOC.AHDRList.Count, DICT.LTOC.LHDRList.Count);
+            }
         }
 
         private byte[] BuildStream(Game game, Platform platform, Dictionary<uint, Section_AHDR> assetDictionary)
@@ -423,21 +424,35 @@ namespace HipHopFile
             return newStream.ToArray();
         }
 
+        public void ToFile(string fileName)
+        {
+            using (var stream = new FileStream(fileName, FileMode.Create))
+                ToStream(stream);
+        }
+
         public byte[] ToBytes()
+        {
+            using (var stream = new MemoryStream())
+            {
+                ToStream(stream);
+                return stream.ToArray();
+            }
+        }
+
+        private void ToStream(Stream stream)
         {
             DICT.ATOC.SortAHDRList();
 
             SetupSTRM(game, platform);
 
-            List<byte> list = new List<byte>();
-
-            HIPA.SetBytes(game, platform, ref list);
-            PACK.SetBytes(game, platform, ref list);
-            DICT.SetBytes(game, platform, ref list);
-            STRM.SetBytes(game, platform, ref list);
-            HIPB?.SetBytes(game, platform, ref list);
-
-            return list.ToArray();
+            using (BigEndianBinaryWriter writer = new BigEndianBinaryWriter(stream))
+            {
+                HIPA.SetBytes(game, platform, writer);
+                PACK.SetBytes(game, platform, writer);
+                DICT.SetBytes(game, platform, writer);
+                STRM.SetBytes(game, platform, writer);
+                HIPB?.SetBytes(game, platform, writer);
+            }
         }
 
         public void ToIni(string unpackFolder, bool multiFolder, bool alphabetical)

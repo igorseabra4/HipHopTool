@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using static HipHopFile.Functions;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public class Section_LINF : HipSection
     {
@@ -13,16 +9,16 @@ namespace HipHopFile
             this.value = value;
         }
 
-        public Section_LINF(BinaryReader binaryReader) : base(binaryReader, Section.LINF)
+        public Section_LINF(BigEndianBinaryReader reader) : base(reader, Section.LINF)
         {
-            value = Switch(binaryReader.ReadInt32());
+            value = reader.ReadInt32();
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.LINF;
 
-            listBytes.AddBigEndian(value);
+            writer.Write(value);
         }
     }
 }

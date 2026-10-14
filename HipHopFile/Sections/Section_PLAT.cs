@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
@@ -15,22 +12,22 @@ namespace HipHopFile
 
         public Section_PLAT() : base(Section.PLAT) { }
 
-        public Section_PLAT(BinaryReader binaryReader, Game game, out Platform platform) : base(binaryReader, Section.PLAT)
+        public Section_PLAT(BigEndianBinaryReader reader, Game game, out Platform platform) : base(reader, Section.PLAT)
         {
             if (game == Game.BFBB)
             {
-                targetPlatform = ReadString(binaryReader);
-                targetPlatformName = ReadString(binaryReader);
-                regionFormat = ReadString(binaryReader);
-                language = ReadString(binaryReader);
-                targetGame = ReadString(binaryReader);
+                targetPlatform = reader.ReadString();
+                targetPlatformName = reader.ReadString();
+                regionFormat = reader.ReadString();
+                language = reader.ReadString();
+                targetGame = reader.ReadString();
             }
             else if (game >= Game.Incredibles)
             {
-                targetPlatform = ReadString(binaryReader);
-                language = ReadString(binaryReader);
-                regionFormat = ReadString(binaryReader);
-                targetGame = ReadString(binaryReader);
+                targetPlatform = reader.ReadString();
+                language = reader.ReadString();
+                regionFormat = reader.ReadString();
+                targetGame = reader.ReadString();
             }
             else
                 throw new Exception("PLAT reading error: unsupported PLAT version");
@@ -38,24 +35,24 @@ namespace HipHopFile
             platform = GetPlatform();
         }
 
-        public override void SetListBytes(Game game, Platform platform, ref List<byte> listBytes)
+        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.PLAT;
 
             if (game == Game.BFBB)
             {
-                listBytes.AddString(targetPlatform);
-                listBytes.AddString(targetPlatformName);
-                listBytes.AddString(regionFormat);
-                listBytes.AddString(language);
-                listBytes.AddString(targetGame);
+                writer.Write(targetPlatform);
+                writer.Write(targetPlatformName);
+                writer.Write(regionFormat);
+                writer.Write(language);
+                writer.Write(targetGame);
             }
             else if (game >= Game.Incredibles)
             {
-                listBytes.AddString(targetPlatform);
-                listBytes.AddString(language);
-                listBytes.AddString(regionFormat);
-                listBytes.AddString(targetGame);
+                writer.Write(targetPlatform);
+                writer.Write(language);
+                writer.Write(regionFormat);
+                writer.Write(targetGame);
             }
             else
                 throw new Exception("PLAT writing error");
