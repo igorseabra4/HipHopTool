@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using static HipHopFile.Functions;
 
 namespace HipHopFile
 {
@@ -30,9 +26,9 @@ namespace HipHopFile
             writer.Write((int)0);
             writer.Write((int)0);
 
-            Setwriter(game, platform, writer);
+            Serialize(game, platform, writer);
 
-            sectionSize = (int)writer.BaseStream.Length - position - 0x8;
+            sectionSize = (int)writer.BaseStream.Position - position - 0x8;
 
             var sectionNameString = sectionType.ToString();
             var sectionSizeBytes = BitConverter.GetBytes(sectionSize);
@@ -44,6 +40,6 @@ namespace HipHopFile
             writer.BaseStream.Position = currentPosition;
         }
 
-        public abstract void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer);
+        public abstract void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer);
     }
 }

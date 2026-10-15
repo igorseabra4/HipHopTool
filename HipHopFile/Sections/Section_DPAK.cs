@@ -26,7 +26,7 @@
             }
         }
 
-        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
+        public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.DPAK;
 

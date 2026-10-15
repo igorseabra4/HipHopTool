@@ -56,7 +56,7 @@ namespace HipHopFile
             PLAT = new Section_PLAT(reader, game, out platform);
         }
 
-        public override void Setwriter(Game game, Platform platform, BigEndianBinaryWriter writer)
+        public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             sectionType = Section.PACK;
 
