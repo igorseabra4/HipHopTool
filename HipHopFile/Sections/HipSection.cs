@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace HipHopFile
+﻿namespace HipHopFile
 {
     public abstract class HipSection
     {
-        public Section sectionType;
-        public int sectionSize;
+        protected Section sectionType;
+        protected int sectionSize;
 
         public HipSection() { }
 
@@ -23,20 +21,18 @@ namespace HipHopFile
         public void SetBytes(Game game, Platform platform, BigEndianBinaryWriter writer)
         {
             int position = (int)writer.BaseStream.Position;
-            writer.Write((int)0);
-            writer.Write((int)0);
+            writer.Write(new byte[8]);
 
             Serialize(game, platform, writer);
 
             sectionSize = (int)writer.BaseStream.Position - position - 0x8;
 
             var sectionNameString = sectionType.ToString();
-            var sectionSizeBytes = BitConverter.GetBytes(sectionSize);
 
             var currentPosition = writer.BaseStream.Position;
             writer.BaseStream.Position = position;
             writer.WriteMagic(sectionNameString);
-            writer.Write(sectionSizeBytes);
+            writer.Write(sectionSize);
             writer.BaseStream.Position = currentPosition;
         }
 
