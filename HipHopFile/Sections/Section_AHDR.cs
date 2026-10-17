@@ -44,6 +44,10 @@ namespace HipHopFile
             this.data = data;
         }
 
+        public Section_AHDR(string assetName, AssetType assetType, AHDRFlags flags, byte[] data) :
+            this(Functions.BKDRHash(assetName), assetType, flags, new Section_ADBG(0, assetName, "", 0), data)
+        { }
+
         public Section_AHDR(BigEndianBinaryReader reader, Platform platform) : base(reader, Section.AHDR)
         {
             assetID = reader.ReadUInt32();
