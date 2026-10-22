@@ -48,7 +48,10 @@ namespace HipHopFile
             if (!isFromINI)
                 SetupFromPath(fileName);
             else
-                SetupFromINI(fileName, out Game game, out Platform platform);
+                SetupFromINI(fileName);
+
+            if (platform == Platform.Unknown && HIPB != null && HIPB.ScoobyPlatform != Platform.Unknown)
+                platform = HIPB.ScoobyPlatform;
         }
 
         private void SetupFromPath(string fileName)
@@ -128,7 +131,7 @@ namespace HipHopFile
             }
         }
 
-        private void SetupFromINI(string iniFileName, out Game game, out Platform platform)
+        private void SetupFromINI(string iniFileName)
         {
             HIPA = new Section_HIPA();
             PACK = new Section_PACK();
