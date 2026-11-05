@@ -1,24 +1,21 @@
-﻿namespace HipHopFile
+﻿namespace HipHopFile;
+
+public class Section_LDBG : HipSection
 {
-    public class Section_LDBG : HipSection
+    public int value;
+
+    public Section_LDBG(int value) : base(Section.LDBG)
     {
-        public int value;
+        this.value = value;
+    }
 
-        public Section_LDBG(int value) : base(Section.LDBG)
-        {
-            this.value = value;
-        }
+    public Section_LDBG(BigEndianBinaryReader reader) : base(reader, Section.LDBG)
+    {
+        value = reader.ReadInt32();
+    }
 
-        public Section_LDBG(BigEndianBinaryReader reader) : base(reader, Section.LDBG)
-        {
-            value = reader.ReadInt32();
-        }
-
-        public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
-        {
-            sectionType = Section.LDBG;
-
-            writer.Write(value);
-        }
+    public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
+    {
+        writer.Write(value);
     }
 }

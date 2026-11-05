@@ -1,29 +1,27 @@
-﻿namespace HipHopFile
+﻿namespace HipHopFile;
+
+public class Section_PFLG : HipSection
 {
-    public class Section_PFLG : HipSection
+    public int flags;
+
+    public Section_PFLG(int flags) : base(Section.PFLG)
     {
-        public int flags;
+        sectionType = Section.PFLG;
+        this.flags = flags;
+    }
 
-        public Section_PFLG(int flags) : base(Section.PFLG)
-        {
-            sectionType = Section.PFLG;
-            this.flags = flags;
-        }
+    public Section_PFLG(BigEndianBinaryReader reader, Game game, out Game outGame) : base(reader, Section.PFLG)
+    {
+        flags = reader.ReadInt32();
 
-        public Section_PFLG(BigEndianBinaryReader reader, Game game, out Game outGame) : base(reader, Section.PFLG)
-        {
-            flags = reader.ReadInt32();
+        if (flags != 0x2E & game >= Game.Incredibles)
+            outGame = Game.BFBB;
+        else
+            outGame = game;
+    }
 
-            if (flags != 0x2E & game >= Game.Incredibles)
-                outGame = Game.BFBB;
-            else
-                outGame = game;
-        }
-
-        public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
-        {
-            sectionType = Section.PFLG;
-            writer.Write(flags);
-        }
+    public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
+    {
+        writer.Write(flags);
     }
 }

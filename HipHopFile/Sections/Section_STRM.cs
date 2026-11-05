@@ -1,38 +1,38 @@
-﻿using System;
+﻿namespace HipHopFile;
 
-namespace HipHopFile
+public class Section_STRM : HipSection
 {
-    public class Section_STRM : HipSection
+    public Section_DHDR DHDR;
+    public Section_DPAK DPAK;
+
+    public Section_STRM() : base(Section.STRM)
     {
-        public Section_DHDR DHDR;
-        public Section_DPAK DPAK;
+        DHDR = new Section_DHDR();
+        DPAK = new Section_DPAK();
+    }
 
-        public Section_STRM() : base(Section.STRM)
-        {
-            DHDR = new Section_DHDR(-1);
-            DPAK = new Section_DPAK();
-        }
+    public Section_STRM(BigEndianBinaryReader reader) : base(reader, Section.STRM)
+    {
+        DHDR = new Section_DHDR(reader);
+        DPAK = new Section_DPAK(reader);
+    }
 
-        public Section_STRM(BigEndianBinaryReader reader) : base(reader, Section.STRM)
-        {
-            string currentSectionName;
+    public int SectionSize
+    {
+        get => sectionSize;
+        set => sectionSize = value;
+    }
 
-            currentSectionName = new string(reader.ReadChars(4));
-            if (currentSectionName != Section.DHDR.ToString())
-                throw new Exception();
-            DHDR = new Section_DHDR(reader);
+    public override void Write(Game game, Platform platform, BigEndianBinaryWriter writer)
+    {
+        writer.WriteMagic(sectionType.ToString());
+        writer.Write(sectionSize);
+        Serialize(game, platform, writer);
+    }
 
-            currentSectionName = new string(reader.ReadChars(4));
-            if (currentSectionName != Section.DPAK.ToString())
-                throw new Exception();
-            DPAK = new Section_DPAK(reader);
-        }
-
-        public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
-        {
-            sectionType = Section.STRM;
-            DHDR.SetBytes(game, platform, writer);
-            DPAK.SetBytes(game, platform, writer);
-        }
+    public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
+    {
+        DHDR.Write(game, platform, writer);
+        DPAK.Write(game, platform, writer);
     }
 }
