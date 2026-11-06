@@ -281,7 +281,6 @@ public class HipFile
         using BigEndianBinaryWriter writer = new BigEndianBinaryWriter(stream);
 
         var HIPA = new Section_HIPA();
-        var STRM = new Section_STRM();
 
         HIPA.Write(game, platform, writer);
 
@@ -292,126 +291,120 @@ public class HipFile
 
         DICT.Write(game, platform, writer);
 
-        // STRM header (8) + DHDR header/value (12) + DPAK header (8).
-        // This is the start of the DPAK payload, including its firstPadding field.
-        long strmStartPosition = writer.BaseStream.Position;
-        const int sectionHeaderSize = 8;
-        const int dhdrSize = sectionHeaderSize + 4;
-        long strmDpakPayloadStartPosition = strmStartPosition + sectionHeaderSize + dhdrSize + sectionHeaderSize;
-
-        STRM.Write(game, platform, writer);
-
         var assetDictionary = new Dictionary<uint, Section_AHDR>(DICT.ATOC.AHDRList.Count);
         foreach (Section_AHDR AHDR in DICT.ATOC.AHDRList)
             assetDictionary[AHDR.assetID] = AHDR;
 
-        foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
+        long strmStartPosition = writer.BaseStream.Position;
+        var STRM = new Section_STRM(writer =>
         {
-            int startLayer = (int)writer.BaseStream.Position;
-            bool isSRAM = game >= Game.Incredibles ? (LayerType_TSSM)LHDR.layerType == LayerType_TSSM.SRAM : (LayerType_BFBB)LHDR.layerType == LayerType_BFBB.SRAM;
-
-            // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
-            LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(u => assetDictionary[u].GetCompareValue(game)).ToList();
-
-            // Ensuring an equal order of entries in SNDI and assets in sram layer is apparently mandatory on ps2, we sort them by their type and assetid 
-            if (platform == Platform.PS2 && isSRAM)
-                LHDR.assetIDlist = LHDR.assetIDlist.GroupBy(u => assetDictionary[u].assetType).SelectMany(g => g.OrderBy(i => i)).ToList();
-
-            int finalAlignment = platform == Platform.GameCube ? 0x20 : 0x800;
-
-            int lastDataIndex = LHDR.assetIDlist.FindLastIndex(aid => assetDictionary[aid].data.Length != 0);
-            uint lastSoundID = LHDR.assetIDlist.LastOrDefault(aid => assetDictionary[aid].assetType == AssetType.Sound);
-
-            for (int i = 0; i < LHDR.assetIDlist.Count; i++)
+            foreach (Section_LHDR LHDR in DICT.LTOC.LHDRList)
             {
-                Section_AHDR AHDR = assetDictionary[LHDR.assetIDlist[i]];
+                int startLayer = (int)writer.BaseStream.Position;
+                bool isSRAM = game >= Game.Incredibles ? (LayerType_TSSM)LHDR.layerType == LayerType_TSSM.SRAM : (LayerType_BFBB)LHDR.layerType == LayerType_BFBB.SRAM;
 
-                // Set stream dependant AHDR data...
-                AHDR.fileOffset = (int)writer.BaseStream.Position;
+                // Sort the LDBG asset IDs. The AHDR data will then be written in this order.
+                LHDR.assetIDlist = LHDR.assetIDlist.OrderBy(u => assetDictionary[u].GetCompareValue(game)).ToList();
 
-                // And add the data to the stream.
-                writer.Write(AHDR.data);
+                // Ensuring an equal order of entries in SNDI and assets in sram layer is apparently mandatory on ps2, we sort them by their type and assetid 
+                if (platform == Platform.PS2 && isSRAM)
+                    LHDR.assetIDlist = LHDR.assetIDlist.GroupBy(u => assetDictionary[u].assetType).SelectMany(g => g.OrderBy(i => i)).ToList();
 
-                AHDR.fileSize = (int)writer.BaseStream.Position - AHDR.fileOffset;
+                int finalAlignment = platform == Platform.GameCube ? 0x20 : 0x800;
 
-                // Calculate alignment data
-                AHDR.plusValue = 0;
-                int alignment = 16;
+                int lastDataIndex = LHDR.assetIDlist.FindLastIndex(aid => assetDictionary[aid].data.Length != 0);
+                uint lastSoundID = LHDR.assetIDlist.LastOrDefault(aid => assetDictionary[aid].assetType == AssetType.Sound);
 
-                switch (AHDR.assetType)
+                for (int i = 0; i < LHDR.assetIDlist.Count; i++)
                 {
-                    case AssetType.SoundStream when game >= Game.Incredibles && platform == Platform.GameCube:
-                        AHDR.ADBG.alignment = 1;
-                        break;
-                    case AssetType.SoundStream:
-                        alignment = finalAlignment;
-                        AHDR.ADBG.alignment = alignment;
-                        break;
-                    case AssetType.Sound:
-                        if (platform == Platform.PS2)
-                        {
-                            if (game == Game.Scooby)
-                                alignment = 2048;
-                            AHDR.ADBG.alignment = alignment;
-                        }
-                        else if (game >= Game.Incredibles && platform == Platform.GameCube)
+                    Section_AHDR AHDR = assetDictionary[LHDR.assetIDlist[i]];
+
+                    // Set stream dependant AHDR data...
+                    AHDR.fileOffset = (int)writer.BaseStream.Position;
+
+                    // And add the data to the stream.
+                    writer.Write(AHDR.data);
+
+                    AHDR.fileSize = (int)writer.BaseStream.Position - AHDR.fileOffset;
+
+                    // Calculate alignment data
+                    AHDR.plusValue = 0;
+                    int alignment = 16;
+
+                    switch (AHDR.assetType)
+                    {
+                        case AssetType.SoundStream when game >= Game.Incredibles && platform == Platform.GameCube:
                             AHDR.ADBG.alignment = 1;
-                        else
-                        {
+                            break;
+                        case AssetType.SoundStream:
                             alignment = finalAlignment;
                             AHDR.ADBG.alignment = alignment;
-                        }
-                        break;
-                    case AssetType.Cutscene:
-                        AHDR.ADBG.alignment = finalAlignment;
-                        break;
-                    case AssetType.TextureStream:
-                    case AssetType.BinkVideo:
-                    case AssetType.WireframeModel:
-                        alignment = finalAlignment;
-                        break;
-                    case AssetType.JSP:
-                    case AssetType.JSPInfo:
-                    case AssetType.CutsceneStreamingSound:
-                    case AssetType.LightKit:
-                        AHDR.ADBG.alignment = alignment;
-                        break;
-                    case AssetType.BSP:
-                        AHDR.ADBG.alignment = -1;
-                        break;
-                    default:
-                        if (Functions.IsDyna(AHDR.assetType))
+                            break;
+                        case AssetType.Sound:
+                            if (platform == Platform.PS2)
+                            {
+                                if (game == Game.Scooby)
+                                    alignment = 2048;
+                                AHDR.ADBG.alignment = alignment;
+                            }
+                            else if (game >= Game.Incredibles && platform == Platform.GameCube)
+                                AHDR.ADBG.alignment = 1;
+                            else
+                            {
+                                alignment = finalAlignment;
+                                AHDR.ADBG.alignment = alignment;
+                            }
+                            break;
+                        case AssetType.Cutscene:
+                            AHDR.ADBG.alignment = finalAlignment;
+                            break;
+                        case AssetType.TextureStream:
+                        case AssetType.BinkVideo:
+                        case AssetType.WireframeModel:
+                            alignment = finalAlignment;
+                            break;
+                        case AssetType.JSP:
+                        case AssetType.JSPInfo:
+                        case AssetType.CutsceneStreamingSound:
+                        case AssetType.LightKit:
+                            AHDR.ADBG.alignment = alignment;
+                            break;
+                        case AssetType.BSP:
                             AHDR.ADBG.alignment = -1;
-                        else
-                            AHDR.ADBG.alignment = 0;
-                        break;
-                }
+                            break;
+                        default:
+                            if (Functions.IsDyna(AHDR.assetType))
+                                AHDR.ADBG.alignment = -1;
+                            else
+                                AHDR.ADBG.alignment = 0;
+                            break;
+                    }
 
-                // Last asset with data in layer is not aligned
-                if (i < lastDataIndex)
-                {
-                    AHDR.plusValue = (alignment - (AHDR.fileSize % alignment)) % alignment;
-                    WritePadding(writer, AHDR.plusValue);
-                }
-
-                // SND section alignment, only on PS2 games after Scooby-Doo
-                if (isSRAM && platform == Platform.PS2 && game != Game.Scooby)
-                {
-                    if (AHDR.assetID == lastSoundID && AHDR.assetID != LHDR.assetIDlist.Last())
+                    // Last asset with data in layer is not aligned
+                    if (i < lastDataIndex)
                     {
-                        AHDR.plusValue = (int)(2048 - ((writer.BaseStream.Length - startLayer) % 2048)) % 2048;
+                        AHDR.plusValue = (alignment - (AHDR.fileSize % alignment)) % alignment;
                         WritePadding(writer, AHDR.plusValue);
                     }
+
+                    // SND section alignment, only on PS2 games after Scooby-Doo
+                    if (isSRAM && platform == Platform.PS2 && game != Game.Scooby)
+                    {
+                        if (AHDR.assetID == lastSoundID && AHDR.assetID != LHDR.assetIDlist.Last())
+                        {
+                            AHDR.plusValue = (int)(2048 - ((writer.BaseStream.Length - startLayer) % 2048)) % 2048;
+                            WritePadding(writer, AHDR.plusValue);
+                        }
+                    }
                 }
+
+                int padding = (int)((finalAlignment - writer.BaseStream.Position % finalAlignment) % finalAlignment);
+                WritePadding(writer, padding);
             }
+        });
 
-            int padding = (int)((finalAlignment - writer.BaseStream.Position % finalAlignment) % finalAlignment);
-            WritePadding(writer, padding);
-        }
-
-        var strmDpakEndPosition = writer.BaseStream.Position;
-        STRM.DPAK.SectionSize = (int)(strmDpakEndPosition - strmDpakPayloadStartPosition);
-        STRM.SectionSize = STRM.DPAK.SectionSize + 20;
+        STRM.Write(game, platform, writer);
+        var strmEndPosition = writer.BaseStream.Position;
 
         writer.BaseStream.Position = dictStartPos;
 
@@ -420,9 +413,7 @@ public class HipFile
         if (writer.BaseStream.Position != strmStartPosition)
             throw new InvalidOperationException("An unknown error has occured while generating the file.");
 
-        STRM.Write(game, platform, writer);
-
-        writer.BaseStream.Position = strmDpakEndPosition;
+        writer.BaseStream.Position = strmEndPosition;
 
         HIPB?.Write(game, platform, writer);
     }

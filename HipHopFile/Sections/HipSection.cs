@@ -17,7 +17,7 @@ public abstract class HipSection
         sectionSize = reader.ReadInt32();
     }
 
-    public virtual void Write(Game game, Platform platform, BigEndianBinaryWriter writer)
+    public void Write(Game game, Platform platform, BigEndianBinaryWriter writer)
     {
         int position = (int)writer.BaseStream.Position;
         writer.Write(stackalloc byte[8]);

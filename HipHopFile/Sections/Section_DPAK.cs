@@ -2,24 +2,16 @@
 
 public class Section_DPAK : HipSection
 {
-    public Section_DPAK() : base(Section.DPAK) { }
+    public Action<BigEndianBinaryWriter> writePayload;
+
+    public Section_DPAK(Action<BigEndianBinaryWriter> writePayload) : base(Section.DPAK)
+    {
+        this.writePayload = writePayload;
+    }
 
     public Section_DPAK(BigEndianBinaryReader reader) : base(reader, Section.DPAK)
     {
         reader.BaseStream.Position += sectionSize;
-    }
-
-    public int SectionSize
-    {
-        get => sectionSize;
-        set => sectionSize = value;
-    }
-
-    public override void Write(Game game, Platform platform, BigEndianBinaryWriter writer)
-    {
-        writer.WriteMagic(sectionType.ToString());
-        writer.Write(sectionSize);
-        Serialize(game, platform, writer);
     }
 
     public override void Serialize(Game game, Platform platform, BigEndianBinaryWriter writer)
@@ -32,5 +24,6 @@ public class Section_DPAK : HipSection
         writer.Write(firstPadding);
 
         HipFile.WritePadding(writer, firstPadding);
+        writePayload?.Invoke(writer);
     }
 }
