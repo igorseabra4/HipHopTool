@@ -12,7 +12,10 @@ public class Section_AHDR : HipSection
 
     public byte[] data;
 
-    public Section_AHDR(uint assetID, string assetType, AHDRFlags flags, Section_ADBG ADBG) : base(Section.AHDR)
+    public Game Game;
+    public Platform Platform;
+
+    public Section_AHDR(uint assetID, string assetType, AHDRFlags flags, Section_ADBG ADBG, Game game, Platform platform) : base(Section.AHDR)
     {
         this.assetID = assetID;
         this.assetType = AssetType.Null;
@@ -27,19 +30,23 @@ public class Section_AHDR : HipSection
 
         this.flags = flags;
         this.ADBG = ADBG;
+        this.Game = game;
+        this.Platform = platform;
     }
 
-    public Section_AHDR(uint assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG, byte[] data) : base(Section.AHDR)
+    public Section_AHDR(uint assetID, AssetType assetType, AHDRFlags flags, Section_ADBG ADBG, byte[] data, Game game, Platform platform) : base(Section.AHDR)
     {
         this.assetID = assetID;
         this.assetType = assetType;
         this.flags = flags;
         this.ADBG = ADBG;
         this.data = data;
+        this.Game = game;
+        this.Platform = platform;
     }
 
-    public Section_AHDR(string assetName, AssetType assetType, AHDRFlags flags, byte[] data) :
-        this(Functions.BKDRHash(assetName), assetType, flags, new Section_ADBG(0, assetName, "", 0), data)
+    public Section_AHDR(string assetName, AssetType assetType, AHDRFlags flags, byte[] data, Game game, Platform platform) :
+        this(Functions.BKDRHash(assetName), assetType, flags, new Section_ADBG(0, assetName, "", 0), data, game, platform)
     { }
 
     public Section_AHDR(BigEndianBinaryReader reader, Platform platform) : base(reader, Section.AHDR)
@@ -466,7 +473,7 @@ public class Section_AHDR : HipSection
     private AssetType GetDynaType(Platform platform)
     {
         if (platform == Platform.GameCube)
-            return ((DynaType)BitConverter.ToUInt32(new byte[] { data[0xB], data[0xA], data[0x9], data[0x8] }, 0)).ToAssetType();
+            return ((DynaType)BitConverter.ToUInt32([data[0xB], data[0xA], data[0x9], data[0x8]], 0)).ToAssetType();
         return ((DynaType)BitConverter.ToUInt32(data, 8)).ToAssetType();
     }
 }

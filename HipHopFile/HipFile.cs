@@ -49,9 +49,6 @@ public class HipFile
             SetupFromPath(fileName);
         else
             SetupFromINI(fileName);
-
-        if (platform == Platform.Unknown && HIPB != null && HIPB.ScoobyPlatform != Platform.Unknown)
-            platform = HIPB.ScoobyPlatform;
     }
 
     private void SetupFromPath(string fileName)
@@ -95,6 +92,15 @@ public class HipFile
                 platform = Platform.Xbox;
             else
                 platform = Platform.Unknown;
+        }
+
+        if (platform == Platform.Unknown && HIPB != null && HIPB.ScoobyPlatform != Platform.Unknown)
+            platform = HIPB.ScoobyPlatform;
+
+        foreach (var AHDR in DICT.ATOC.AHDRList)
+        {
+            AHDR.Game = game;
+            AHDR.Platform = platform;
         }
     }
 
@@ -239,7 +245,11 @@ public class HipFile
                     LHDR.assetIDlist.Remove(AHDR.assetID);
             }
             else
+            {
                 AHDR.data = value;
+                AHDR.Game = game;
+                AHDR.Platform = platform;
+            }
         }
     }
 
@@ -256,7 +266,7 @@ public class HipFile
         assetIDlist.Add(assetID);
 
         Section_ADBG newADBG = new Section_ADBG(align, assetName, assetFileName, checksum);
-        Section_AHDR newAHDR = new Section_AHDR(assetID, assetType, flags, newADBG);
+        Section_AHDR newAHDR = new Section_AHDR(assetID, assetType, flags, newADBG, game, platform);
 
         DICT.ATOC.AHDRList.Add(newAHDR);
     }
