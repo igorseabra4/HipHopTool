@@ -34,613 +34,249 @@ namespace HipHopFile
 
         public static string GetCode(this AssetType assetType)
         {
-            switch (assetType)
+            return assetType switch
             {
-                case AssetType.Null:
-                    return "NULL";
-                case AssetType.AnimationList:
-                    return "ALST";
-                case AssetType.Animation:
-                    return "ANIM";
-                case AssetType.AnimationTable:
-                    return "ATBL";
-                case AssetType.AttackTable:
-                    return "ATKT";
-                case AssetType.BinkVideo:
-                    return "BINK";
-                case AssetType.Boulder:
-                    return "BOUL";
-                case AssetType.BSP:
-                    return "BSP";
-                case AssetType.Button:
-                    return "BUTN";
-                case AssetType.Camera:
-                    return "CAM";
-                case AssetType.CameraCurve:
-                    return "CCRV";
-                case AssetType.Counter:
-                    return "CNTR";
-                case AssetType.CollisionTable:
-                    return "COLL";
-                case AssetType.Conditional:
-                    return "COND";
-                case AssetType.Credits:
-                    return "CRDT";
-                case AssetType.Cutscene:
-                    return "CSN";
-                case AssetType.CutsceneManager:
-                    return "CSNM";
-                case AssetType.CutsceneStreamingSound:
-                    return "CSSS";
-                case AssetType.CutsceneTableOfContents:
-                    return "CTOC";
-                case AssetType.Destructible:
-                    return "DEST";
-                case AssetType.Dispatcher:
-                    return "DPAT";
-                case AssetType.DiscoFloor:
-                    return "DSCO";
-                case AssetType.DestructibleObject:
-                    return "DSTR";
-                case AssetType.DashTrack:
-                    return "DTRK";
-                case AssetType.Duplicator:
-                    return "DUPC";
-                case AssetType.ElectricArcGenerator:
-                    return "EGEN";
-                case AssetType.Environment:
-                    return "ENV";
-                case AssetType.Flythrough:
-                    return "FLY";
-                case AssetType.Fog:
-                    return "FOG";
-                case AssetType.GrassMesh:
-                    return "GRSM";
-                case AssetType.Group:
-                    return "GRUP";
-                case AssetType.Gust:
-                    return "GUST";
-                case AssetType.Hangable:
-                    return "HANG";
-                case AssetType.JawDataTable:
-                    return "JAW";
-                case AssetType.JSP:
-                case AssetType.JSPInfo:
-                    return "JSP";
-                case AssetType.Light:
-                    return "LITE";
-                case AssetType.LightKit:
-                    return "LKIT";
-                case AssetType.LobMaster:
-                    return "LOBM";
-                case AssetType.LevelOfDetailTable:
-                    return "LODT";
-                case AssetType.SurfaceMapper:
-                    return "MAPR";
-                case AssetType.ModelInfo:
-                    return "MINF";
-                case AssetType.Model:
-                    return "MODL";
-                case AssetType.MorphTarget:
-                    return "MPHT";
-                case AssetType.Marker:
-                    return "MRKR";
-                case AssetType.MovePoint:
-                    return "MVPT";
-                case AssetType.NavigationMesh:
-                    return "NGMS";
-                case AssetType.Villain:
-                    return "NPC";
-                case AssetType.NPCSettings:
-                    return "NPCS";
-                case AssetType.OneLiner:
-                    return "ONEL";
-                case AssetType.ParticleEmitter:
-                    return "PARE";
-                case AssetType.ParticleProperties:
-                    return "PARP";
-                case AssetType.ParticleSystem:
-                    return "PARS";
-                case AssetType.Pendulum:
-                    return "PEND";
-                case AssetType.ProgressScript:
-                    return "PGRS";
-                case AssetType.PickupTable:
-                    return "PICK";
-                case AssetType.PipeInfoTable:
-                    return "PIPT";
-                case AssetType.Pickup:
-                    return "PKUP";
-                case AssetType.Platform:
-                    return "PLAT";
-                case AssetType.Player:
-                    return "PLYR";
-                case AssetType.Portal:
-                    return "PORT";
-                case AssetType.Projectile:
-                    return "PRJT";
-                case AssetType.ReactiveAnimation:
-                    return "RANM";
-                case AssetType.RawImage:
-                    return "RAW";
-                case AssetType.Texture:
-                    return "RWTX";
-                case AssetType.Script:
-                    return "SCRP";
-                case AssetType.SDFX:
-                    return "SDFX";
-                case AssetType.SFX:
-                    return "SFX";
-                case AssetType.SoundGroup:
-                    return "SGRP";
-                case AssetType.ShadowTable:
-                    return "SHDW";
-                case AssetType.Shrapnel:
-                    return "SHRP";
-                case AssetType.SimpleObject:
-                    return "SIMP";
-                case AssetType.SlideProperty:
-                    return "SLID";
-                case AssetType.Sound:
-                    return "SND";
-                case AssetType.SoundInfo:
-                    return "SNDI";
-                case AssetType.SoundStream:
-                    return "SNDS";
-                case AssetType.Spline:
-                    return "SPLN";
-                case AssetType.SplinePath:
-                    return "SPLP";
-                case AssetType.SceneSettings:
-                    return "SSET";
-                case AssetType.Subtitles:
-                    return "SUBT";
-                case AssetType.Surface:
-                    return "SURF";
-                case AssetType.TextureStream:
-                    return "TEXS";
-                case AssetType.Text:
-                    return "TEXT";
-                case AssetType.Timer:
-                    return "TIMR";
-                case AssetType.Track:
-                    return "TRCK";
-                case AssetType.PickupTypes:
-                    return "TPIK";
-                case AssetType.Trigger:
-                    return "TRIG";
-                case AssetType.ThrowableTable:
-                    return "TRWT";
-                case AssetType.UserInterface:
-                    return "UI";
-                case AssetType.UIFN:
-                    return "UIFN";
-                case AssetType.UserInterfaceFont:
-                    return "UIFT";
-                case AssetType.UserInterfaceMotion:
-                    return "UIM";
-                case AssetType.NPC:
-                    return "VIL";
-                case AssetType.NPCProperties:
-                    return "VILP";
-                case AssetType.Volume:
-                    return "VOLU";
-                case AssetType.WireframeModel:
-                    return "WIRE";
-                case AssetType.ZipLine:
-                    return "ZLIN";
-                case AssetType.Checkpoint:
-                case AssetType.ParticleGenerator:
-                case AssetType.Bomber:
-                case AssetType.BossUnderminerDrill:
-                case AssetType.BossUnderminerUM:
-                case AssetType.Chicken:
-                case AssetType.Driller:
-                case AssetType.Enforcer:
-                case AssetType.Humanoid:
-                case AssetType.Rat:
-                case AssetType.RobotTank:
-                case AssetType.Scientist:
-                case AssetType.Shooter:
-                case AssetType.EnemySB:
-                case AssetType.Spawner:
-                case AssetType.CastNCrew:
-                case AssetType.Critter:
-                case AssetType.Dennis:
-                case AssetType.FrogFish:
-                case AssetType.Mindy:
-                case AssetType.Neptune:
-                case AssetType.Enemy:
-                case AssetType.Crate:
-                case AssetType.Turret:
-                case AssetType.IncrediblesIcon:
-                case AssetType.InterestPointer:
-                case AssetType.JSPExtraData:
-                case AssetType.SceneProperties:
-                case AssetType.LensFlareSource:
-                case AssetType.AudioConversation:
-                case AssetType.CameraBinaryPoi:
-                case AssetType.CameraPreset:
-                case AssetType.CameraTransitionPath:
-                case AssetType.CameraTransitionTime:
-                case AssetType.BossBrain:
-                case AssetType.Flamethrower:
-                case AssetType.LensFlareElement:
-                case AssetType.LightEffectFlicker:
-                case AssetType.LightEffectStrobe:
-                case AssetType.Lightning:
-                case AssetType.Rumble:
-                case AssetType.RumbleBoxEmitter:
-                case AssetType.RumbleSphericalEmitter:
-                case AssetType.ScreenFade:
-                case AssetType.ScreenWarp:
-                case AssetType.Splash:
-                case AssetType.WaterHose:
-                case AssetType.Grass:
-                case AssetType.LightEffect:
-                case AssetType.SmokeEmitter:
-                case AssetType.SparkEmitter:
-                case AssetType.Spotlight:
-                case AssetType.UberLaser:
-                case AssetType.WaterBody:
-                case AssetType.BoulderGenerator:
-                case AssetType.BusStop:
-                case AssetType.CameraTweak:
-                case AssetType.FlythroughObject:
-                case AssetType.FreezableObject:
-                case AssetType.Grapple:
-                case AssetType.HangableObject:
-                case AssetType.IncrediblesPickup:
-                case AssetType.NPCSettingsObject:
-                case AssetType.RaceTimer:
-                case AssetType.Ring:
-                case AssetType.RingControl:
-                case AssetType.RubbleGenerator:
-                case AssetType.Taxi:
-                case AssetType.TeleportBox:
-                case AssetType.TurretObject:
-                case AssetType.Vent:
-                case AssetType.VentType:
-                case AssetType.BulletMark:
-                case AssetType.BulletTime:
-                case AssetType.BungeeDrop:
-                case AssetType.BungeeHook:
-                case AssetType.CameraParamAsset:
-                case AssetType.DashCameraSpline:
-                case AssetType.FlameEmitter:
-                case AssetType.LaserBeam:
-                case AssetType.RbandCameraAsset:
-                case AssetType.TalkBox:
-                case AssetType.TaskBox:
-                case AssetType.TextBox:
-                case AssetType.TrainCar:
-                case AssetType.TrainJunction:
-                case AssetType.HUDImage:
-                case AssetType.HUDMeterFont:
-                case AssetType.HUDMeterUnit:
-                case AssetType.HUDModel:
-                case AssetType.HUDText:
-                case AssetType.InteractionIceBridge:
-                case AssetType.InteractionLaunch:
-                case AssetType.InteractionLift:
-                case AssetType.InteractionSwitchLever:
-                case AssetType.InteractionTurn:
-                case AssetType.LogicFunctionGenerator:
-                case AssetType.LogicReference:
-                case AssetType.NPCCoverPoint:
-                case AssetType.NPCCustomAV:
-                case AssetType.NPCGroup:
-                case AssetType.Pointer:
-                case AssetType.UserInterfaceBox:
-                case AssetType.UserInterfaceController:
-                case AssetType.UserInterfaceImage:
-                case AssetType.UserInterfaceModel:
-                case AssetType.UserInterfaceText:
-                case AssetType.UserInterfaceTextUserString:
-                case AssetType.AnalogDeflection:
-                case AssetType.AnalogDirection:
-                case AssetType.NPCGate:
-                case AssetType.NPCWalls:
-                case AssetType.HUDCompassObject:
-                case AssetType.HUDCompassSystem:
-                case AssetType.LogicMission:
-                case AssetType.LogicTask:
-                case AssetType.PourWidget:
-                case AssetType.Twiddler:
-                case AssetType.CarryablePropertyRepel:
-                case AssetType.Tightrope:
-                case AssetType.CarryablePropertySwipe:
-                case AssetType.CarryableObject:
-                case AssetType.Springboard:
-                case AssetType.CarryablePropertyGeneric:
-                case AssetType.CarryablePropertyAttract:
-                case AssetType.EnemySwarmBug:
-                case AssetType.EnemySwarmOwl:
-                case AssetType.EnemyRightArm:
-                case AssetType.EnemyLeftArm:
-                case AssetType.PoleSwing:
-                case AssetType.EnemyThief:
-                case AssetType.EnemyWaiter:
-                case AssetType.Unknown_EBC04E7B:
-                    return "DYNA";
-            }
-
-            throw new Exception("Unknown asset type: " + assetType);
+                AssetType.Null => "NULL",
+                AssetType.AnimationList => "ALST",
+                AssetType.Animation => "ANIM",
+                AssetType.AnimationTable => "ATBL",
+                AssetType.AttackTable => "ATKT",
+                AssetType.BinkVideo => "BINK",
+                AssetType.Boulder => "BOUL",
+                AssetType.BSP => "BSP",
+                AssetType.Button => "BUTN",
+                AssetType.Camera => "CAM",
+                AssetType.CameraCurve => "CCRV",
+                AssetType.Counter => "CNTR",
+                AssetType.CollisionTable => "COLL",
+                AssetType.Conditional => "COND",
+                AssetType.Credits => "CRDT",
+                AssetType.Cutscene => "CSN",
+                AssetType.CutsceneManager => "CSNM",
+                AssetType.CutsceneStreamingSound => "CSSS",
+                AssetType.CutsceneTableOfContents => "CTOC",
+                AssetType.Destructible => "DEST",
+                AssetType.Dispatcher => "DPAT",
+                AssetType.DiscoFloor => "DSCO",
+                AssetType.DestructibleObject => "DSTR",
+                AssetType.DashTrack => "DTRK",
+                AssetType.Duplicator => "DUPC",
+                AssetType.ElectricArcGenerator => "EGEN",
+                AssetType.Environment => "ENV",
+                AssetType.Flythrough => "FLY",
+                AssetType.Fog => "FOG",
+                AssetType.GrassMesh => "GRSM",
+                AssetType.Group => "GRUP",
+                AssetType.Gust => "GUST",
+                AssetType.Hangable => "HANG",
+                AssetType.JawDataTable => "JAW",
+                AssetType.JSP or AssetType.JSPInfo => "JSP",
+                AssetType.Light => "LITE",
+                AssetType.LightKit => "LKIT",
+                AssetType.LobMaster => "LOBM",
+                AssetType.LevelOfDetailTable => "LODT",
+                AssetType.SurfaceMapper => "MAPR",
+                AssetType.ModelInfo => "MINF",
+                AssetType.Model => "MODL",
+                AssetType.MorphTarget => "MPHT",
+                AssetType.Marker => "MRKR",
+                AssetType.MovePoint => "MVPT",
+                AssetType.NavigationMesh => "NGMS",
+                AssetType.Villain => "NPC",
+                AssetType.NPCSettings => "NPCS",
+                AssetType.OneLiner => "ONEL",
+                AssetType.ParticleEmitter => "PARE",
+                AssetType.ParticleProperties => "PARP",
+                AssetType.ParticleSystem => "PARS",
+                AssetType.Pendulum => "PEND",
+                AssetType.ProgressScript => "PGRS",
+                AssetType.PickupTable => "PICK",
+                AssetType.PipeInfoTable => "PIPT",
+                AssetType.Pickup => "PKUP",
+                AssetType.Platform => "PLAT",
+                AssetType.Player => "PLYR",
+                AssetType.Portal => "PORT",
+                AssetType.Projectile => "PRJT",
+                AssetType.ReactiveAnimation => "RANM",
+                AssetType.RawImage => "RAW",
+                AssetType.Texture => "RWTX",
+                AssetType.Script => "SCRP",
+                AssetType.SDFX => "SDFX",
+                AssetType.SFX => "SFX",
+                AssetType.SoundGroup => "SGRP",
+                AssetType.ShadowTable => "SHDW",
+                AssetType.Shrapnel => "SHRP",
+                AssetType.SimpleObject => "SIMP",
+                AssetType.SlideProperty => "SLID",
+                AssetType.Sound => "SND",
+                AssetType.SoundInfo => "SNDI",
+                AssetType.SoundStream => "SNDS",
+                AssetType.Spline => "SPLN",
+                AssetType.SplinePath => "SPLP",
+                AssetType.SceneSettings => "SSET",
+                AssetType.Subtitles => "SUBT",
+                AssetType.Surface => "SURF",
+                AssetType.TextureStream => "TEXS",
+                AssetType.Text => "TEXT",
+                AssetType.Timer => "TIMR",
+                AssetType.Track => "TRCK",
+                AssetType.PickupTypes => "TPIK",
+                AssetType.Trigger => "TRIG",
+                AssetType.ThrowableTable => "TRWT",
+                AssetType.UserInterface => "UI",
+                AssetType.UIFN => "UIFN",
+                AssetType.UserInterfaceFont => "UIFT",
+                AssetType.UserInterfaceMotion => "UIM",
+                AssetType.NPC => "VIL",
+                AssetType.NPCProperties => "VILP",
+                AssetType.Volume => "VOLU",
+                AssetType.WireframeModel => "WIRE",
+                AssetType.ZipLine => "ZLIN",
+                AssetType.Checkpoint or AssetType.ParticleGenerator or AssetType.Bomber or AssetType.BossUnderminerDrill or AssetType.BossUnderminerUM or AssetType.Chicken or AssetType.Driller or AssetType.Enforcer or AssetType.Humanoid or AssetType.Rat or AssetType.RobotTank or AssetType.Scientist or AssetType.Shooter or AssetType.EnemySB or AssetType.Spawner or AssetType.CastNCrew or AssetType.Critter or AssetType.Dennis or AssetType.FrogFish or AssetType.Mindy or AssetType.Neptune or AssetType.Enemy or AssetType.Crate or AssetType.Turret or AssetType.IncrediblesIcon or AssetType.InterestPointer or AssetType.JSPExtraData or AssetType.SceneProperties or AssetType.LensFlareSource or AssetType.AudioConversation or AssetType.CameraBinaryPoi or AssetType.CameraPreset or AssetType.CameraTransitionPath or AssetType.CameraTransitionTime or AssetType.BossBrain or AssetType.Flamethrower or AssetType.LensFlareElement or AssetType.LightEffectFlicker or AssetType.LightEffectStrobe or AssetType.Lightning or AssetType.Rumble or AssetType.RumbleBoxEmitter or AssetType.RumbleSphericalEmitter or AssetType.ScreenFade or AssetType.ScreenWarp or AssetType.Splash or AssetType.WaterHose or AssetType.Grass or AssetType.LightEffect or AssetType.SmokeEmitter or AssetType.SparkEmitter or AssetType.Spotlight or AssetType.UberLaser or AssetType.WaterBody or AssetType.BoulderGenerator or AssetType.BusStop or AssetType.CameraTweak or AssetType.FlythroughObject or AssetType.FreezableObject or AssetType.Grapple or AssetType.HangableObject or AssetType.IncrediblesPickup or AssetType.NPCSettingsObject or AssetType.RaceTimer or AssetType.Ring or AssetType.RingControl or AssetType.RubbleGenerator or AssetType.Taxi or AssetType.TeleportBox or AssetType.TurretObject or AssetType.Vent or AssetType.VentType or AssetType.BulletMark or AssetType.BulletTime or AssetType.BungeeDrop or AssetType.BungeeHook or AssetType.CameraParamAsset or AssetType.DashCameraSpline or AssetType.FlameEmitter or AssetType.LaserBeam or AssetType.RbandCameraAsset or AssetType.TalkBox or AssetType.TaskBox or AssetType.TextBox or AssetType.TrainCar or AssetType.TrainJunction or AssetType.HUDImage or AssetType.HUDMeterFont or AssetType.HUDMeterUnit or AssetType.HUDModel or AssetType.HUDText or AssetType.InteractionIceBridge or AssetType.InteractionLaunch or AssetType.InteractionLift or AssetType.InteractionSwitchLever or AssetType.InteractionTurn or AssetType.LogicFunctionGenerator or AssetType.LogicReference or AssetType.NPCCoverPoint or AssetType.NPCCustomAV or AssetType.NPCGroup or AssetType.Pointer or AssetType.UserInterfaceBox or AssetType.UserInterfaceController or AssetType.UserInterfaceImage or AssetType.UserInterfaceModel or AssetType.UserInterfaceText or AssetType.UserInterfaceTextUserString or AssetType.AnalogDeflection or AssetType.AnalogDirection or AssetType.NPCGate or AssetType.NPCWalls or AssetType.HUDCompassObject or AssetType.HUDCompassSystem or AssetType.LogicMission or AssetType.LogicTask or AssetType.PourWidget or AssetType.Twiddler or AssetType.CarryablePropertyRepel or AssetType.Tightrope or AssetType.CarryablePropertySwipe or AssetType.CarryableObject or AssetType.Springboard or AssetType.CarryablePropertyGeneric or AssetType.CarryablePropertyAttract or AssetType.EnemySwarmBug or AssetType.EnemySwarmOwl or AssetType.EnemyRightArm or AssetType.EnemyLeftArm or AssetType.PoleSwing or AssetType.EnemyThief or AssetType.EnemyWaiter or AssetType.Unknown_EBC04E7B
+                => "DYNA",
+                _ => throw new Exception("Unknown asset type: " + assetType),
+            };
         }
 
         public static AssetType ToAssetType(this DynaType dynaType)
         {
-            switch (dynaType)
+            return dynaType switch
             {
-                case DynaType.AnalogDeflection:
-                    return AssetType.AnalogDeflection;
-                case DynaType.AnalogDirection:
-                    return AssetType.AnalogDirection;
-                case DynaType.Carrying_CarryableObject:
-                    return AssetType.CarryableObject;
-                case DynaType.Carrying_CarryableProperty_GenericUseProperty:
-                    return AssetType.CarryablePropertyGeneric;
-                case DynaType.Carrying_CarryableProperty_UsePropertyAttract:
-                    return AssetType.CarryablePropertyAttract;
-                case DynaType.Carrying_CarryableProperty_UsePropertyRepel:
-                    return AssetType.CarryablePropertyRepel;
-                case DynaType.Carrying_CarryableProperty_UsePropertySwipe:
-                    return AssetType.CarryablePropertySwipe;
-                case DynaType.Checkpoint:
-                    return AssetType.Checkpoint;
-                case DynaType.ContextObject_PoleSwing:
-                    return AssetType.PoleSwing;
-                case DynaType.ContextObject_Springboard:
-                    return AssetType.Springboard;
-                case DynaType.ContextObject_Tightrope:
-                    return AssetType.Tightrope;
-                case DynaType.Effect__particle_generator:
-                    return AssetType.ParticleGenerator;
-                case DynaType.Enemy__IN2__Bomber:
-                    return AssetType.Bomber;
-                case DynaType.Enemy__IN2__BossUnderminerDrill:
-                    return AssetType.BossUnderminerDrill;
-                case DynaType.Enemy__IN2__BossUnderminerUM:
-                    return AssetType.BossUnderminerUM;
-                case DynaType.Enemy__IN2__Chicken:
-                    return AssetType.Chicken;
-                case DynaType.Enemy__IN2__Driller:
-                    return AssetType.Driller;
-                case DynaType.Enemy__IN2__Enforcer:
-                    return AssetType.Enforcer;
-                case DynaType.Enemy__IN2__Humanoid:
-                    return AssetType.Humanoid;
-                case DynaType.Enemy__IN2__Rat:
-                    return AssetType.Rat;
-                case DynaType.Enemy__IN2__RobotTank:
-                    return AssetType.RobotTank;
-                case DynaType.Enemy__IN2__Scientist:
-                    return AssetType.Scientist;
-                case DynaType.Enemy__IN2__Shooter:
-                    return AssetType.Shooter;
-                case DynaType.Enemy__NPC_Gate:
-                    return AssetType.NPCGate;
-                case DynaType.Enemy__NPC_Walls:
-                    return AssetType.NPCWalls;
-                case DynaType.Enemy__RATS__LeftArm:
-                    return AssetType.EnemyLeftArm;
-                case DynaType.Enemy__RATS__RightArm:
-                    return AssetType.EnemyRightArm;
-                case DynaType.Enemy__RATS__Swarm__Bug:
-                    return AssetType.EnemySwarmBug;
-                case DynaType.Enemy__RATS__Swarm__Owl:
-                    return AssetType.EnemySwarmOwl;
-                case DynaType.Enemy__RATS__Thief:
-                    return AssetType.EnemyThief;
-                case DynaType.Enemy__RATS__Waiter:
-                    return AssetType.EnemyWaiter;
-                case DynaType.Enemy__SB:
-                    return AssetType.EnemySB;
-                case DynaType.Enemy__SB__BucketOTron:
-                    return AssetType.Spawner;
-                case DynaType.Enemy__SB__CastNCrew:
-                    return AssetType.CastNCrew;
-                case DynaType.Enemy__SB__Critter:
-                    return AssetType.Critter;
-                case DynaType.Enemy__SB__Dennis:
-                    return AssetType.Dennis;
-                case DynaType.Enemy__SB__FrogFish:
-                    return AssetType.FrogFish;
-                case DynaType.Enemy__SB__Mindy:
-                    return AssetType.Mindy;
-                case DynaType.Enemy__SB__Neptune:
-                    return AssetType.Neptune;
-                case DynaType.Enemy__SB__Standard:
-                    return AssetType.Enemy;
-                case DynaType.Enemy__SB__SupplyCrate:
-                    return AssetType.Crate;
-                case DynaType.Enemy__SB__Turret:
-                    return AssetType.Turret;
-                case DynaType.HUD_Compass_Object:
-                    return AssetType.HUDCompassObject;
-                case DynaType.HUD_Compass_System:
-                    return AssetType.HUDCompassSystem;
-                case DynaType.Incredibles__Icon:
-                    return AssetType.IncrediblesIcon;
-                case DynaType.Interest_Pointer:
-                    return AssetType.InterestPointer;
-                case DynaType.JSPExtraData:
-                    return AssetType.JSPExtraData;
-                case DynaType.Pour_Widget:
-                    return AssetType.PourWidget;
-                case DynaType.SceneProperties:
-                    return AssetType.SceneProperties;
-                case DynaType.Twiddler:
-                    return AssetType.Twiddler;
-                case DynaType.Unknown_EBC04E7B:
-                    return AssetType.Unknown_EBC04E7B;
-                case DynaType.audio__conversation:
-                    return AssetType.AudioConversation;
-                case DynaType.camera__binary_poi:
-                    return AssetType.CameraBinaryPoi;
-                case DynaType.camera__preset:
-                    return AssetType.CameraPreset;
-                case DynaType.camera__transition_path:
-                    return AssetType.CameraTransitionPath;
-                case DynaType.camera__transition_time:
-                    return AssetType.CameraTransitionTime;
-                case DynaType.effect__BossBrain:
-                    return AssetType.BossBrain;
-                case DynaType.effect__Flamethrower:
-                    return AssetType.Flamethrower;
-                case DynaType.effect__LensFlareElement:
-                    return AssetType.LensFlareElement;
-                case DynaType.effect__LensFlareSource:
-                    return AssetType.LensFlareSource;
-                case DynaType.effect__LightEffectFlicker:
-                    return AssetType.LightEffectFlicker;
-                case DynaType.effect__LightEffectStrobe:
-                    return AssetType.LightEffectStrobe;
-                case DynaType.effect__Lightning:
-                    return AssetType.Lightning;
-                case DynaType.effect__Rumble:
-                    return AssetType.Rumble;
-                case DynaType.effect__RumbleBoxEmitter:
-                    return AssetType.RumbleBoxEmitter;
-                case DynaType.effect__RumbleSphericalEmitter:
-                    return AssetType.RumbleSphericalEmitter;
-                case DynaType.effect__ScreenFade:
-                    return AssetType.ScreenFade;
-                case DynaType.effect__ScreenWarp:
-                    return AssetType.ScreenWarp;
-                case DynaType.effect__Splash:
-                    return AssetType.Splash;
-                case DynaType.effect__Waterhose:
-                    return AssetType.WaterHose;
-                case DynaType.effect__grass:
-                    return AssetType.Grass;
-                case DynaType.effect__light:
-                    return AssetType.LightEffect;
-                case DynaType.effect__smoke_emitter:
-                    return AssetType.SmokeEmitter;
-                case DynaType.effect__spark_emitter:
-                    return AssetType.SparkEmitter;
-                case DynaType.effect__spotlight:
-                    return AssetType.Spotlight;
-                case DynaType.effect__uber_laser:
-                    return AssetType.UberLaser;
-                case DynaType.effect__water_body:
-                    return AssetType.WaterBody;
-                case DynaType.game_object__BoulderGenerator:
-                    return AssetType.BoulderGenerator;
-                case DynaType.game_object__BusStop:
-                    return AssetType.BusStop;
-                case DynaType.game_object__Camera_Tweak:
-                    return AssetType.CameraTweak;
-                case DynaType.game_object__Flythrough:
-                    return AssetType.FlythroughObject;
-                case DynaType.game_object__FreezableObject:
-                    return AssetType.FreezableObject;
-                case DynaType.game_object__Grapple:
-                    return AssetType.Grapple;
-                case DynaType.game_object__Hangable:
-                    return AssetType.HangableObject;
-                case DynaType.game_object__IN_Pickup:
-                    return AssetType.IncrediblesPickup;
-                case DynaType.game_object__NPCSettings:
-                    return AssetType.NPCSettingsObject;
-                case DynaType.game_object__RaceTimer:
-                    return AssetType.RaceTimer;
-                case DynaType.game_object__Ring:
-                    return AssetType.Ring;
-                case DynaType.game_object__RingControl:
-                    return AssetType.RingControl;
-                case DynaType.game_object__RubbleGenerator:
-                    return AssetType.RubbleGenerator;
-                case DynaType.game_object__Taxi:
-                    return AssetType.Taxi;
-                case DynaType.game_object__Teleport:
-                    return AssetType.TeleportBox;
-                case DynaType.game_object__Turret:
-                    return AssetType.TurretObject;
-                case DynaType.game_object__Vent:
-                    return AssetType.Vent;
-                case DynaType.game_object__VentType:
-                    return AssetType.VentType;
-                case DynaType.game_object__bullet_mark:
-                    return AssetType.BulletMark;
-                case DynaType.game_object__bullet_time:
-                    return AssetType.BulletTime;
-                case DynaType.game_object__bungee_drop:
-                    return AssetType.BungeeDrop;
-                case DynaType.game_object__bungee_hook:
-                    return AssetType.BungeeHook;
-                case DynaType.game_object__camera_param_asset:
-                    return AssetType.CameraParamAsset;
-                case DynaType.game_object__dash_camera_spline:
-                    return AssetType.DashCameraSpline;
-                case DynaType.game_object__flame_emitter:
-                    return AssetType.FlameEmitter;
-                case DynaType.game_object__laser_beam:
-                    return AssetType.LaserBeam;
-                case DynaType.game_object__rband_camera_asset:
-                    return AssetType.RbandCameraAsset;
-                case DynaType.game_object__talk_box:
-                    return AssetType.TalkBox;
-                case DynaType.game_object__task_box:
-                    return AssetType.TaskBox;
-                case DynaType.game_object__text_box:
-                    return AssetType.TextBox;
-                case DynaType.game_object__train_car:
-                    return AssetType.TrainCar;
-                case DynaType.game_object__train_junction:
-                    return AssetType.TrainJunction;
-                case DynaType.hud__image:
-                    return AssetType.HUDImage;
-                case DynaType.hud__meter__font:
-                    return AssetType.HUDMeterFont;
-                case DynaType.hud__meter__unit:
-                    return AssetType.HUDMeterUnit;
-                case DynaType.hud__model:
-                    return AssetType.HUDModel;
-                case DynaType.hud__text:
-                    return AssetType.HUDText;
-                case DynaType.interaction__IceBridge:
-                    return AssetType.InteractionIceBridge;
-                case DynaType.interaction__Launch:
-                    return AssetType.InteractionLaunch;
-                case DynaType.interaction__Lift:
-                    return AssetType.InteractionLift;
-                case DynaType.interaction__SwitchLever:
-                    return AssetType.InteractionSwitchLever;
-                case DynaType.interaction__Turn:
-                    return AssetType.InteractionTurn;
-                case DynaType.logic__FunctionGenerator:
-                    return AssetType.LogicFunctionGenerator;
-                case DynaType.logic__Mission:
-                    return AssetType.LogicMission;
-                case DynaType.logic__Task:
-                    return AssetType.LogicTask;
-                case DynaType.logic__reference:
-                    return AssetType.LogicReference;
-                case DynaType.npc__CoverPoint:
-                    return AssetType.NPCCoverPoint;
-                case DynaType.npc__NPC_Custom_AV:
-                    return AssetType.NPCCustomAV;
-                case DynaType.npc__group:
-                    return AssetType.NPCGroup;
-                case DynaType.pointer:
-                    return AssetType.Pointer;
-                case DynaType.ui__box:
-                    return AssetType.UserInterfaceBox;
-                case DynaType.ui__controller:
-                    return AssetType.UserInterfaceController;
-                case DynaType.ui__image:
-                    return AssetType.UserInterfaceImage;
-                case DynaType.ui__model:
-                    return AssetType.UserInterfaceModel;
-                case DynaType.ui__text:
-                    return AssetType.UserInterfaceText;
-                case DynaType.ui__text__userstring:
-                    return AssetType.UserInterfaceTextUserString;
-            }
-
-            throw new Exception("Unknown DYNA type: " + dynaType.ToString("X8"));
+                DynaType.AnalogDeflection => AssetType.AnalogDeflection,
+                DynaType.AnalogDirection => AssetType.AnalogDirection,
+                DynaType.Carrying_CarryableObject => AssetType.CarryableObject,
+                DynaType.Carrying_CarryableProperty_GenericUseProperty => AssetType.CarryablePropertyGeneric,
+                DynaType.Carrying_CarryableProperty_UsePropertyAttract => AssetType.CarryablePropertyAttract,
+                DynaType.Carrying_CarryableProperty_UsePropertyRepel => AssetType.CarryablePropertyRepel,
+                DynaType.Carrying_CarryableProperty_UsePropertySwipe => AssetType.CarryablePropertySwipe,
+                DynaType.Checkpoint => AssetType.Checkpoint,
+                DynaType.ContextObject_PoleSwing => AssetType.PoleSwing,
+                DynaType.ContextObject_Springboard => AssetType.Springboard,
+                DynaType.ContextObject_Tightrope => AssetType.Tightrope,
+                DynaType.Effect__particle_generator => AssetType.ParticleGenerator,
+                DynaType.Enemy__IN2__Bomber => AssetType.Bomber,
+                DynaType.Enemy__IN2__BossUnderminerDrill => AssetType.BossUnderminerDrill,
+                DynaType.Enemy__IN2__BossUnderminerUM => AssetType.BossUnderminerUM,
+                DynaType.Enemy__IN2__Chicken => AssetType.Chicken,
+                DynaType.Enemy__IN2__Driller => AssetType.Driller,
+                DynaType.Enemy__IN2__Enforcer => AssetType.Enforcer,
+                DynaType.Enemy__IN2__Humanoid => AssetType.Humanoid,
+                DynaType.Enemy__IN2__Rat => AssetType.Rat,
+                DynaType.Enemy__IN2__RobotTank => AssetType.RobotTank,
+                DynaType.Enemy__IN2__Scientist => AssetType.Scientist,
+                DynaType.Enemy__IN2__Shooter => AssetType.Shooter,
+                DynaType.Enemy__NPC_Gate => AssetType.NPCGate,
+                DynaType.Enemy__NPC_Walls => AssetType.NPCWalls,
+                DynaType.Enemy__RATS__LeftArm => AssetType.EnemyLeftArm,
+                DynaType.Enemy__RATS__RightArm => AssetType.EnemyRightArm,
+                DynaType.Enemy__RATS__Swarm__Bug => AssetType.EnemySwarmBug,
+                DynaType.Enemy__RATS__Swarm__Owl => AssetType.EnemySwarmOwl,
+                DynaType.Enemy__RATS__Thief => AssetType.EnemyThief,
+                DynaType.Enemy__RATS__Waiter => AssetType.EnemyWaiter,
+                DynaType.Enemy__SB => AssetType.EnemySB,
+                DynaType.Enemy__SB__BucketOTron => AssetType.Spawner,
+                DynaType.Enemy__SB__CastNCrew => AssetType.CastNCrew,
+                DynaType.Enemy__SB__Critter => AssetType.Critter,
+                DynaType.Enemy__SB__Dennis => AssetType.Dennis,
+                DynaType.Enemy__SB__FrogFish => AssetType.FrogFish,
+                DynaType.Enemy__SB__Mindy => AssetType.Mindy,
+                DynaType.Enemy__SB__Neptune => AssetType.Neptune,
+                DynaType.Enemy__SB__Standard => AssetType.Enemy,
+                DynaType.Enemy__SB__SupplyCrate => AssetType.Crate,
+                DynaType.Enemy__SB__Turret => AssetType.Turret,
+                DynaType.HUD_Compass_Object => AssetType.HUDCompassObject,
+                DynaType.HUD_Compass_System => AssetType.HUDCompassSystem,
+                DynaType.Incredibles__Icon => AssetType.IncrediblesIcon,
+                DynaType.Interest_Pointer => AssetType.InterestPointer,
+                DynaType.JSPExtraData => AssetType.JSPExtraData,
+                DynaType.Pour_Widget => AssetType.PourWidget,
+                DynaType.SceneProperties => AssetType.SceneProperties,
+                DynaType.Twiddler => AssetType.Twiddler,
+                DynaType.Unknown_EBC04E7B => AssetType.Unknown_EBC04E7B,
+                DynaType.audio__conversation => AssetType.AudioConversation,
+                DynaType.camera__binary_poi => AssetType.CameraBinaryPoi,
+                DynaType.camera__preset => AssetType.CameraPreset,
+                DynaType.camera__transition_path => AssetType.CameraTransitionPath,
+                DynaType.camera__transition_time => AssetType.CameraTransitionTime,
+                DynaType.effect__BossBrain => AssetType.BossBrain,
+                DynaType.effect__Flamethrower => AssetType.Flamethrower,
+                DynaType.effect__LensFlareElement => AssetType.LensFlareElement,
+                DynaType.effect__LensFlareSource => AssetType.LensFlareSource,
+                DynaType.effect__LightEffectFlicker => AssetType.LightEffectFlicker,
+                DynaType.effect__LightEffectStrobe => AssetType.LightEffectStrobe,
+                DynaType.effect__Lightning => AssetType.Lightning,
+                DynaType.effect__Rumble => AssetType.Rumble,
+                DynaType.effect__RumbleBoxEmitter => AssetType.RumbleBoxEmitter,
+                DynaType.effect__RumbleSphericalEmitter => AssetType.RumbleSphericalEmitter,
+                DynaType.effect__ScreenFade => AssetType.ScreenFade,
+                DynaType.effect__ScreenWarp => AssetType.ScreenWarp,
+                DynaType.effect__Splash => AssetType.Splash,
+                DynaType.effect__Waterhose => AssetType.WaterHose,
+                DynaType.effect__grass => AssetType.Grass,
+                DynaType.effect__light => AssetType.LightEffect,
+                DynaType.effect__smoke_emitter => AssetType.SmokeEmitter,
+                DynaType.effect__spark_emitter => AssetType.SparkEmitter,
+                DynaType.effect__spotlight => AssetType.Spotlight,
+                DynaType.effect__uber_laser => AssetType.UberLaser,
+                DynaType.effect__water_body => AssetType.WaterBody,
+                DynaType.game_object__BoulderGenerator => AssetType.BoulderGenerator,
+                DynaType.game_object__BusStop => AssetType.BusStop,
+                DynaType.game_object__Camera_Tweak => AssetType.CameraTweak,
+                DynaType.game_object__Flythrough => AssetType.FlythroughObject,
+                DynaType.game_object__FreezableObject => AssetType.FreezableObject,
+                DynaType.game_object__Grapple => AssetType.Grapple,
+                DynaType.game_object__Hangable => AssetType.HangableObject,
+                DynaType.game_object__IN_Pickup => AssetType.IncrediblesPickup,
+                DynaType.game_object__NPCSettings => AssetType.NPCSettingsObject,
+                DynaType.game_object__RaceTimer => AssetType.RaceTimer,
+                DynaType.game_object__Ring => AssetType.Ring,
+                DynaType.game_object__RingControl => AssetType.RingControl,
+                DynaType.game_object__RubbleGenerator => AssetType.RubbleGenerator,
+                DynaType.game_object__Taxi => AssetType.Taxi,
+                DynaType.game_object__Teleport => AssetType.TeleportBox,
+                DynaType.game_object__Turret => AssetType.TurretObject,
+                DynaType.game_object__Vent => AssetType.Vent,
+                DynaType.game_object__VentType => AssetType.VentType,
+                DynaType.game_object__bullet_mark => AssetType.BulletMark,
+                DynaType.game_object__bullet_time => AssetType.BulletTime,
+                DynaType.game_object__bungee_drop => AssetType.BungeeDrop,
+                DynaType.game_object__bungee_hook => AssetType.BungeeHook,
+                DynaType.game_object__camera_param_asset => AssetType.CameraParamAsset,
+                DynaType.game_object__dash_camera_spline => AssetType.DashCameraSpline,
+                DynaType.game_object__flame_emitter => AssetType.FlameEmitter,
+                DynaType.game_object__laser_beam => AssetType.LaserBeam,
+                DynaType.game_object__rband_camera_asset => AssetType.RbandCameraAsset,
+                DynaType.game_object__talk_box => AssetType.TalkBox,
+                DynaType.game_object__task_box => AssetType.TaskBox,
+                DynaType.game_object__text_box => AssetType.TextBox,
+                DynaType.game_object__train_car => AssetType.TrainCar,
+                DynaType.game_object__train_junction => AssetType.TrainJunction,
+                DynaType.hud__image => AssetType.HUDImage,
+                DynaType.hud__meter__font => AssetType.HUDMeterFont,
+                DynaType.hud__meter__unit => AssetType.HUDMeterUnit,
+                DynaType.hud__model => AssetType.HUDModel,
+                DynaType.hud__text => AssetType.HUDText,
+                DynaType.interaction__IceBridge => AssetType.InteractionIceBridge,
+                DynaType.interaction__Launch => AssetType.InteractionLaunch,
+                DynaType.interaction__Lift => AssetType.InteractionLift,
+                DynaType.interaction__SwitchLever => AssetType.InteractionSwitchLever,
+                DynaType.interaction__Turn => AssetType.InteractionTurn,
+                DynaType.logic__FunctionGenerator => AssetType.LogicFunctionGenerator,
+                DynaType.logic__Mission => AssetType.LogicMission,
+                DynaType.logic__Task => AssetType.LogicTask,
+                DynaType.logic__reference => AssetType.LogicReference,
+                DynaType.npc__CoverPoint => AssetType.NPCCoverPoint,
+                DynaType.npc__NPC_Custom_AV => AssetType.NPCCustomAV,
+                DynaType.npc__group => AssetType.NPCGroup,
+                DynaType.pointer => AssetType.Pointer,
+                DynaType.ui__box => AssetType.UserInterfaceBox,
+                DynaType.ui__controller => AssetType.UserInterfaceController,
+                DynaType.ui__image => AssetType.UserInterfaceImage,
+                DynaType.ui__model => AssetType.UserInterfaceModel,
+                DynaType.ui__text => AssetType.UserInterfaceText,
+                DynaType.ui__text__userstring => AssetType.UserInterfaceTextUserString,
+                _ => throw new Exception("Unknown DYNA type: " + dynaType.ToString("X8")),
+            };
         }
     }
 }
