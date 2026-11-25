@@ -28,16 +28,35 @@ public class HipFile
     public Section_DICT DICT;
     public Section_HIPB HIPB;
 
-    public Game game;
-    public Platform platform;
+    public Game game
+    {
+        get;
+        set 
+        { 
+            field = value; 
+            foreach (var AHDR in DICT?.ATOC?.AHDRList ?? [])
+                AHDR.Game = value;
+        }
+    }
+
+    public Platform platform
+    {
+        get;
+        set
+        {
+            field = value;
+            foreach (var AHDR in DICT?.ATOC?.AHDRList ?? [])
+                AHDR.Platform = value;
+        }
+    }
 
     public HipFile(Game game, Platform platform, Section_PACK PACK, Section_DICT DICT, Section_HIPB HIPB)
     {
-        this.game = game;
-        this.platform = platform;
         this.PACK = PACK;
         this.DICT = DICT;
         this.HIPB = HIPB;
+        this.game = game;
+        this.platform = platform;
     }
 
     private HipFile(string fileName, bool isFromINI = false)
@@ -56,9 +75,11 @@ public class HipFile
         using (var reader = new BigEndianBinaryReader(new FileStream(fileName, FileMode.Open)))
         {
             _ = new Section_HIPA(reader);
-            PACK = new Section_PACK(reader, out game, out platform);
+            PACK = new Section_PACK(reader, out var game, out var platform);
             DICT = new Section_DICT(reader, platform);
             _ = new Section_STRM(reader);
+            this.game = game;
+            this.platform = platform;
             if (reader.BaseStream.Position != reader.BaseStream.Length)
                 HIPB = new Section_HIPB(reader);
         }
@@ -96,12 +117,6 @@ public class HipFile
 
         if (platform == Platform.Unknown && HIPB != null && HIPB.ScoobyPlatform != Platform.Unknown)
             platform = HIPB.ScoobyPlatform;
-
-        foreach (var AHDR in DICT.ATOC.AHDRList)
-        {
-            AHDR.Game = game;
-            AHDR.Platform = platform;
-        }
     }
 
     private static Game GetGame(string v) => v switch
